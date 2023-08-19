@@ -1,3 +1,3 @@
-export default function Guidely() {
-  return <div>hello</div>;
+export default function GuidelyPage() {
+  return <div>GuidelyPage</div>;
 }

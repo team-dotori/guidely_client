@@ -17,4 +17,3 @@ export default function badge() {
     <div>달성 날짜</div>
   </div>
 }
-
