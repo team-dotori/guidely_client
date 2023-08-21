@@ -1,6 +1,6 @@
 import React from 'react';
 
-export default function badge({name, date, badgeImageName, acq}) {
+export default function represBadge({name, date, badgeImageName, acq }) {
 
   const style = {
     badgeBox:{
@@ -8,21 +8,21 @@ export default function badge({name, date, badgeImageName, acq}) {
       flexDirection: 'column',
       alignItems: 'center',
       textAlign: 'center',
-      padding: '5%', // 적절한 패딩을 설정
-      paddingTop: '20px',
-      width:'25%'
+      paddingTop: '25px',
+      paddingBottom: '15px', // 적절한 패딩을 설정
+      width:'100%',
     },
     badgeimg:{
-        width: '70px',
-        height: '70px',
-        // backgroundColor: 'pink',
-        borderRadius: '35px', 
-        marginBottom: '10%',
-        opacity: acq ? 1 : 0.25,
+        width: '118px',
+        height: '118px',
+        backgroundColor: 'pink',
+        borderRadius: '59px', 
+        marginTop: '5%',
+        marginBottom: '7%',
     },
     badgeName:{
       marginBottom: '5%',
-      fontSize: '13px',
+      fontSize: '18px',
     },
 
     badgeDate:{
@@ -39,6 +39,7 @@ export default function badge({name, date, badgeImageName, acq}) {
 
   return (
     <div style={style.badgeBox}>
+      <div style={{fontSize:'13px'}}>나의 대표 뱃지</div>
       <div style={style.badgeimg}>
         <img
           style={imgstyle}
@@ -47,7 +48,7 @@ export default function badge({name, date, badgeImageName, acq}) {
         />
       </div>
       <div style={style.badgeName}><strong>{name}</strong></div>
-      {acq && <div style={style.badgeDate}>{date}</div>}
+      <div style={style.badgeDate}>{date}</div>
     </div>
   );
 
