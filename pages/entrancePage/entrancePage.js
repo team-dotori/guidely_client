@@ -15,7 +15,7 @@ export default function EntrancePage() {
 
     if (code) {
       // const res = await fetch(
-      //   `http://172.30.1.20:8080/kakao/callback?code=${code}`
+      //   `http://${process.env.GUIDELY_SERVER_BASE_URL}/kakao/callback?code=${code}`
       // );
       // const data = await res.json();
       // console.log(data);
