@@ -1,6 +1,8 @@
-import React from 'react';
+import React, {useState} from 'react';
+
 
 export default function badge({name, date, badgeImageName, acq}) {
+  const [isModalOpen, setIsModalOpen] = useState(false); // 모달 상태 관리
 
   const style = {
     badgeBox:{
@@ -37,8 +39,18 @@ export default function badge({name, date, badgeImageName, acq}) {
 
   }
 
+  // 모달 열기 함수
+  const openModal = () => {
+    setIsModalOpen(true);
+  };
+
+  // 모달 닫기 함수
+  const closeModal = () => {
+    setIsModalOpen(false);
+  };
+
   return (
-    <div style={style.badgeBox}>
+    <div style={style.badgeBox} onClick={openModal}>
       <div style={style.badgeimg}>
         <img
           style={imgstyle}
