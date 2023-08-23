@@ -1,6 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
 import Badge from "./badgePage/badge"
 import BigBadge from "./badgePage/represBadge"
+import BadgeDetail from "./badgePage/badgeDetail";
+import ReactModal from "react-modal";
+// import styles from "./modalCss.css";
+
 
 function BadgePage() {
     const bigbadge = {name: '공감왕', date: '2023.08.22', badgeImageName:'heartKing'}
@@ -29,26 +33,54 @@ function BadgePage() {
     }
 
     const badgeGroups = chunkArray(badges, chunkSize);
+    const [isOpen, setIsOpen] = useState(false);
+    const [openedData, setOpenedData] = useState(null);
 
-    const hrstyle = {
-        width:'100%',
-        margin:'0px',
-        borderTop: '0.3px solid lightgray'
+    const style = {
+        hrstyle:{
+            width:'100%',
+            margin:'0px',
+            borderTop: '0.3px solid lightgray'
+        },
+        modal:{
+            height: '200px',
+            width: '90%',
+            backgroundColor: 'pink', 
+            padding: "5%",
+            inset: 0,
+            borderRadius: "30px",
+            top: "70%"
+        }
     }
+
+
 
     return (
         <div>
             <BigBadge name={bigbadge.name} date={bigbadge.date} badgeImageName={bigbadge.badgeImageName}  />
-            <hr style={hrstyle}/>
+            <hr style={style.hrstyle}/>
             {badgeGroups.map((group, index) => (
                 <div key={index} style={{ display: 'flex', justifyContent: 'center' }}>
                     {group.map((badge, badgeIndex) => (
-                        <Badge key={badgeIndex} name={badge.name} date={badge.date} badgeImageName={badge.badgeImageName} acq={badge.acq}  />
+                        <Badge key={badgeIndex} name={badge.name} date={badge.date} badgeImageName={badge.badgeImageName} acq={badge.acq} setIsOpen={setIsOpen} setOpenedData={setOpenedData} />
                     ))}
                 </div>
             ))}
+            <ReactModal isOpen={isOpen} style={{ content: style.modal }}>
+                <button onClick={() => setIsOpen(old => !old)}>close</button>
+                {openedData && 
+                (<BadgeDetail 
+                    name={openedData.name} 
+                    date={openedData.date} 
+                    badgeImageName={openedData.badgeImageName}
+                    acq={openedData.acq}  />
+                    )}
+            
+            </ReactModal>
+
         </div>
     );
+
 }
 
 export default BadgePage;
