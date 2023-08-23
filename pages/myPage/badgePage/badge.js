@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 
 
-export default function badge({name, date, badgeImageName, acq, setIsOpen, setOpenedData}) {
+export default function badge({name, date, badgeImageName, acq, level, setIsOpen, setOpenedData}) {
   // const [isModalOpen, setIsModalOpen] = useState(false); // 모달 상태 관리
 
   const style = {
@@ -25,6 +25,7 @@ export default function badge({name, date, badgeImageName, acq, setIsOpen, setOp
     badgeName:{
       marginBottom: '5%',
       fontSize: '13px',
+      fontWeight: 'bold'
     },
 
     badgeDate:{
@@ -43,7 +44,7 @@ export default function badge({name, date, badgeImageName, acq, setIsOpen, setOp
     <div style={style.badgeBox} onClick={() => {
       setIsOpen(old => !old);
       setOpenedData({
-        name, date, badgeImageName, acq
+        name, date, badgeImageName, acq, level,
       })
     }}>
       <div style={style.badgeimg}>
@@ -53,7 +54,7 @@ export default function badge({name, date, badgeImageName, acq, setIsOpen, setOp
           alt={`${name} 뱃지`}
         />
       </div>
-      <div style={style.badgeName}><strong>{name}</strong></div>
+      <div style={style.badgeName}>{name}</div>
       {acq && <div style={style.badgeDate}>{date}</div>}
     </div>
   );

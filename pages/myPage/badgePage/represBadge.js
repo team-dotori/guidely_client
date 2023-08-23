@@ -1,6 +1,6 @@
 import React from 'react';
 
-export default function represBadge({name, date, badgeImageName, acq }) {
+export default function represBadge({name, level, badgeImageName}) {
 
   const style = {
     badgeBox:{
@@ -17,16 +17,19 @@ export default function represBadge({name, date, badgeImageName, acq }) {
         height: '118px',
         backgroundColor: 'pink',
         borderRadius: '59px', 
-        marginTop: '5%',
-        marginBottom: '7%',
+        marginTop: '3%',
+        marginBottom: '5%',
     },
     badgeName:{
-      marginBottom: '5%',
+      marginBottom: '3%',
       fontSize: '18px',
+      fontWeight: 'bold',
     },
 
-    badgeDate:{
+    badgeLevel:{
       fontSize: '13px',
+      marginBottom: '5%',
+      fontWeight: 'bold',
     },
     
   }
@@ -47,8 +50,8 @@ export default function represBadge({name, date, badgeImageName, acq }) {
           alt={`${name} 뱃지`}
         />
       </div>
-      <div style={style.badgeName}><strong>{name}</strong></div>
-      <div style={style.badgeDate}>{date}</div>
+      <div style={style.badgeName}>{name}</div>
+      <div style={style.badgeLevel}>레벨 {level}</div>
     </div>
   );
 
