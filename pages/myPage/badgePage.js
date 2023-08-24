@@ -3,6 +3,7 @@ import Badge from "./badgePage/badge"
 import BigBadge from "./badgePage/represBadge"
 import BadgeDetail from "./badgePage/badgeDetail";
 import ReactModal from "react-modal";
+import AppBar from "../topBar";
 
 
 
@@ -54,11 +55,16 @@ function BadgePage() {
             boxShadow: '-4px -4px 8px rgba(0, 0, 0, 0.2)',
             boxSizing: 'border-box',
             paddingTop: '5%'
+        },
+        bar:{
+            marginTop: '10vh',
         }
     }
     
     return (
         <div>
+            <AppBar pagename = "활동배지" />
+            <div style={style.bar}/>
             <BigBadge name={bigbadge.name} date={bigbadge.date} badgeImageName={bigbadge.badgeImageName} level={bigbadge.level} />
             {/* {레벨 어쩔거???} */}
             <hr style={style.hrstyle}/>

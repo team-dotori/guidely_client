@@ -1,9 +1,10 @@
-import React from 'react';
+import React, {useState} from 'react';
 
 
 export default function BadgeModal({ name, level, badgeImageName, acq }) {
+    const [buttonClicked, setButtonClicked] = useState(false);
     
-  const style = {
+    const style = {
     badgeBox:{
       display: 'flex',
       flexDirection: 'column',
@@ -47,10 +48,11 @@ export default function BadgeModal({ name, level, badgeImageName, acq }) {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: 'white',
         borderRadius: '13px',
         border: '1px solid #181818',
-        fontWeight: '600' // semi bold 수준
+        fontWeight: '600', // semi bold 수준
+        backgroundColor: buttonClicked ? 'black' : 'white', // false 일때 좌 true 일때 우
+        color: buttonClicked ? 'white' : '#181818', // 버튼 클릭 시 글자색 변경
     },
 
     badgeGet:{
@@ -65,6 +67,11 @@ export default function BadgeModal({ name, level, badgeImageName, acq }) {
     height: '100%',
 
   }
+
+  const handleClick = () => {
+    setButtonClicked(true); 
+    // 추가로 버튼 클릭에 따른 동작 수행
+  };
   
 
     return (
@@ -83,7 +90,9 @@ export default function BadgeModal({ name, level, badgeImageName, acq }) {
           {acq ? 
           <div>
             <div style={style.badgeLevel}> 레벨 {level} </div>
-            <button style={style.rpButton}>나의 대표 뱃지로 설정하기</button>
+            <button style={style.rpButton}
+            onClick={handleClick}
+            >나의 대표 뱃지로 설정하기</button>
            </div> 
            :
           <div>

@@ -55,7 +55,7 @@ export default function badge({name, date, badgeImageName, acq, level, setIsOpen
         />
       </div>
       <div style={style.badgeName}>{name}</div>
-      {acq && <div style={style.badgeDate}>{date}</div>}
+      {acq ? <div style={style.badgeDate}>{date}</div> : <div>-</div>}
     </div>
   );
 
