@@ -5,6 +5,7 @@ import SelectDetails from "./selectDetails.js";
 import SelectPlace from "./selectPlace.js";
 import SelectRisk from "./selectRisk.js";
 import SelectSpecific from "./selectSpecific.js";
+import SelectComplete from "./selectComplete.js";
 
 export default function ReportPage() {
   const didMount = useRef(false);
@@ -21,16 +22,26 @@ export default function ReportPage() {
       key={1}
       setCurrentProgressContent={setCurrentProgressContent}
     />,
-    <SelectSpecific key={2} />,
-    <SelectDetails key={3} />,
-    <SelectRisk key={4} />,
+    <SelectSpecific
+      key={2}
+      setCurrentProgressContent={setCurrentProgressContent}
+    />,
+    <SelectDetails
+      key={3}
+      setCurrentProgressContent={setCurrentProgressContent}
+    />,
+    <SelectRisk
+      key={4}
+      setCurrentProgressContent={setCurrentProgressContent}
+    />,
+    <SelectComplete key={5} />,
   ];
 
   useEffect(() => {
+    console.log(currentProgressContent);
     if (didMount.current) {
       setCurrentProgressInd(currentProgressInd + 1);
       setSelectionResultList([...selectionResultList, currentProgressContent]);
-      console.log(selectionResultList);
     } else didMount.current = true;
   }, [currentProgressContent]);
 

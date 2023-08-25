@@ -1,14 +1,23 @@
 import Image from "next/image";
 
-export default function SelectSpecific() {
+export default function SelectSpecific({ setCurrentProgressContent }) {
   return (
     <div className="container">
       <div className="title">상세분류를 선택해 주세요.</div>
-      <Item specificName={"어쩌고 저쩌고"} />
+      <Item
+        specificName={"상세분류1"}
+        setCurrentProgressContent={setCurrentProgressContent}
+      />
       <div className="divider" />
-      <Item specificName={"어쩌고 저쩌고"} />
+      <Item
+        specificName={"상세분류2"}
+        setCurrentProgressContent={setCurrentProgressContent}
+      />
       <div className="divider" />
-      <Item specificName={"어쩌고 저쩌고"} />
+      <Item
+        specificName={"상세분류3"}
+        setCurrentProgressContent={setCurrentProgressContent}
+      />
 
       <style jsx>{`
         .container {
@@ -33,13 +42,20 @@ export default function SelectSpecific() {
   );
 }
 
-function Item({ specificName }) {
+function Item({ specificName, setCurrentProgressContent }) {
   return (
     <div className="container">
       <div className="title">{specificName}</div>
       <Image src="/icons/info.svg" width={20} height={20} alt="가이드라인" />
       <div style={{ width: 160 }} />
-      <button className="select">선택</button>
+      <button
+        className="select"
+        onClick={() => {
+          setCurrentProgressContent(specificName);
+        }}
+      >
+        선택
+      </button>
       <style jsx>{`
         .container {
           width: 329px;

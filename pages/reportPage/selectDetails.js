@@ -1,10 +1,10 @@
 import Image from "next/image";
 
-export default function SelectDetails() {
+export default function SelectDetails({ setCurrentProgressContent }) {
   return (
     <div className="container">
       <div className="title">상세내용을 작성해 주세요.</div>
-      <DetailInput />
+      <DetailInput setCurrentProgressContent={setCurrentProgressContent} />
 
       <style jsx>{`
         .container {
@@ -23,22 +23,22 @@ export default function SelectDetails() {
   );
 }
 
-function DetailInput() {
+function DetailInput({ setCurrentProgressContent }) {
   return (
     <div className="container">
       <button
         className="button"
         onClick={() => {
-          console.log("camera button clicked!");
+          setCurrentProgressContent("사진");
         }}
       >
-        <Image src="/icons/camera.svg" width={16} height={14.4} alt="camera" />
+        <Image src="/icons/camera.svg" width={16} height={16} alt="camera" />
       </button>
       <div style={{ width: 29.73 }} />
       <button
         className="button"
         onClick={() => {
-          console.log("edit button clicked!");
+          setCurrentProgressContent("텍스트");
         }}
       >
         {" "}

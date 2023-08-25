@@ -1,13 +1,23 @@
-import Image from "next/image";
-
-export default function SelectRisk() {
+export default function SelectRisk({ setCurrentProgressContent }) {
   return (
     <div className="container">
       <div className="title">위험도를 선택해 주세요.</div>
       <div className="buttonBox">
-        <RiskButton text={"불편해요"} ifSelected={true} />
-        <RiskButton text={"조심!"} ifSelected={false} />
-        <RiskButton text={"위험해요"} ifSelected={false} />
+        <RiskButton
+          text={"불편해요"}
+          ifSelected={true}
+          setCurrentProgressContent={setCurrentProgressContent}
+        />
+        <RiskButton
+          text={"조심!"}
+          ifSelected={false}
+          setCurrentProgressContent={setCurrentProgressContent}
+        />
+        <RiskButton
+          text={"위험해요"}
+          ifSelected={false}
+          setCurrentProgressContent={setCurrentProgressContent}
+        />
       </div>
 
       <style jsx>{`
@@ -34,10 +44,15 @@ export default function SelectRisk() {
   );
 }
 
-function RiskButton({ text, ifSelected }) {
+function RiskButton({ text, ifSelected, setCurrentProgressContent }) {
   return (
     <div className="container">
-      <button className="button" />
+      <button
+        className="button"
+        onClick={() => {
+          setCurrentProgressContent(text);
+        }}
+      />
       <div className="text">{text}</div>
 
       <style jsx>{`
