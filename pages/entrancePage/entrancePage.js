@@ -159,7 +159,7 @@ function SelectionScreen({ setifDisabled, setScreenState }) {
 
 function SignInScreen() {
   const tryKakaoSignIn = async () => {
-    location.href = "/api/signIn/kakao";
+    location.href = "/api/kakao/signIn";
     // const data = await (await fetch(
     //   "/api/signIn/kakao",
 
