@@ -92,17 +92,17 @@ export default function Post({ text, id, time, type }) {
       {type === 'text' ? 
       (<TruncatedText text = {text} maxLength={30}/>)
       :(<div style={style.soundimgBox}>
-        <img style={style.soundimg} src='img/nocolorLine.svg' />
-        <img style={style.soundimg} src='img/coloredLine.svg' />
+        <img style={style.soundimg} src='/img/nocolorLine.svg' />
+        <img style={style.soundimg} src='/img/coloredLine.svg' />
         </div>)}
     </div>
     <div style={bottomstyle}>
       <div style={bottomstyle.date}>{time}</div>
       <div style={style.heart} onClick={handleLikeClick}>
           {isLiked ? (
-            <img src="img/blackheart.svg" alt="Heart1" style={{ width: '20px', height: '20px' }} />
+            <img src="/img/blackheart.svg" alt="Heart1" style={{ width: '20px', height: '20px' }} />
           ) : (
-            <img src="img/whiteheart.svg" alt="Heart2" style={{ width: '20px', height: '20px' }} />
+            <img src="/img/whiteheart.svg" alt="Heart2" style={{ width: '20px', height: '20px' }} />
           )}
         </div>
     </div>
