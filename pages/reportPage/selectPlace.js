@@ -1,10 +1,66 @@
 import Image from "next/image";
+import { useEffect, useState } from "react";
 
 export default function SelectPlace({ setCurrentProgressContent }) {
+  const [query, setQuery] = useState("");
+  const [searchItems, setSearchItems] = useState([]);
+  const inputWaitTime = 300;
+
+  useEffect(() => {
+    const inputWaitFunction = setTimeout(async () => {
+      if (query.length > 0) {
+        //search
+        const responseJSON = await (
+          await fetch(`/api/kakao/map/searchByKeyword?query=${query}`, {
+            headers: {
+              Authorization: `KakaoAK ${process.env.KAKAO_REST_API_KEY}`,
+            },
+          })
+        ).json();
+        console.log("[API] kakao map api fetched");
+
+        let resultList = [];
+        responseJSON["documents"].map((val) => {
+          let curResult = [];
+          let placeName = val.place_name;
+
+          while (placeName.indexOf(query) != -1) {
+            if (curResult.length != 0) {
+              curResult.push({
+                subStr: placeName.substr(0, placeName.indexOf(query)),
+                ifHighlighted: false,
+              });
+            }
+            curResult.push({
+              subStr: placeName.substr(placeName.indexOf(query), query.length),
+              ifHighlighted: true,
+            });
+            placeName = placeName.substr(
+              placeName.indexOf(query) + query.length
+            );
+          }
+
+          if (placeName.length > 0) {
+            curResult.push({ subStr: placeName, ifHighlighted: false });
+          }
+
+          resultList.push(curResult);
+        });
+        setSearchItems(resultList);
+      }
+    }, inputWaitTime);
+
+    return () => clearTimeout(inputWaitFunction);
+  }, [query]);
+
+  const inputOnChanged = (val) => {
+    setQuery(val.target.value);
+  };
+
   return (
     <div className="container">
       <div className="title">신고장소를 선택해 주세요.</div>
-      <SearchBox />
+      <SearchBox onChange={inputOnChanged} />
 
       <div
         className="currentPosButton"
@@ -14,21 +70,13 @@ export default function SelectPlace({ setCurrentProgressContent }) {
       >
         현 위치로 설정
       </div>
-
-      <SearchItem
-        placeName={[
-          { subStr: "산격", ifHighlighted: true },
-          { subStr: "초등학교", ifHighlighted: false },
-          { subStr: "초등학교", ifHighlighted: false },
-          { subStr: "초등학교", ifHighlighted: false },
-          { subStr: "초등학교", ifHighlighted: false },
-          { subStr: "초등학교", ifHighlighted: false },
-          { subStr: "초등학교", ifHighlighted: false },
-          { subStr: "초등학교", ifHighlighted: false },
-          { subStr: "초등학교", ifHighlighted: false },
-        ]}
-        setCurrentProgressContent={setCurrentProgressContent}
-      />
+      {searchItems.map((val, ind) => (
+        <SearchItem
+          key={ind}
+          placeName={val}
+          setCurrentProgressContent={setCurrentProgressContent}
+        />
+      ))}
 
       <style jsx>{`
         .container {
@@ -54,11 +102,11 @@ export default function SelectPlace({ setCurrentProgressContent }) {
   );
 }
 
-function SearchBox() {
+function SearchBox({ onChange }) {
   return (
     <div className="container">
       <div className="circle" />
-      <input className="textInput"></input>
+      <input className="textInput" onChange={onChange}></input>
       <div className="divider" />
       <div
         className="mapButton"
