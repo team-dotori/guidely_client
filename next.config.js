@@ -1,5 +1,9 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  env: {
+    KAKAO_REST_API_KEY: process.env.KAKAO_REST_API_KEY,
+  },
+
   async rewrites() {
     return [
       // {
@@ -11,8 +15,17 @@ const nextConfig = {
         destination: "/entrancePage/entrancePage",
       },
       {
-        source: "/api/signIn/kakao",
+        source: "/reportPage",
+        destination: "/reportPage/reportPage",
+      },
+
+      {
+        source: "/api/kakao/signIn",
         destination: `https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=${process.env.KAKAO_CLIENT_ID}&redirect_uri=http://${process.env.GUIDELY_CLIENT_BASE_URL}/entrancePage`,
+      },
+      {
+        source: "/api/kakao/map/searchByKeyword",
+        destination: `https://dapi.kakao.com/v2/local/search/keyword`,
       },
     ];
   },
