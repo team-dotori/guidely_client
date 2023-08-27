@@ -2,6 +2,7 @@
 const nextConfig = {
   env: {
     KAKAO_REST_API_KEY: process.env.KAKAO_REST_API_KEY,
+    KAKAO_JAVASCRIPT_KEY: process.env.KAKAO_JAVASCRIPT_KEY,
   },
 
   async rewrites() {
@@ -18,6 +19,10 @@ const nextConfig = {
         source: "/reportPage",
         destination: "/reportPage/reportPage",
       },
+      {
+        source: "/myPage/myActionPage",
+        destination: "/myPage/myActionPage/myActionPage",
+      },
 
       {
         source: "/api/kakao/signIn",
@@ -27,6 +32,10 @@ const nextConfig = {
         source: "/api/kakao/map/searchByKeyword",
         destination: `https://dapi.kakao.com/v2/local/search/keyword`,
       },
+      // {
+      //   source: "/api/kakao/map/load",
+      //   destination: `https://dapi.kakao.com/v2/maps/sdk.js?appkey=${process.env.KAKAO_JAVASCRIPT_KEY}&autoload=false`,
+      // },
     ];
   },
 };
