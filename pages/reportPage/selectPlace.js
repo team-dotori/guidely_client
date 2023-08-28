@@ -1,7 +1,15 @@
 import Image from "next/image";
 import { useEffect, useState } from "react";
+import SelectionFinshed from "./selectionFinished";
 
-export default function SelectPlace({ setCurrentProgressContent }) {
+export default function SelectPlace({
+  place,
+  setPlace,
+  setPlaceInfo,
+  toNextStep,
+  toCurrentStep,
+  ifCurrentStep,
+}) {
   const [query, setQuery] = useState("");
   const [searchItems, setSearchItems] = useState([]);
   const inputWaitTime = 300;
@@ -21,17 +29,24 @@ export default function SelectPlace({ setCurrentProgressContent }) {
 
         let resultList = [];
         responseJSON["documents"].map((val) => {
-          let curResult = [];
+          let curResult = {
+            placeName: [],
+            latitude: parseFloat(val.y),
+            longitude: parseFloat(val.x),
+            address: val.road_address_name,
+            buildingName: val.place_name,
+            type: "INSIDE",
+          };
           let placeName = val.place_name;
 
           while (placeName.indexOf(query) != -1) {
-            if (curResult.length != 0) {
-              curResult.push({
+            if (curResult.placeName.length != 0) {
+              curResult.placeName.push({
                 subStr: placeName.substr(0, placeName.indexOf(query)),
                 ifHighlighted: false,
               });
             }
-            curResult.push({
+            curResult.placeName.push({
               subStr: placeName.substr(placeName.indexOf(query), query.length),
               ifHighlighted: true,
             });
@@ -41,7 +56,10 @@ export default function SelectPlace({ setCurrentProgressContent }) {
           }
 
           if (placeName.length > 0) {
-            curResult.push({ subStr: placeName, ifHighlighted: false });
+            curResult.placeName.push({
+              subStr: placeName,
+              ifHighlighted: false,
+            });
           }
 
           resultList.push(curResult);
@@ -59,25 +77,38 @@ export default function SelectPlace({ setCurrentProgressContent }) {
 
   return (
     <div className="container">
-      <div className="title">신고장소를 선택해 주세요.</div>
-      <SearchBox onChange={inputOnChanged} />
-
-      <div
-        className="currentPosButton"
-        onClick={() => {
-          console.log("curPosition on Click!");
-        }}
-      >
-        현 위치로 설정
-      </div>
-      {searchItems.map((val, ind) => (
-        <SearchItem
-          key={ind}
-          placeName={val}
-          setCurrentProgressContent={setCurrentProgressContent}
+      {place ? (
+        <SelectionFinshed
+          title="신고장소"
+          content={place}
+          toCurrentStep={toCurrentStep}
         />
-      ))}
-
+      ) : null}
+      {ifCurrentStep ? (
+        <div className="optionBox">
+          <div className="topDivider" />
+          <div className="title">신고장소를 선택해 주세요.</div>
+          <SearchBox onChange={inputOnChanged} />
+          <div
+            className="currentPosButton"
+            onClick={() => {
+              console.log("curPosition on Click!");
+            }}
+          >
+            현 위치로 설정
+          </div>
+          {searchItems.map((val, ind) => (
+            <SearchItem
+              key={ind}
+              setPlace={setPlace}
+              item={val}
+              toNextStep={toNextStep}
+              setPlaceInfo={setPlaceInfo}
+            />
+          ))}
+          <div className="bottomDivider" />
+        </div>
+      ) : null}
       <style jsx>{`
         .container {
           display: flex;
@@ -85,8 +116,21 @@ export default function SelectPlace({ setCurrentProgressContent }) {
           align-items: center;
         }
 
+        .optionBox {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+        }
+
+        .topDivider {
+          width: 331px;
+          height: 0.3px;
+          background-color: rgba(0, 0, 0, 0.25);
+          margin-top: 19px;
+        }
+
         .title {
-          margin: 53px 0px 16.27px 0px;
+          margin: 41px 0px 16.27px 0px;
           font-size: 22.87px;
           font-weight: 600;
         }
@@ -96,6 +140,14 @@ export default function SelectPlace({ setCurrentProgressContent }) {
           font-weight: 600;
 
           margin: 33.69px auto 13.27px 16px;
+        }
+
+        .bottomDivider {
+          width: 331px;
+          height: 0.3px;
+          background-color: rgba(0, 0, 0, 0.25);
+          margin-top: 13.27px;
+          margin-bottom: 19px;
         }
       `}</style>
     </div>
@@ -190,19 +242,25 @@ function SearchBox({ onChange }) {
         {subStr: "초등학교", ifHighlighted: false},
       ]
  */
-function SearchItem({ placeName, setCurrentProgressContent }) {
+function SearchItem({ setPlace, item, toNextStep, setPlaceInfo }) {
   return (
     <div className="container">
       <div className="divider" />
       <div
         className="content"
         onClick={() => {
-          setCurrentProgressContent(
-            placeName.map((val) => val["subStr"]).join("")
-          );
+          setPlace(item.placeName.map((val) => val["subStr"]).join(""));
+          setPlaceInfo({
+            latitude: item.latitude,
+            longitude: item.longitude,
+            address: item.address,
+            buildingName: item.buildingName,
+            type: item.type,
+          });
+          toNextStep();
         }}
       >
-        {placeName.map((val, ind) => (
+        {item.placeName.map((val, ind) => (
           <span
             key={ind}
             className={val["ifHighlighted"] ? "highlighted" : "notHighlighted"}

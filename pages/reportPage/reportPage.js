@@ -7,57 +7,142 @@ import SelectRisk from "./selectRisk.js";
 import SelectSpecific from "./selectSpecific.js";
 import SelectComplete from "./selectComplete.js";
 
-export default function ReportPage() {
-  const didMount = useRef(false);
-  const [currentProgressInd, setCurrentProgressInd] = useState(0);
-  const [currentProgressContent, setCurrentProgressContent] = useState("");
-  const [selectionResultList, setSelectionResultList] = useState([]);
+const riskEnumTable = {
+  불편해요: "LOW",
+  "조심!": "MEDIUM",
+  위험해요: "HIGH",
+};
 
-  const progressComponentList = [
-    <SelectPlace
-      key={0}
-      setCurrentProgressContent={setCurrentProgressContent}
-    />,
-    <SelectCategory
-      key={1}
-      setCurrentProgressContent={setCurrentProgressContent}
-    />,
-    <SelectSpecific
-      key={2}
-      setCurrentProgressContent={setCurrentProgressContent}
-    />,
-    <SelectDetails
-      key={3}
-      setCurrentProgressContent={setCurrentProgressContent}
-    />,
-    <SelectRisk
-      key={4}
-      setCurrentProgressContent={setCurrentProgressContent}
-    />,
-    <SelectComplete key={5} />,
-  ];
+const categoryEnumTable = {
+  점자: "BRAILLE",
+  "점자 보도블럭": "BRAILLE_SIDEWALK_BLOCK",
+  유의구간: "CAUTION_SECTION",
+  "시설물 오류": "FACILITY_ERROR",
+};
+
+export default function ReportPage() {
+  const [currentProgressInd, setCurrentProgressInd] = useState(0);
+  const [place, setPlace] = useState("");
+  const [category, setCategory] = useState("");
+  const [specific, setSpecific] = useState("");
+  const [detail, setDetail] = useState("");
+  const [imageURL, setImageURL] = useState("");
+  const [risk, setRisk] = useState("");
+
+  //latitude, longitude, address, buildingName, type
+  const [placeInfo, setPlaceInfo] = useState("");
+
+  const [ifFetchSuccess, setIfFetchSuccess] = useState(false);
+
+  function toNextStep() {
+    if (place.length == 0) return setCurrentProgressInd(0);
+    if (category.length == 0) return setCurrentProgressInd(1);
+    if (specific.length == 0) return setCurrentProgressInd(2);
+    if (detail.length == 0) return setCurrentProgressInd(3);
+    if (risk.length == 0) return setCurrentProgressInd(4);
+    return setCurrentProgressInd(5);
+  }
 
   useEffect(() => {
-    console.log(currentProgressContent);
-    if (didMount.current) {
-      setCurrentProgressInd(currentProgressInd + 1);
-      setSelectionResultList([...selectionResultList, currentProgressContent]);
-    } else didMount.current = true;
-  }, [currentProgressContent]);
+    toNextStep();
+  }, [place, category, specific, detail, risk]);
+
+  function toCurrentStep(ind) {
+    setCurrentProgressInd(ind);
+  }
+
+  useEffect(() => {}, []);
+
+  async function postRequest() {
+    fetch("/api/guidely/api/declaration", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        buildingName: placeInfo.buildingName,
+        address: placeInfo.address,
+        latitude: placeInfo.latitude,
+        longitude: placeInfo.longitude,
+        type: placeInfo.type,
+
+        category: categoryEnumTable[category],
+
+        specification: specific,
+
+        contents: detail === "이미지" ? "" : detail,
+
+        imgUrl: imageURL,
+
+        risk: riskEnumTable[risk],
+      }),
+    }).then((response) => {
+      switch (response.status) {
+        case 201:
+          setIfFetchSuccess(true);
+          break;
+      }
+    });
+  }
 
   return (
     <div className="container">
       <AppBar progressPercentage={currentProgressInd / 5} />
       <div className="upperSizedBox" />
-      {selectionResultList.map((val, ind) => (
-        <SelectionFinshed
-          key={ind}
-          title={progressTagList[ind]}
-          content={val}
-        />
-      ))}
-      <div className="divider" />
-      {progressComponentList[currentProgressInd]}
+      <SelectPlace
+        place={place}
+        setPlace={setPlace}
+        setPlaceInfo={setPlaceInfo}
+        toNextStep={toNextStep}
+        toCurrentStep={() => {
+          toCurrentStep(0);
+        }}
+        ifCurrentStep={currentProgressInd == 0}
+      />
+      <SelectCategory
+        category={category}
+        setCategory={setCategory}
+        toNextStep={toNextStep}
+        toCurrentStep={() => {
+          toCurrentStep(1);
+        }}
+        ifCurrentStep={currentProgressInd == 1}
+      />
+      <SelectSpecific
+        category={category}
+        specific={specific}
+        setSpecific={setSpecific}
+        toNextStep={toNextStep}
+        toCurrentStep={() => {
+          toCurrentStep(2);
+        }}
+        ifCurrentStep={currentProgressInd == 2}
+      />
+      <SelectDetails
+        detail={detail}
+        setDetail={setDetail}
+        imageURL={imageURL}
+        setImageURL={setImageURL}
+        toNextStep={toNextStep}
+        toCurrentStep={() => {
+          toCurrentStep(3);
+        }}
+        ifCurrentStep={currentProgressInd == 3}
+      />
+      <SelectRisk
+        risk={risk}
+        setRisk={setRisk}
+        toNextStep={toNextStep}
+        toCurrentStep={() => {
+          toCurrentStep(4);
+        }}
+        ifCurrentStep={currentProgressInd == 4}
+      />
+      {currentProgressInd == 5 && !ifFetchSuccess ? (
+        <SubmitButton postRequest={postRequest} />
+      ) : null}
+      {ifFetchSuccess ? <SelectComplete /> : null}
+
       <style jsx>{`
         .container {
           position: absolute;
@@ -81,73 +166,31 @@ export default function ReportPage() {
   );
 }
 
-export const progressTagList = [
-  "신고장소",
-  "신고내용",
-  "상세분류",
-  "상세내용",
-  "위험도",
-];
-
-function SelectionFinshed({ title, content }) {
+function SubmitButton({ postRequest }) {
   return (
-    <div className="container">
-      <div className="title">{title}</div>
-      <div className="contentBox">
-        <div className="yellowCircle" />
-        <div className="content">{content}</div>
-        <div className="transparentCircle" />
-      </div>
-
+    <div>
+      <div className="divider" />
+      <button className="button" onClick={postRequest}>
+        신고완료
+      </button>
       <style jsx>{`
         .container {
-          margin-bottom: 21px;
-          width: 331px;
-          height: 74px;
-
           display: flex;
-          flex-direction: column;
-          justify-content: space-between;
-        }
-
-        .title {
-          font-size: 13.72px;
-        }
-
-        .contentBox {
-          border-radius: 35px;
-          width: 331px;
-          height: 47px;
-          background-color: #181818;
-
-          display: flex;
-          justify-content: space-between;
           align-items: center;
         }
+        .divider {
+          margin: 24px 0px 24px 0px;
+        }
+        .button {
+          width: 331px;
+          height: 47px;
+          border: none;
+          border-radius: 35px;
+          background-color: #4f4beb;
 
-        .content {
-          font-weight: 600;
+          font-weight: 800;
+          font-size: 15px;
           color: #ffffff;
-
-          width: 269px;
-          text-overflow: ellipsis;
-          overflow: hidden;
-          white-space: nowrap;
-        }
-
-        .yellowCircle {
-          width: 7px;
-          height: 7px;
-          margin-left: 16px;
-          background-color: #fcff59;
-          border-radius: 50%;
-        }
-
-        .transparentCircle {
-          width: 7px;
-          height: 7px;
-          margin-right: 16px;
-          border-radius: 50%;
         }
       `}</style>
     </div>
