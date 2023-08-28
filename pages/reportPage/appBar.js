@@ -14,7 +14,6 @@ export default function AppBar({ progressPercentage }) {
           height: 78px;
 
           padding-top: 29px;
-          box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
 
           background-color: #ffffff;
         }
@@ -68,7 +67,7 @@ function TitleBox() {
         .title {
           display: inline;
 
-          font-weight: bold;
+          font-weight: 700;
           font-size: 20px;
 
           margin-left: 18px;
