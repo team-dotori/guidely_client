@@ -9,7 +9,7 @@ export default function HomePage() {
         <ListItem
           image={
             <Image
-              src={"/icons/pwd_home_icons/signalPage.svg"}
+              src={"/icons/alert_white.svg"}
               width={41}
               height={33.47}
               alt="신고 내역 알림"
@@ -20,7 +20,7 @@ export default function HomePage() {
         <ListItem
           image={
             <Image
-              src={"/icons/pwd_home_icons/reportSearchPage.svg"}
+              src={"/icons/list_white.svg"}
               width={36}
               height={36}
               alt="신고 내역 조회"
@@ -31,7 +31,7 @@ export default function HomePage() {
         <ListItem
           image={
             <Image
-              src={"/icons/pwd_home_icons/navigationPage.svg"}
+              src={"/icons/location_white.svg"}
               width={41}
               height={48}
               alt="길찾기"
@@ -42,7 +42,7 @@ export default function HomePage() {
         <ListItem
           image={
             <Image
-              src={"/icons/pwd_home_icons/boardPage.svg"}
+              src={"/icons/textBubble_white.svg"}
               width={41}
               height={41}
               alt="게시판"
@@ -97,6 +97,8 @@ function ListItem({ image, title }) {
         }
 
         .icon {
+          display: flex;
+          align-items: center;
           width: 57px;
         }
 
