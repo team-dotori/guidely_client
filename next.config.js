@@ -24,12 +24,12 @@ const nextConfig = {
         destination: "/myPage/myActionPage/myActionPage",
       },
       {
-        source: "/pwd/signalPage/signalPage",
-        destination: "/pwd/signalPage",
-      },
-      {
         source: "/pwd/homePage",
         destination: "/pwd/homePage/homePage",
+      },
+      {
+        source: "/pwd/signalPage",
+        destination: "/pwd/signalPage/signalPage",
       },
 
       {
@@ -44,6 +44,10 @@ const nextConfig = {
       {
         source: "/api/kakao/map/searchByKeyword",
         destination: `https://dapi.kakao.com/v2/local/search/keyword`,
+      },
+      {
+        source: "/api/kakao/map/addressByCoor",
+        destination: `https://dapi.kakao.com/v2/local/geo/coord2address`,
       },
       // {
       //   source: "/api/kakao/map/load",
