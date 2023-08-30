@@ -1,12 +1,6 @@
 import Image from "next/image";
 import SelectionFinshed from "./selectionFinished";
-
-const specificTable = {
-  점자: ["잘못된 정보", "내용 부실", "글자 또는 문법오류", "훼손"],
-  "점자 보도블럭": ["잘못된 정보", "훼손"],
-  유의구간: ["위험내용"],
-  "시설물 오류": ["작동오류", "부정확한 정보"],
-};
+import { specificTable } from "@/public/constants/enumTable";
 
 export default function SelectSpecific({
   category,
