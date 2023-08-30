@@ -16,7 +16,7 @@ export default function ReportListPage({
 
   async function getReportList() {
     const data = await (
-      await fetch(`http://192.168.172.148:8080/api/location/${curLocation.id}`)
+      await fetch(`api/guidely/api/location/${curLocation.id}`)
     ).json();
     setReportList(
       data.map((val) => ({
