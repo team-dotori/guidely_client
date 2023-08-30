@@ -2,18 +2,24 @@ import { useEffect, useState } from "react";
 import SignalPanel from "./comp_signalPanel";
 import LocationList from "./comp_locationList";
 
-export default function LocationListPage({ setCurLocation, toNextPage }) {
+export default function LocationListPage({
+  setCurLocation,
+  toNextPage,
+  curCoordinate,
+}) {
   const [locationList, setLocationList] = useState([]);
+  const [curAddress, setCurAddress] = useState(" ");
 
   useEffect(() => {
-    getLocationList();
-  }, []);
+    // getLocationList(curCoordinate);
+    getAddressByCoor(curCoordinate);
+  }, [curCoordinate]);
 
-  async function getLocationList() {
+  async function getLocationList({ lat, lon }) {
     const data = await (
       await fetch(
         "/api/guidely/api/location/navigation" +
-          `?latitude=${37.12345}&longitude=${-122.672}`
+          `?latitude=${lat}&longitude=${lon}`
       )
     ).json();
 
@@ -26,9 +32,23 @@ export default function LocationListPage({ setCurLocation, toNextPage }) {
     );
   }
 
+  async function getAddressByCoor({ lat, lon }) {
+    const json = await (
+      await fetch(`/api/kakao/map/addressByCoor?x=${lon}&y=${lat}`, {
+        headers: {
+          Authorization: `KakaoAK ${process.env.KAKAO_REST_API_KEY}`,
+        },
+      })
+    ).json();
+
+    if (json.documents.length > 0) {
+      setCurAddress(json.documents[0].address.address_name);
+    }
+  }
+
   return (
     <div className="container">
-      <SignalPanel totNum={locationList.length} />
+      <SignalPanel totNum={locationList.length} curAddress={curAddress} />
       <LocationList
         locationList={locationList}
         setCurLocation={setCurLocation}

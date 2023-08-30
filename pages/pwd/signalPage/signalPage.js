@@ -1,14 +1,58 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import AppBar from "./comp_appbar";
 import BottomBar from "./comp_bottomBar";
 import LocationListPage from "./locationListPage/locationListPage";
 import ReportListPage from "./reportListPage/reportListPage";
 import ReportDetailPage from "./reportDetailPage/reportDetailPage";
 
+import {
+  getDistanceBetweenCoor,
+  getCurrentPostion,
+  requestGeolocatorPermission,
+} from "@/public/functions/coordinate";
+import {
+  defaultLatLon,
+  detectDistance,
+  detectInterval,
+} from "@/public/constants/constant";
+
 export default function SignalPage() {
   const [curDepth, setCurDepth] = useState(0);
   const [curLocation, setCurLocation] = useState();
   const [curReport, setCurReport] = useState();
+  const [curCoordinate, setCurCoordinate] = useState(defaultLatLon);
+  const [timer, setTimer] = useState(0);
+
+  useEffect(() => {
+    // getCurrentPostion(
+    //   (position) => {
+    //     if (
+    //       getDistanceBetweenCoor(
+    //         curCoordinate.lat,
+    //         curCoordinate.lon,
+    //         position.coords.latitude,
+    //         position.coords.longitude
+    //       ) > detectDistance
+    //     ) {
+    //       setCurCoordinate({
+    //         lat: position.coords.latitude,
+    //         lon: position.coords.longitude,
+    //       });
+    //     }
+    //   },
+    //   () => {
+    //     // navigator.permissions.revoke({ name: "geolocation" }).then((result) => {
+    //     //   report(result.state);
+    //     // });
+    //     // requestGeolocatorPermission();
+    //     // setCurCoordinate(defaultLatLon);
+    //   }
+    // );
+
+    setTimeout(() => {
+      setTimer(timer + 1);
+    }, detectInterval);
+  }, [timer]);
 
   function toNextPage() {
     setCurDepth(curDepth + 1);
@@ -21,6 +65,8 @@ export default function SignalPage() {
           <LocationListPage
             setCurLocation={setCurLocation}
             toNextPage={toNextPage}
+            curCoordinate={curCoordinate}
+            timer={timer}
           />
         );
       case 1:

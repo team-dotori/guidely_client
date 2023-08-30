@@ -1,10 +1,10 @@
 import Image from "next/image";
 
-export default function SignalPanel({ totNum }) {
+export default function SignalPanel({ totNum, curAddress }) {
   return (
     <div className="background">
       <div className="container">
-        <div className="locationText">산격동 1308-2</div>
+        <div className="locationText">{curAddress}</div>
         <div style={{ height: 8 }} />
         <div className="reportCountBox">
           <div>
