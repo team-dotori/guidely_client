@@ -23,6 +23,14 @@ const nextConfig = {
         source: "/myPage/myActionPage",
         destination: "/myPage/myActionPage/myActionPage",
       },
+      {
+        source: "/pwd/signalPage/signalPage",
+        destination: "/pwd/signalPage",
+      },
+      {
+        source: "/pwd/homePage",
+        destination: "/pwd/homePage/homePage",
+      },
 
       {
         source: "/api/guidely/:path*",
