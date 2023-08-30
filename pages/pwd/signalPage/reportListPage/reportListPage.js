@@ -1,7 +1,5 @@
-import AppBar from "../comp_appbar";
 import ReportList from "./comp_reportList";
 import Panel from "./comp_panel";
-import BottomBar from "../comp_bottomBar";
 import { useEffect, useState } from "react";
 import { riskEnumTable, categoryEnumTable } from "@/public/constants/enumTable";
 
