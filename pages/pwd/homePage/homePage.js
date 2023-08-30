@@ -16,6 +16,7 @@ export default function HomePage() {
             />
           }
           title="신고 내역 알림"
+          linkURL="/pwd/signalPage"
         />
         <ListItem
           image={
@@ -27,6 +28,7 @@ export default function HomePage() {
             />
           }
           title="신고 내역 조회"
+          linkURL="/pwd/reportSearchPage"
         />
         <ListItem
           image={
@@ -79,9 +81,14 @@ export default function HomePage() {
   );
 }
 
-function ListItem({ image, title }) {
+function ListItem({ image, title, linkURL }) {
   return (
-    <div className="container">
+    <div
+      className="container"
+      onClick={() => {
+        location.href = linkURL;
+      }}
+    >
       <div className="icon">{image}</div>
       <div className="title">{title}</div>
       <div className="divider" />
