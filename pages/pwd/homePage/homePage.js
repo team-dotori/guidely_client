@@ -42,7 +42,7 @@ export default function HomePage() {
         <ListItem
           image={
             <Image
-              src={"/icons/textBubble_white.svg"}
+              src={"/icons/speechBubble_white.svg"}
               width={41}
               height={41}
               alt="게시판"
