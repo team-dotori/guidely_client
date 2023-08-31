@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import AppBar from "./searchBar";
 import NavBar from "./navBar";
+import ReactModal from "react-modal";
+import PlaceDetail from "./placeDetail";
 
 export default function MapPage() {
   const [mapLoaded, setMapLoaded] = useState(false);
@@ -33,8 +35,22 @@ export default function MapPage() {
         width: "100vw",
         height: "90vh",
         marginTop: "10vh",
-        zIndex: "-100"
+        zIndex: "-1"
     },
+
+    modal:{
+        position: 'absolute',
+        inset:'78% 0 0 50%',
+        transform: 'translateX(-50%)', // 모달을 가로 방향으로 중앙 정렬
+        width: '100%',
+        height: '21.5%',
+        borderRadius: '13.5px 13.5px 0 0',
+        backgroundColor: 'white',
+        border: 'none',
+        boxShadow: '-4px -4px 8px rgba(0, 0, 0, 0.2)',
+        boxSizing: 'border-box',
+        paddingTop: '5%'
+    }
 };
 
   return (
@@ -42,6 +58,15 @@ export default function MapPage() {
       <AppBar />
       <div id="map" style={style.map} />
       <NavBar />
+      <ReactModal 
+                isOpen={true} 
+                style={{ content: style.modal }} 
+                ariaHideApp={false}
+                shouldCloseOnOverlayClick={true}
+                //onRequestClose={() => setIsOpen(old => !old)}
+                >
+                  <PlaceDetail></PlaceDetail>
+      </ReactModal>
     </div>
   );
 }
