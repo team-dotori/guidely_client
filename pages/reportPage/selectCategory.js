@@ -1,23 +1,51 @@
 import Image from "next/image";
+import SelectionFinshed from "./selectionFinished";
 
-export default function SelectCategory({ setCurrentProgressContent }) {
+export default function SelectCategory({
+  category,
+  setCategory,
+  toNextStep,
+  toCurrentStep,
+  ifCurrentStep,
+}) {
   return (
     <div className="container">
-      <div className="title">신고내용을 선택해 주세요.</div>
-      <Item
-        categoryName={"어쩌고 저쩌고"}
-        setCurrentProgressContent={setCurrentProgressContent}
-      />
-      <div className="divider" />
-      <Item
-        categoryName={"어쩌고 저쩌고"}
-        setCurrentProgressContent={setCurrentProgressContent}
-      />
-      <div className="divider" />
-      <Item
-        categoryName={"어쩌고 저쩌고"}
-        setCurrentProgressContent={setCurrentProgressContent}
-      />
+      {category ? (
+        <SelectionFinshed
+          title="신고내용"
+          content={category}
+          toCurrentStep={toCurrentStep}
+        />
+      ) : null}
+      {ifCurrentStep ? (
+        <div className="optionBox">
+          <div className="topDivider" />
+          <div className="title">신고내용을 선택해 주세요.</div>
+          <Item
+            categoryName={"점자"}
+            setCategory={setCategory}
+            toNextStep={toNextStep}
+          />
+          <div className="divider" />
+          <Item
+            categoryName={"점자 보도블럭"}
+            setCategory={setCategory}
+            toNextStep={toNextStep}
+          />
+          <div className="divider" />
+          <Item
+            categoryName={"유의구간"}
+            setCategory={setCategory}
+            toNextStep={toNextStep}
+          />
+          <div className="divider" />
+          <Item
+            categoryName={"시설물 오류"}
+            setCategory={setCategory}
+            toNextStep={toNextStep}
+          />
+        </div>
+      ) : null}
 
       <style jsx>{`
         .container {
@@ -26,8 +54,21 @@ export default function SelectCategory({ setCurrentProgressContent }) {
           align-items: center;
         }
 
+        .optionBox {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+        }
+
+        .topDivider {
+          width: 331px;
+          height: 0.3px;
+          background-color: rgba(0, 0, 0, 0.25);
+          margin-top: 19px;
+        }
+
         .title {
-          margin: 53px 0px 15px 0px;
+          margin: 41px 0px 15px 0px;
           font-size: 22.87px;
           font-weight: 600;
         }
@@ -37,12 +78,20 @@ export default function SelectCategory({ setCurrentProgressContent }) {
           width: 331px;
           background: rgba(0, 0, 0, 0.15);
         }
+
+        .bottomDivider {
+          width: 331px;
+          height: 0.3px;
+          background-color: rgba(0, 0, 0, 0.25);
+          margin-top: 29.85px;
+          margin-bottom: 19px;
+        }
       `}</style>
     </div>
   );
 }
 
-function Item({ categoryName, setCurrentProgressContent }) {
+function Item({ categoryName, setCategory, toNextStep }) {
   return (
     <div className="container">
       <div className="title">{categoryName}</div>
@@ -51,7 +100,8 @@ function Item({ categoryName, setCurrentProgressContent }) {
       <button
         className="select"
         onClick={() => {
-          setCurrentProgressContent(categoryName);
+          setCategory(categoryName);
+          toNextStep();
         }}
       >
         선택

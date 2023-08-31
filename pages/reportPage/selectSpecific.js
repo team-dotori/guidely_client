@@ -1,24 +1,43 @@
 import Image from "next/image";
+import SelectionFinshed from "./selectionFinished";
+import { specificTable } from "@/public/constants/enumTable";
 
-export default function SelectSpecific({ setCurrentProgressContent }) {
+export default function SelectSpecific({
+  category,
+  specific,
+  setSpecific,
+  toNextStep,
+  toCurrentStep,
+  ifCurrentStep,
+}) {
   return (
     <div className="container">
-      <div className="title">상세분류를 선택해 주세요.</div>
-      <Item
-        specificName={"상세분류1"}
-        setCurrentProgressContent={setCurrentProgressContent}
-      />
-      <div className="divider" />
-      <Item
-        specificName={"상세분류2"}
-        setCurrentProgressContent={setCurrentProgressContent}
-      />
-      <div className="divider" />
-      <Item
-        specificName={"상세분류3"}
-        setCurrentProgressContent={setCurrentProgressContent}
-      />
-
+      {specific ? (
+        <SelectionFinshed
+          title="상세분류"
+          content={specific}
+          toCurrentStep={toCurrentStep}
+        />
+      ) : null}
+      {ifCurrentStep ? (
+        <div className="optionBox">
+          <div className="topDivider" />
+          <div className="title">상세분류를 선택해 주세요.</div>
+          {specificTable[category].map((val, ind) => (
+            <div key={ind}>
+              <Item
+                specificName={val}
+                setSpecific={setSpecific}
+                toNextStep={toNextStep}
+              />
+              {ind != specificTable[category].length - 1 ? (
+                <div className="divider" />
+              ) : null}
+            </div>
+          ))}
+          <div className="bottomDivider" />
+        </div>
+      ) : null}
       <style jsx>{`
         .container {
           display: flex;
@@ -26,8 +45,21 @@ export default function SelectSpecific({ setCurrentProgressContent }) {
           align-items: center;
         }
 
+        .optionBox {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+        }
+
+        .topDivider {
+          width: 331px;
+          height: 0.3px;
+          background-color: rgba(0, 0, 0, 0.25);
+          margin-top: 19px;
+        }
+
         .title {
-          margin: 53px 0px 15px 0px;
+          margin: 41px 0px 15px 0px;
           font-size: 22.87px;
           font-weight: 600;
         }
@@ -37,12 +69,20 @@ export default function SelectSpecific({ setCurrentProgressContent }) {
           width: 331px;
           background: rgba(0, 0, 0, 0.15);
         }
+
+        .bottomDivider {
+          width: 331px;
+          height: 0.3px;
+          background-color: rgba(0, 0, 0, 0.25);
+          margin-top: 29.85px;
+          margin-bottom: 19px;
+        }
       `}</style>
     </div>
   );
 }
 
-function Item({ specificName, setCurrentProgressContent }) {
+function Item({ specificName, setSpecific, toNextStep }) {
   return (
     <div className="container">
       <div className="title">{specificName}</div>
@@ -51,7 +91,8 @@ function Item({ specificName, setCurrentProgressContent }) {
       <button
         className="select"
         onClick={() => {
-          setCurrentProgressContent(specificName);
+          setSpecific(specificName);
+          toNextStep();
         }}
       >
         선택
@@ -68,7 +109,7 @@ function Item({ specificName, setCurrentProgressContent }) {
         }
 
         .title {
-          width: 109px;
+          width: 130px;
 
           font-size: 15px;
           font-weight: 600;
