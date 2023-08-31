@@ -25,7 +25,6 @@ export default function Panel({
           })
         ).json();
         console.log("[API] kakao map api fetched");
-
         if (responseJSON["documents"].length > 0) {
           setCurBuildingName(responseJSON["documents"][0].place_name);
         }
@@ -48,7 +47,7 @@ export default function Panel({
         <div style={{ height: 23 }} />
 
         {curBuildingName.length == 0 ? (
-          <div className="locationInfo">올바른 장소를 입력해 주세요.</div>
+          <div className="locationInfo">검색 결과가 없습니다.</div>
         ) : (
           <div className="locationInfo">
             <b>{curBuildingName}</b>에

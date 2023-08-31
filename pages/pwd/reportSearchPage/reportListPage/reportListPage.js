@@ -12,22 +12,37 @@ export default function ReportListPage({
   const [reportList, setReportList] = useState([]);
 
   useEffect(() => {
-    // getReportList();
+    if (curBuildingName.length > 0) {
+      getReportList();
+    }
   }, [curBuildingName]);
 
   async function getReportList() {
-    const data = await (
-      await fetch(`api/guidely/api/location/${curLocation.id}`)
-    ).json();
-    setReportList(
-      data.map((val) => ({
-        count: data.length,
-        category: categoryEnumTable[val.category],
-        risk: riskEnumTable[val.risk],
-        contents: val.contents,
-        specification: val.specification,
-      }))
-    );
+    fetch(
+      `/api/guidely/api/location/find?buildingName=${curBuildingName}`
+    ).then((data) => {
+      switch (data.status) {
+        case 200:
+          data.json().then((data) => {
+            if (data.length > 0) {
+              setReportList(
+                data.map((val) => ({
+                  count: data.length,
+                  category: categoryEnumTable[val.category],
+                  risk: riskEnumTable[val.risk],
+                  contents: val.contents,
+                  specification: val.specification,
+                }))
+              );
+            }
+          });
+          break;
+        case 500:
+          setCurBuildingName("");
+          setReportList([]);
+          break;
+      }
+    });
   }
 
   return (
