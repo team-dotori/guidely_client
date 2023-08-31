@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import SelectionFinshed from "./selectionFinished";
+import { textInputWaitTime } from "@/public/constants/constant";
 
 export default function SelectPlace({
   place,
@@ -12,7 +13,6 @@ export default function SelectPlace({
 }) {
   const [query, setQuery] = useState("");
   const [searchItems, setSearchItems] = useState([]);
-  const inputWaitTime = 300;
 
   useEffect(() => {
     const inputWaitFunction = setTimeout(async () => {
@@ -66,7 +66,7 @@ export default function SelectPlace({
         });
         setSearchItems(resultList);
       }
-    }, inputWaitTime);
+    }, textInputWaitTime);
 
     return () => clearTimeout(inputWaitFunction);
   }, [query]);

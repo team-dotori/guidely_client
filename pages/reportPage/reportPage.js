@@ -1,4 +1,9 @@
 import { useEffect, useState, useRef } from "react";
+import {
+  riskEnumTable,
+  categoryEnumTable,
+} from "@/public/constants/enumTable.js";
+
 import AppBar from "./appBar.js";
 import SelectCategory from "./selectCategory.js";
 import SelectDetails from "./selectDetails.js";
@@ -6,19 +11,6 @@ import SelectPlace from "./selectPlace.js";
 import SelectRisk from "./selectRisk.js";
 import SelectSpecific from "./selectSpecific.js";
 import SelectComplete from "./selectComplete.js";
-
-const riskEnumTable = {
-  불편해요: "LOW",
-  "조심!": "MEDIUM",
-  위험해요: "HIGH",
-};
-
-const categoryEnumTable = {
-  점자: "BRAILLE",
-  "점자 보도블럭": "BRAILLE_SIDEWALK_BLOCK",
-  유의구간: "CAUTION_SECTION",
-  "시설물 오류": "FACILITY_ERROR",
-};
 
 export default function ReportPage() {
   const [currentProgressInd, setCurrentProgressInd] = useState(0);

@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { useEffect, useState } from "react";
+import { defaultLatLng } from "@/public/constants/constant";
 
 export default function MapTab() {
   return (
@@ -88,10 +89,6 @@ function SearchBar() {
 
 function MyMap() {
   const [kakaoMap, setKakaoMap] = useState();
-  const defaultLatLng = {
-    lat: 35.888836,
-    lng: 128.610299,
-  };
 
   useEffect(() => {
     // DOM으로 스크립트 태그 만들기

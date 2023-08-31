@@ -23,6 +23,18 @@ const nextConfig = {
         source: "/myPage/myActionPage",
         destination: "/myPage/myActionPage/myActionPage",
       },
+      {
+        source: "/pwd/homePage",
+        destination: "/pwd/homePage/homePage",
+      },
+      {
+        source: "/pwd/signalPage",
+        destination: "/pwd/signalPage/signalPage",
+      },
+      {
+        source: "/pwd/reportSearchPage",
+        destination: "/pwd/reportSearchPage/reportSearchPage",
+      },
 
       {
         source: "/api/guidely/:path*",
@@ -36,6 +48,10 @@ const nextConfig = {
       {
         source: "/api/kakao/map/searchByKeyword",
         destination: `https://dapi.kakao.com/v2/local/search/keyword`,
+      },
+      {
+        source: "/api/kakao/map/addressByCoor",
+        destination: `https://dapi.kakao.com/v2/local/geo/coord2address`,
       },
       // {
       //   source: "/api/kakao/map/load",
