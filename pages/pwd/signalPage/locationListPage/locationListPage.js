@@ -11,7 +11,7 @@ export default function LocationListPage({
   const [curAddress, setCurAddress] = useState(" ");
 
   useEffect(() => {
-    // getLocationList(curCoordinate);
+    getLocationList(curCoordinate);
     getAddressByCoor(curCoordinate);
   }, [curCoordinate]);
 
