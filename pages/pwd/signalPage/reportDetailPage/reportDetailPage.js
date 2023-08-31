@@ -1,3 +1,4 @@
+import Like from "./comp_like";
 import Panel from "./comp_panel";
 import ReportDetail from "./comp_reportDetail";
 
@@ -6,6 +7,7 @@ export default function ReportDetailPage({ locationName, curReport }) {
     <div className="container">
       <Panel locationName={locationName} reportCount={curReport.count} />
       <ReportDetail curReport={curReport} />
+      <Like reportId={curReport} />
       <style jsx>{`
         .container {
           width: 100vw;
