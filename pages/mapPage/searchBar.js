@@ -4,7 +4,7 @@ import React from "react";
 export default function AppBar() {
   return (
     <div className="appBar">
-    <SearchBox></SearchBox>
+    <SearchBox onChange={(val)=>{console.log(val.target.value)}}/>
       <style jsx>{`
         .appBar {
           position: fixed;
