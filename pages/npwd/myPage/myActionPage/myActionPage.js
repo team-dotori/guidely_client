@@ -1,5 +1,5 @@
-import AppBar from "./appBar";
-import MapTab from "./tabMap";
+import AppBar from "@/components/npwd/myPage/myActionPage/appBar";
+import MapTab from "@/components/npwd/myPage/myActionPage/tabMap";
 
 export default function MyActionPage() {
   return (

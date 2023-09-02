@@ -1,5 +1,5 @@
-import ReportList from "./comp_reportList";
-import Panel from "./comp_panel";
+import ReportList from "@/components/pwd/reportSearchPage/reportListPage/reportList";
+import Panel from "@/components/pwd/reportSearchPage/reportListPage/panel";
 import { useEffect, useState } from "react";
 import { riskEnumTable, categoryEnumTable } from "@/public/constants/enumTable";
 

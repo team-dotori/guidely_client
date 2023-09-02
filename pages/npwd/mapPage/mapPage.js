@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
-import AppBar from "./searchBar";
-import NavBar from "./navBar";
+import AppBar from "@/components/npwd/mapPage/searchBar";
+import NavBar from "@/components/npwd/mapPage/navBar";
 import ReactModal from "react-modal";
-import PlaceDetail from "./placeDetail";
+import PlaceDetail from "@/components/npwd/mapPage/placeDetail";
 
 export default function MapPage() {
   const [mapLoaded, setMapLoaded] = useState(false);

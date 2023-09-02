@@ -1,4 +1,4 @@
-import AppBar from "./appbar.js";
+import AppBar from "@/components/pwd/homePage/appbar.js";
 import Image from "next/image";
 
 export default function HomePage() {

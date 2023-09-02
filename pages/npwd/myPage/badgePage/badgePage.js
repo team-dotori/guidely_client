@@ -1,9 +1,9 @@
 import React, { useState } from "react";
-import Badge from "./badge";
-import BigBadge from "./represBadge";
-import BadgeDetail from "./badgeDetail";
+import Badge from "@/components/npwd/myPage/badgePage/badge";
+import BigBadge from "@/components/npwd/myPage/badgePage/represBadge";
+import BadgeDetail from "@/components/npwd/myPage/badgePage/badgeDetail";
 import ReactModal from "react-modal";
-import AppBar from "./topBar";
+import AppBar from "@/components/npwd/myPage/badgePage/topBar";
 
 function BadgePage() {
   const bigbadge = {

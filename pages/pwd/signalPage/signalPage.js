@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
-import AppBar from "./comp_appbar";
-import BottomBar from "./comp_bottomBar";
+import AppBar from "@/components/pwd/signalPage/appbar";
+import BottomBar from "@/components/pwd/signalPage/bottomBar";
 import LocationListPage from "./locationListPage/locationListPage";
 import ReportListPage from "./reportListPage/reportListPage";
 import ReportDetailPage from "./reportDetailPage/reportDetailPage";

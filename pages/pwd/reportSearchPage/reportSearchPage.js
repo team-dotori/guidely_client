@@ -1,6 +1,6 @@
 import { useState } from "react";
-import BottomBar from "./comp_bottomBar";
-import AppBar from "./comp_appbar";
+import BottomBar from "@/components/pwd/reportSearchPage/bottomBar";
+import AppBar from "@/components/pwd/reportSearchPage/appbar";
 import ReportListPage from "./reportListPage/reportListPage";
 import ReportDetailPage from "./reportDetailPage/reportDetailPage";
 

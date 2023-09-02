@@ -4,13 +4,13 @@ import {
   categoryEnumTable,
 } from "@/public/constants/enumTable.js";
 
-import AppBar from "./appBar.js";
-import SelectCategory from "./selectCategory.js";
-import SelectDetails from "./selectDetails.js";
-import SelectPlace from "./selectPlace.js";
-import SelectRisk from "./selectRisk.js";
-import SelectSpecific from "./selectSpecific.js";
-import SelectComplete from "./selectComplete.js";
+import AppBar from "@/components/npwd/reportPage/appBar.js";
+import SelectCategory from "@/components/npwd/reportPage/selectCategory.js";
+import SelectDetails from "@/components/npwd/reportPage/selectDetails.js";
+import SelectPlace from "@/components/npwd/reportPage/selectPlace.js";
+import SelectRisk from "@/components/npwd/reportPage/selectRisk.js";
+import SelectSpecific from "@/components/npwd/reportPage/selectSpecific.js";
+import SelectComplete from "@/components/npwd/reportPage/selectComplete.js";
 
 export default function ReportPage() {
   const [currentProgressInd, setCurrentProgressInd] = useState(0);
