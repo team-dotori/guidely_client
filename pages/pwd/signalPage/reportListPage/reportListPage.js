@@ -11,7 +11,7 @@ export default function ReportListPage({
   const [reportList, setReportList] = useState([]);
 
   useEffect(() => {
-    getReportList();
+    // getReportList();
   }, []);
 
   async function getReportList() {
