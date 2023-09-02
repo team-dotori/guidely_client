@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
 import AppBar from "@/components/pwd/signalPage/appbar";
 import BottomBar from "@/components/pwd/signalPage/bottomBar";
-import LocationListPage from "./locationListPage/locationListPage";
-import ReportListPage from "./reportListPage/reportListPage";
-import ReportDetailPage from "./reportDetailPage/reportDetailPage";
+import LocationListPage from "@/components/pwd/signalPage/locationListPage/locationListPage";
+import ReportListPage from "@/components/pwd/signalPage/reportListPage/reportListPage";
+import ReportDetailPage from "@/components/pwd/signalPage/reportDetailPage/reportDetailPage";
 
 import {
   getDistanceBetweenCoor,
