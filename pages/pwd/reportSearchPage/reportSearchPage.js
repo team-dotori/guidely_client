@@ -1,8 +1,8 @@
 import { useState } from "react";
 import BottomBar from "@/components/pwd/reportSearchPage/bottomBar";
 import AppBar from "@/components/pwd/reportSearchPage/appbar";
-import ReportListPage from "./reportListPage/reportListPage";
-import ReportDetailPage from "./reportDetailPage/reportDetailPage";
+import ReportListPage from "@/components/pwd/reportSearchPage/reportListPage/reportListPage";
+import ReportDetailPage from "@/components/pwd/reportSearchPage/reportDetailPage/reportDetailPage";
 
 export default function ReportSearchPage() {
   const [curDepth, setCurDepth] = useState(0);
