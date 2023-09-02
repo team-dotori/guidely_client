@@ -1,5 +1,5 @@
-import Panel from "./comp_panel";
-import ReportDetail from "./comp_reportDetail";
+import Panel from "@/components/pwd/reportSearchPage/reportDetailPage/panel";
+import ReportDetail from "@/components/pwd/reportSearchPage/reportDetailPage/reportDetail";
 
 export default function ReportDetailPage({ locationName, curReport }) {
   return (

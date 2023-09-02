@@ -1,6 +1,6 @@
 import React from "react";
-import Post from "./post";
-import AppBar from "./topBar";
+import Post from "@/components/npwd/boardPage/post";
+import AppBar from "@/components/npwd/boardPage/topBar";
 function boardPage() {
   const style = {
     marginTop: "12.5vh",

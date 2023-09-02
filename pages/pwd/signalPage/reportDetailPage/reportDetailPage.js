@@ -1,6 +1,6 @@
-import Like from "./comp_like";
-import Panel from "./comp_panel";
-import ReportDetail from "./comp_reportDetail";
+import Like from "@/components/pwd/signalPage/reportDetailPage/like";
+import Panel from "@/components/pwd/signalPage/reportDetailPage/panel";
+import ReportDetail from "@/components/pwd/signalPage/reportDetailPage/reportDetail";
 
 export default function ReportDetailPage({ locationName, curReport }) {
   return (

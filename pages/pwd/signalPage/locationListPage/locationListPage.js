@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import SignalPanel from "./comp_signalPanel";
-import LocationList from "./comp_locationList";
+import SignalPanel from "@/components/pwd/signalPage/locationListPage/signalPanel";
+import LocationList from "@/components/pwd/signalPage/locationListPage/locationList";
 
 export default function LocationListPage({
   setCurLocation,
