@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { useEffect, useState } from "react";
-import { defaultLatLng } from "@/public/constants/constant";
+import { defaultLatLon } from "@/public/constants/constant";
 
 export default function MapTab() {
   return (
@@ -108,8 +108,8 @@ function MyMap() {
         const mapContainer = document.getElementById("map");
         const mapOption = {
           center: new window.kakao.maps.LatLng(
-            defaultLatLng.lat,
-            defaultLatLng.lng
+            defaultLatLon.lat,
+            defaultLatLon.lon
           ), // 지도의 중심좌표
           level: 3, // 지도의 확대 레벨
         };

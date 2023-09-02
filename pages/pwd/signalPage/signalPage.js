@@ -24,6 +24,17 @@ export default function SignalPage() {
   const [timer, setTimer] = useState(0);
 
   useEffect(() => {
+    getCurrentPostion(
+      (position) => {
+        alert(position.coords.latitude + " " + position.coords.longitude);
+      },
+      (error) => {
+        alert(error.message);
+      }
+    );
+  }, []);
+
+  useEffect(() => {
     // getCurrentPostion(
     //   (position) => {
     //     if (

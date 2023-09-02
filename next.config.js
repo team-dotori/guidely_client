@@ -16,13 +16,34 @@ const nextConfig = {
         destination: "/entrancePage/entrancePage",
       },
       {
-        source: "/reportPage",
-        destination: "/reportPage/reportPage",
+        source: "/npwd/reportPage",
+        destination: "/npwd/reportPage/reportPage",
       },
       {
-        source: "/myPage/myActionPage",
-        destination: "/myPage/myActionPage/myActionPage",
+        source: "/npwd/myPage/myActionPage",
+        destination: "/npwd/myPage/myActionPage/myActionPage",
       },
+      {
+        source: "/npwd/boardPage",
+        destination: "/npwd/boardPage/boardPage",
+      },
+      {
+        source: "/npwd/myPage",
+        destination: "/npwd/myPage/myPage",
+      },
+      {
+        source: "/npwd/myPage/badgePage",
+        destination: "/npwd/myPage/badgePage/badgePage",
+      },
+      {
+        source: "/npwd/myPage/myActionPage",
+        destination: "/npwd/myPage/myActionPage/myActionPage",
+      },
+      {
+        source: "/npwd/mapPage",
+        destination: "/npwd/mapPage/mapPage",
+      },
+
       {
         source: "/pwd/homePage",
         destination: "/pwd/homePage/homePage",
@@ -55,7 +76,7 @@ const nextConfig = {
       },
       // {
       //   source: "/api/kakao/map/load",
-      //   destination: `https://dapi.kakao.com/v2/maps/sdk.js?appkey=${process.env.KAKAO_JAVASCRIPT_KEY}&autoload=false`,
+      //   destination: `//dapi.kakao.com/v2/maps/sdk.js?appkey=${process.env.KAKAO_JAVASCRIPT_KEY}&autoload=false`,
       // },
     ];
   },
