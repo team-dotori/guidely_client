@@ -14,11 +14,10 @@ export default function EntrancePage() {
     let code = new URL(window.location.href).searchParams.get("code");
 
     if (code) {
-      // const res = await fetch(
-      //   `http://${process.env.GUIDELY_SERVER_BASE_URL}/kakao/callback?code=${code}`
-      // );
-      // const data = await res.json();
-      // console.log(data);
+      const res = await fetch(`/api/guidely/kakao/callback?code=${code}`);
+      const data = await res.json();
+      document.cookie = `accessToken=${data.accessToken}`;
+      document.cookie = `refreshToken=${data.refreshToken}`;
     }
   };
 
