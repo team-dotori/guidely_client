@@ -13,7 +13,7 @@ export default function AppBar({pagename}) {
           height: 15vw;
           left: 0;
           padding-top: 29px;
-          box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+          // box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
           background-color: #ffffff;
         }
       `}</style>
