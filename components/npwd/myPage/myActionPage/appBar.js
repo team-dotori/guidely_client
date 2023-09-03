@@ -1,11 +1,11 @@
 import Image from "next/image";
 import { useEffect, useState, useRef } from "react";
 
-export default function AppBar({ progressPercentage }) {
+export default function AppBar({ curTab, setCurTab }) {
   return (
     <div className="appBar">
       <TitleBox />
-      <ModeButtons />
+      <ModeButtons curTab={curTab} setCurTab={setCurTab} />
       <style jsx>{`
         .appBar {
           display: flex;
@@ -53,14 +53,12 @@ function TitleBox() {
   );
 }
 
-function ModeButtons() {
+function ModeButtons({ curTab, setCurTab }) {
   const [ifFirst, setIfFirst] = useState(true);
-
-  const [ifSelectedLeft, setIfSelectedLeft] = useState(true);
 
   return (
     <div className="container">
-      {ifSelectedLeft ? (
+      {curTab ? (
         <div
           className={
             ifFirst
@@ -74,18 +72,18 @@ function ModeButtons() {
         <div
           className={"item leftNotSelected"}
           onClick={() => {
-            setIfSelectedLeft(true);
+            setCurTab(true);
           }}
         >
           지도
         </div>
       )}
-      {ifSelectedLeft ? (
+      {curTab ? (
         <div
           className="item rightNotSelected"
           onClick={() => {
             if (ifFirst) setIfFirst(false);
-            setIfSelectedLeft(false);
+            setCurTab(false);
           }}
         >
           로그

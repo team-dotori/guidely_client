@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { defaultLatLon } from "@/public/constants/constant";
+import { getCurrentPostion } from "@/public/functions/coordinate";
 
 export default function MapTab() {
   return (
@@ -90,6 +91,45 @@ function SearchBar() {
 function MyMap() {
   const [kakaoMap, setKakaoMap] = useState();
 
+  function createCircle({ lat, lon }) {
+    // 지도에 표시할 원을 생성합니다
+    var circle = new window.kakao.maps.Circle({
+      center: new window.kakao.maps.LatLng(lat, lon), // 원의 중심좌표 입니다
+      // radius: 50, // 미터 단위의 원의 반지름입니다
+      strokeWeight: 0, // 선의 두께입니다
+      strokeColor: "#FFFFFF", // 선의 색깔입니다
+      strokeOpacity: 0, // 선의 불투명도 입니다 1에서 0 사이의 값이며 0에 가까울수록 투명합니다
+      fillColor: "#FFFFFF", // 채우기 색깔입니다
+      fillOpacity: 1, // 채우기 불투명도 입니다
+    });
+
+    // 지도에 원을 표시합니다
+    circle.setMap(kakaoMap);
+  }
+
+  function createRectangle() {
+    var sw = new window.kakao.maps.LatLng(33.255012, 125.61518), // 사각형 영역의 남서쪽 좌표
+      ne = new window.kakao.maps.LatLng(38.671078, 130.556394); // 사각형 영역의 북동쪽 좌표
+
+    // 사각형을 구성하는 영역정보를 생성합니다
+    // 사각형을 생성할 때 영역정보는 LatLngBounds 객체로 넘겨줘야 합니다
+    var rectangleBounds = new window.kakao.maps.LatLngBounds(sw, ne);
+
+    // 지도에 표시할 사각형을 생성합니다
+    var rectangle = new window.kakao.maps.Rectangle({
+      bounds: rectangleBounds, // 그려질 사각형의 영역정보입니다
+      strokeWeight: 0, // 선의 두께입니다
+      strokeColor: "#FFFFFF", // 선의 색깔입니다
+      strokeOpacity: 0, // 선의 불투명도 입니다 1에서 0 사이의 값이며 0에 가까울수록 투명합니다
+      strokeStyle: "shortdashdot", // 선의 스타일입니다
+      fillColor: "#000000", // 채우기 색깔입니다
+      fillOpacity: 0.35, // 채우기 불투명도 입니다
+    });
+
+    // 지도에 사각형을 표시합니다
+    rectangle.setMap(kakaoMap);
+  }
+
   useEffect(() => {
     // DOM으로 스크립트 태그 만들기
     const mapScript = document.createElement("script");
@@ -117,34 +157,28 @@ function MyMap() {
       });
     };
 
-    // sciprt가 완전히 load 된 이후, 지도를 띄우는 코드를 실행시킨다.
+    // script가 완전히 load 된 이후, 지도를 띄우는 코드를 실행시킨다.
     mapScript.addEventListener("load", onLoadKakaoMap);
   }, []);
 
-  function getCurrentPostion(successCallback, errorCallback) {
-    const { geolocation } = navigator;
-
-    geolocation.getCurrentPosition(successCallback, errorCallback, {
-      enableHighAccuracy: false,
-      maximumAge: 0,
-      timeout: Infinity,
-    });
-  }
-
   useEffect(() => {
-    //첫 로딩 시
     if (kakaoMap) {
-      const curPosition = getCurrentPostion(
+      getCurrentPostion(
         (position) => {
           kakaoMap.setCenter(
-            new kakao.maps.LatLng(
+            new window.kakao.maps.LatLng(
               position.coords.latitude,
               position.coords.longitude
             )
           );
+          createRectangle();
+          createCircle({
+            lat: position.coords.latitude,
+            lon: position.coords.longitude,
+          });
         },
         (error) => {
-          console.log(error);
+          alert(error.message);
         }
       );
     }
