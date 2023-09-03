@@ -1,13 +1,13 @@
 import React, { useState } from "react";
 import TruncatedText from "./TruncatedText";
 
-export default function Post({ text, id, time, type }) {
+export default function Post({ text, id, time, type, count, picurl }) {
   const [isLiked, setIsLiked] = useState(false);
 
   const style = {
     postbox: {
       backgroundColor: "#F1F3F5",
-      width: "60vw",
+      width: "70vw",
       height: "120px",
       margin: "auto",
       marginBottom: "5%",
@@ -72,6 +72,13 @@ export default function Post({ text, id, time, type }) {
       textAlign: "right",
       cursor: "pointer",
     },
+    heartcnt:{
+      textAlign: "right",
+      fontSize: '11px',
+      opacity: '0.8',
+      padding: '1%',
+      fontWeight: '300'
+    }
   };
 
   const handleLikeClick = () => {
@@ -82,7 +89,7 @@ export default function Post({ text, id, time, type }) {
     <div style={style.postbox}>
       <div style={style.profilebox}>
         <div style={style.profile}>
-          <img src="/img/powerpuffgirl.png" style={imgstyle} alt="hi" />
+          <img src={picurl} style={imgstyle} alt="pf" />
         </div>
         <p style={style.userid}>
           <strong>{id}</strong>
@@ -101,6 +108,7 @@ export default function Post({ text, id, time, type }) {
       </div>
       <div style={bottomstyle}>
         <div style={bottomstyle.date}>{time}</div>
+        <div style={bottomstyle.heartcnt}>{count}</div>
         <div style={style.heart} onClick={handleLikeClick}>
           {isLiked ? (
             <img
