@@ -1,3 +1,5 @@
+//이 파일은 위험요소에 대한 정보
+
 import React from "react";
 import TruncatedText from "@/components/npwd/boardPage/TruncatedText";
 
