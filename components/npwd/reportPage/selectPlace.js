@@ -17,7 +17,7 @@ export default function SelectPlace({
 
   useEffect(() => {
     const inputWaitFunction = setTimeout(async () => {
-      if (ifMapMode && query.length > 0) {
+      if (!ifMapMode && query.length > 0) {
         //search
         const responseJSON = await (
           await fetch(`/api/kakao/map/searchByKeyword?query=${query}`, {

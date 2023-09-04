@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { riskEnumTable } from "@/public/constants/enumTable";
 
 export default function ReportDetail({ curReport }) {
   return (
@@ -73,7 +74,12 @@ function ReportContent({ curReport }) {
           <b>위험도 </b>|<b> {curReport.risk}</b>
         </div>
         <div style={{ width: 7 }} />
-        <Image src={"/icons/risk.svg"} width={26} height={25} alt="불편해요" />
+        <Image
+          src={`/icons/risk_${riskEnumTable[curReport.risk]}.svg`}
+          width={26}
+          height={25}
+          alt="불편해요"
+        />
       </div>
 
       <div className="content">{curReport.contents}</div>

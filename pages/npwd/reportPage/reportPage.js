@@ -46,7 +46,7 @@ export default function ReportPage() {
   useEffect(() => {}, []);
 
   async function postRequest() {
-    fetch(`/api/guidely/api/declaration/${1}`, {
+    fetch(`/api/guidely/api/declaration`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

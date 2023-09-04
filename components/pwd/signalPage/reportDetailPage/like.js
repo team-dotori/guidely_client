@@ -2,7 +2,6 @@ import Image from "next/image";
 
 export default function Like({ reportId }) {
   function requestLike() {
-    console.log(reportId);
     fetch(`/api/guidely/api/declaration/like/${reportId}`, {
       method: "PATCH",
     });

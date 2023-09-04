@@ -8,8 +8,9 @@ export default function MyActionPage() {
   const [curTab, setCurTab] = useState(true); // true: map, false: log
 
   useEffect(() => {
-    fetch("/api/guidely/api/users/declarations/1").then((res) => {
+    fetch("/api/guidely/api/users/declarations").then((res) => {
       res.json().then((res) => {
+        console.log(res);
         setReportList(res);
         // category : "BRAILLE"
         // contents : "This is test"
