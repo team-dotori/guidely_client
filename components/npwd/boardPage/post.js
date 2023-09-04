@@ -112,7 +112,7 @@ export default function Post({ text, id, time, type, count, picurl }) {
         <div style={style.heart} onClick={handleLikeClick}>
           {isLiked ? (
             <img
-              src="/img/blackheart.svg"
+              src="/img/blueheart.svg"
               alt="Heart1"
               style={{ width: "20px", height: "20px" }}
             />
