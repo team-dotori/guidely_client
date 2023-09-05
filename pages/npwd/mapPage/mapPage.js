@@ -2,47 +2,73 @@ import React, { useEffect, useState } from "react";
 import {
   AppBar_Main,
   AppBar_RouteSelection,
-} from "@/components/npwd/mapPage/searchBar";
-import NavBar from "@/components/npwd/mapPage/navBar";
-import ReactModal from "react-modal";
-import PlaceDetail from "@/components/npwd/mapPage/placeDetail";
+} from "@/components/npwd/mapPage/topBar";
+import {
+  NavBar,
+  PlaceDetail,
+  RouteSearchResult,
+} from "@/components/npwd/mapPage/bottomBar";
 import { defaultLatLon } from "@/public/constants/constant";
 import { riskEnumTable } from "@/public/constants/enumTable";
+import { getDistanceBetweenCoor } from "@/public/functions/coordinate";
 
 export default function MapPage() {
-  const [mode, setMode] = useState(0); // 0: 지도 | 1: 위치선택 -> 모달창 | 2: 경로 선택 | 3: 네비게이션
+  const [mode, setMode] = useState(2); // 0: 지도 | 1: 위치선택 -> 모달창 | 2: 경로 선택 | 3: 네비게이션
 
-  const [currentLocation, setCurrentLocation] = useState();
+  const [currentLocation, setCurrentLocation] = useState(null);
+  useEffect(() => {
+    // setMode(currentLocation ? 1 : 0);
+  }, [currentLocation]);
+
+  const [sourceSearchItem, setSourceSearchItem] = useState(null);
+  const [destinationSearchItem, setDestinationSearchItem] = useState(null);
+
+  const [routeInfo, setRouteInfo] = useState({
+    totalDistance: 557,
+    totalTime: 463,
+    totalDeclarationCount: 16,
+    locationList: [
+      {
+        type: "INSIDE",
+        riskMean: 0.7,
+        countDeclaration: 3,
+        percentageFromStart: 10,
+      },
+      {
+        type: "OUTSIDE",
+        riskMean: 1.5,
+        countDeclaration: 8,
+        percentageFromStart: 40,
+      },
+      {
+        type: "INSIDE",
+        riskMean: 2,
+        countDeclaration: 5,
+        percentageFromStart: 70,
+      },
+    ],
+  });
 
   const style = {
     map: {
       width: "100vw",
-      height: "90vh",
-      marginTop: "10vh",
+      height: "100vh",
       zIndex: "0",
-    },
-
-    modal: {
-      position: "absolute",
-      inset: "78% 0 0 50%",
-      transform: "translateX(-50%)", // 모달을 가로 방향으로 중앙 정렬
-      width: "100%",
-      height: "21.5%",
-      borderRadius: "13.5px 13.5px 0 0",
-      backgroundColor: "white",
-      border: "none",
-      boxShadow: "-4px -4px 8px rgba(0, 0, 0, 0.2)",
-      boxSizing: "border-box",
-      paddingTop: "5%",
     },
   };
 
   function renderTop() {
     switch (mode) {
       case 0:
-        return <AppBar_Main />;
       case 1:
-        return <AppBar_RouteSelection />;
+        return <AppBar_Main />;
+      case 2:
+        return (
+          <AppBar_RouteSelection
+            setSourceSearchItem={setSourceSearchItem}
+            setDestinationSearchItem={setDestinationSearchItem}
+          />
+        );
     }
   }
 
@@ -51,31 +77,55 @@ export default function MapPage() {
       case 0:
         return <NavBar />;
       case 1:
-        return (
-          <ReactModal
-            isOpen={false}
-            style={{ content: style.modal }}
-            ariaHideApp={false}
-            shouldCloseOnOverlayClick={true}
-            //onRequestClose={() => setIsOpen(old => !old)}
-          >
-            <PlaceDetail></PlaceDetail>
-          </ReactModal>
-        );
-        break;
+      // return <PlaceDetail currentLocation={currentLocation} />;
+      case 2:
+        return <RouteSearchResult routeInfo={routeInfo} />;
     }
   }
 
   return (
     <div>
       {renderTop()}
-      <Map setCurrentLocation={setCurrentLocation} />
+      <Map
+        setCurrentLocation={setCurrentLocation}
+        sourceSearchItem={sourceSearchItem}
+        destinationSearchItem={destinationSearchItem}
+        setRouteInfo={setRouteInfo}
+        style={style.map}
+      />
       {renderBottom()}
     </div>
   );
 }
 
-function Map({ setCurrentLocation }) {
+function Map({
+  setCurrentLocation,
+  sourceSearchItem,
+  destinationSearchItem,
+  setRouteInfo,
+}) {
+  const [clusterer, setClusterer] = useState(null);
+  function initClusterer({ minLevel }) {
+    setClusterer(
+      new window.kakao.maps.MarkerClusterer({
+        map: kakaoMap, // 마커들을 클러스터로 관리하고 표시할 지도 객체
+        gridSize: 30, // 클러스터의 격자 크기. 화면 픽셀 단위이며 해당 격자 영역 안에 마커가 포함되면 클러스터에 포함시킨다
+        averageCenter: true, // 클러스터에 포함된 마커들의 평균 위치를 클러스터 마커 위치로 설정
+        minLevel: minLevel, // 클러스터 할 최소 지도 레벨
+        // styles: [
+        //   {
+        //     width: "53px",
+        //     height: "52px",
+        //     color: "#fff",
+        //     textAlign: "center",
+        //     lineHeight: "54px",
+        //   },
+        // ],
+      })
+    );
+  }
+
+  //////////////////////////////// 지도 모드일 때
   //location 핀들 가져오기
   useEffect(() => {
     fetch("/api/guidely/api/location")
@@ -88,7 +138,6 @@ function Map({ setCurrentLocation }) {
   const [locationList, setLocationList] = useState([]);
   useEffect(() => {
     if (locationList.length > 0) {
-      console.log(locationList);
       setMarker(locationList);
     }
   }, [locationList]);
@@ -148,27 +197,52 @@ function Map({ setCurrentLocation }) {
   //   },
   // ];
 
+  const [curClickedLocation, setCurClickedLocation] = useState();
   useEffect(() => {
     if (kakaoMap) {
+      kakao.maps.event.addListener(kakaoMap, "click", function (mouseEvent) {
+        // 클릭한 위도, 경도 정보를 가져옵니다
+        var latlng = mouseEvent.latLng;
+        setCurClickedLocation({
+          lat: latlng.Ma,
+          lon: latlng.La,
+        });
+      });
     }
   }, [kakaoMap]);
+  useEffect(() => {
+    if (curClickedLocation) {
+      const nearlestDisInd = searchForClickedLocation();
+      if (nearlestDisInd !== -1) {
+        setCurrentLocation(locationList[nearlestDisInd]);
+      } else {
+        setCurrentLocation(null);
+      }
+    }
+  }, [curClickedLocation]);
+  function searchForClickedLocation() {
+    const nearlestDis = locationList
+      .map((val, ind) => {
+        return {
+          dis: getDistanceBetweenCoor(
+            val.latitude,
+            val.longitude,
+            curClickedLocation.lat,
+            curClickedLocation.lon
+          ),
+          ind: ind,
+        };
+      })
+      .sort((a, b) => a.dis - b.dis)[0];
+    if (nearlestDis.dis < 50) {
+      return nearlestDis.ind;
+    } else {
+      return -1;
+    }
+  }
 
   function setMarker(newLocations) {
-    var clusterer = new window.kakao.maps.MarkerClusterer({
-      map: kakaoMap, // 마커들을 클러스터로 관리하고 표시할 지도 객체
-      gridSize: 30, // 클러스터의 격자 크기. 화면 픽셀 단위이며 해당 격자 영역 안에 마커가 포함되면 클러스터에 포함시킨다
-      averageCenter: true, // 클러스터에 포함된 마커들의 평균 위치를 클러스터 마커 위치로 설정
-      minLevel: 5, // 클러스터 할 최소 지도 레벨
-      // styles: [
-      //   {
-      //     width: "53px",
-      //     height: "52px",
-      //     color: "#fff",
-      //     textAlign: "center",
-      //     lineHeight: "54px",
-      //   },
-      // ],
-    });
+    initClusterer({ minLevel: 5 });
     clusterer.clear();
 
     const customMarkers = newLocations.map((val) => {
@@ -185,7 +259,7 @@ function Map({ setCurrentLocation }) {
       return new window.kakao.maps.CustomOverlay({
         position: position,
         content: content,
-        clickable: true,
+        clickable: false,
       });
     });
 
@@ -197,10 +271,165 @@ function Map({ setCurrentLocation }) {
     // });
   }
 
+  //////////////////////////////// 위치선택 모드일 때
+  useEffect(() => {
+    if (sourceSearchItem && destinationSearchItem) {
+      searchRoute();
+    }
+  }, [sourceSearchItem, destinationSearchItem]);
+
+  function searchRoute() {
+    fetch(`/api/tmap/searchRoute?version=1&format=json&callback=result`, {
+      method: "POST",
+      headers: {
+        appkey: process.env.TMAP_APPKEY,
+      },
+      body: JSON.stringify({
+        startX: sourceSearchItem.longitude,
+        startY: sourceSearchItem.latitude,
+        endX: destinationSearchItem.longitude,
+        endY: destinationSearchItem.latitude,
+        reqCoordType: "WGS84GEO",
+        resCoordType: "WGS84GEO",
+        startName: sourceSearchItem.placeName,
+        endName: destinationSearchItem.placeName,
+      }),
+    })
+      .then((res) => {
+        switch (res.status) {
+          case 200:
+            return res.json();
+          default:
+            alert("경로를 찾을 수 없습니다.");
+            break;
+        }
+      })
+      .then((data) => {
+        if (data) {
+          setRouteInfo({
+            totalDistance: data.features[0].properties.totalDistance,
+            totalTime: data.features[0].properties.totalTime,
+            totalDeclarationCount: 16,
+            locationList: [
+              {
+                type: "INSIDE",
+                riskMean: 0.7,
+                countDeclaration: 3,
+                percentageFromStart: 10,
+              },
+              {
+                type: "OUTSIDE",
+                riskMean: 1.5,
+                countDeclaration: 8,
+                percentageFromStart: 40,
+              },
+              {
+                type: "INSIDE",
+                riskMean: 2,
+                countDeclaration: 5,
+                percentageFromStart: 70,
+              },
+            ],
+          });
+          let newPoints = [];
+          let newLines = [];
+          data.features.forEach((element) => {
+            if (element.geometry.type === "Point") {
+              newPoints.push({
+                lon: element.geometry.coordinates[0],
+                lat: element.geometry.coordinates[1],
+                circle: createCricle({
+                  lon: element.geometry.coordinates[0],
+                  lat: element.geometry.coordinates[1],
+                }),
+              });
+            } else if (element.geometry.type === "LineString") {
+              newLines.push({
+                points: element.geometry.coordinates.map((val) => {
+                  return {
+                    lon: val[0],
+                    lat: val[1],
+                  };
+                }),
+                distance: element.properties.distance,
+                line: cerateLine({
+                  points: element.geometry.coordinates.map((val) => {
+                    return {
+                      lon: val[0],
+                      lat: val[1],
+                    };
+                  }),
+                }),
+              });
+            }
+          });
+
+          setPoints(newPoints);
+          setLines(newLines);
+        }
+      });
+  }
+
+  const [points, setPoints] = useState([]);
+  useEffect(() => {
+    if (points.length > 0) {
+      setPointsOnMap({ points });
+      mapPostionReset({ points });
+    }
+  }, [points]);
+
+  function setPointsOnMap({ points }) {
+    points.forEach((point) => {
+      point.circle.setMap(kakaoMap);
+    });
+  }
+
+  const [lines, setLines] = useState([]);
+  useEffect(() => {
+    setLinesOnMap({ lines });
+  }, [lines]);
+
+  function setLinesOnMap({ lines }) {
+    lines.forEach((line) => {
+      line.line.setMap(kakaoMap);
+    });
+  }
+
+  function createCricle({ lon, lat }) {
+    return new window.kakao.maps.Circle({
+      center: new window.kakao.maps.LatLng(lat, lon), // 원의 중심좌표 입니다
+      radius: 10, // 미터 단위의 원의 반지름입니다
+      // strokeWeight: 1, // 선의 두께입니다
+      // strokeColor: "#75B8FA", // 선의 색깔입니다
+      strokeOpacity: 0, // 선의 불투명도 입니다 1에서 0 사이의 값이며 0에 가까울수록 투명합니다
+      // strokeStyle: "dashed", // 선의 스타일 입니다
+      fillColor: "#4F4BEB", // 채우기 색깔입니다
+      fillOpacity: 1, // 채우기 불투명도 입니다
+    });
+  }
+  function cerateLine({ points }) {
+    // 지도에 표시할 선을 생성합니다
+    return new kakao.maps.Polyline({
+      path: points.map((val) => new kakao.maps.LatLng(val.lat, val.lon)), // 선을 구성하는 좌표배열 입니다
+      strokeWeight: 3, // 선의 두께 입니다
+      strokeColor: "#4F4BEB", // 선의 색깔입니다
+      strokeOpacity: 1, // 선의 불투명도 입니다 1에서 0 사이의 값이며 0에 가까울수록 투명합니다
+      strokeStyle: "solid", // 선의 스타일입니다
+    });
+  }
+  function mapPostionReset({ points }) {
+    let bounds = new window.kakao.maps.LatLngBounds();
+    points.forEach((point) => {
+      bounds.extend(new kakao.maps.LatLng(point.lat, point.lon));
+    });
+
+    kakaoMap.setBounds(bounds);
+  }
+
   const style = {
     map: {
       width: "100vw",
-      height: "90vh",
+      height: "100vh",
       zIndex: "1",
     },
 

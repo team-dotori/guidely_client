@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { textInputWaitTime, defaultLatLon } from "@/public/constants/constant";
 
 export function AppBar_Main() {
@@ -112,48 +112,71 @@ function SearchBox({ onChange }) {
   );
 }
 
-export function AppBar_RouteSelection() {
+export function AppBar_RouteSelection({
+  setSourceSearchItem,
+  setDestinationSearchItem,
+}) {
   //출발지 검색
-  const [sourceQuery, setSourceQuery] = useState("");
-  const [sourceSearchItems, setSourceSearchItems] = useState([]);
-  const [source, setSource] = useState("");
-
-  useEffect(() => {
-    const inputWaitFunction = setTimeout(async () => {
-      if (sourceQuery.length > 0) {
-        //search
-        const responseJSON = await (
-          await fetch(`/api/kakao/map/searchByKeyword?query=${sourceQuery}`, {
-            headers: {
-              Authorization: `KakaoAK ${process.env.KAKAO_REST_API_KEY}`,
-            },
-          })
-        ).json();
-        console.log("[API] kakao map api fetched");
-
-        if (responseJSON["documents"].length !== 0) {
-          const resultList = responseJSON["documents"].map((val) => {
-            return {
-              placeName: val.place_name,
-              latitude: parseFloat(val.y),
-              longitude: parseFloat(val.x),
-            };
+  const sourceInputOnSubmit = (e) => {
+    if (e.keyCode == 13) {
+      if (e.target.value.length > 0) {
+        fetch(`/api/kakao/map/searchByKeyword?query=${e.target.value}`, {
+          headers: {
+            Authorization: `KakaoAK ${process.env.KAKAO_REST_API_KEY}`,
+          },
+        })
+          .then((res) => res.json())
+          .then((data) => {
+            console.log(data);
+            if (data["documents"].length !== 0) {
+              const resultList = data["documents"].map((val) => {
+                return {
+                  placeName: val.place_name,
+                  latitude: parseFloat(val.y),
+                  longitude: parseFloat(val.x),
+                };
+              });
+              setSourceSearchItem(resultList[0]);
+              e.target.value = resultList[0].placeName;
+            }
           });
-          setSourceSearchItems(resultList);
-          setSource(resultList[0].placeName);
-        }
       }
-    }, textInputWaitTime);
 
-    return () => clearTimeout(inputWaitFunction);
-  }, [sourceQuery]);
-
-  const sourceInputOnChanged = (val) => {
-    setSourceQuery(val.target.value);
+      e.target.blur();
+      destinationInputRef.current.focus();
+    }
   };
 
-  const sourceInputOnFocus = (val) => {
-    setSource("");
+  //목적지 검색
+  const destinationInputRef = useRef();
+
+  const destinationInputOnSubmit = (e) => {
+    if (e.keyCode == 13) {
+      if (e.target.value.length > 0) {
+        fetch(`/api/kakao/map/searchByKeyword?query=${e.target.value}`, {
+          headers: {
+            Authorization: `KakaoAK ${process.env.KAKAO_REST_API_KEY}`,
+          },
+        })
+          .then((res) => res.json())
+          .then((data) => {
+            console.log(data);
+            if (data["documents"].length !== 0) {
+              const resultList = data["documents"].map((val) => {
+                return {
+                  placeName: val.place_name,
+                  latitude: parseFloat(val.y),
+                  longitude: parseFloat(val.x),
+                };
+              });
+              setDestinationSearchItem(resultList[0]);
+              e.target.value = resultList[0].placeName;
+            }
+          });
+      }
+
+      e.target.blur();
+    }
   };
 
   return (
@@ -168,9 +191,7 @@ export function AppBar_RouteSelection() {
           <div style={{ width: "17px" }} />
           <input
             placeholder="출발지를 입력하세요."
-            onChange={sourceInputOnChanged}
-            onFocus={sourceInputOnFocus}
-            value={source.length !== 0 ? source : sourceQuery}
+            onKeyUp={sourceInputOnSubmit}
           />
         </div>
 
@@ -186,7 +207,11 @@ export function AppBar_RouteSelection() {
           <div style={{ width: "15px" }} />
           <div className="divider" />
           <div style={{ width: "17px" }} />
-          <input placeholder="목적지를 입력하세요." />
+          <input
+            placeholder="목적지를 입력하세요."
+            onKeyUp={destinationInputOnSubmit}
+            ref={destinationInputRef}
+          />
         </div>
 
         <button className="transferButton">
