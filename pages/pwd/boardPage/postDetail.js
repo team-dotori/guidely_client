@@ -3,7 +3,7 @@ import AppBar from "@/components/pwd/reportSearchPage/appbar";
 
 import Comment from "@/components/pwd/boardPage/comments";
 
-import PutComm from "@/pages/npwd/boardPage/inputComment"
+import PutComm from "@/pages/pwd/boardPage/inputComment"
 // 멈춤 없는거
 import BottomBar from "@/components/pwd/reportSearchPage/bottomBar";
 import Post from "@/components/pwd/boardPage/post";
@@ -117,7 +117,7 @@ export default function PostDetail({ text, userid, time, type, count, picurl }) 
             heartcnt={comment.heartcnt}
           />
         ))}
-        <div style={{height:'9vh'}}/>
+        <div style={{height:'15vh'}}/>
         <PutComm></PutComm>
         <BottomBar></BottomBar>
     </>
