@@ -6,6 +6,10 @@ export const riskEnumTable = {
   LOW: "불편해요",
   MEDIUM: "조심!",
   HIGH: "위험해요",
+
+  0: "LOW",
+  1: "MEDIUM",
+  2: "HIGH",
 };
 
 export const categoryEnumTable = {
