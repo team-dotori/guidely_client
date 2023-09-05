@@ -56,6 +56,10 @@ export default function PutLocation(){
             width: '28px',
             height: '28px',
             margin: '0 2% 0 0',
+        },
+        writeText:{
+          fontSize: '15px',
+          fontWeight: '700',
         }
 
     }
@@ -67,6 +71,8 @@ export default function PutLocation(){
             <img src="/icons/speechbubble_black.svg" style={style.titleIcon} />
             게시판
             <br />
+            
+            <div style={style.writeText}>게시물 작성</div>
             <div style={style.searchbarCon}>
               <input style={style.searchingB} />
               <img src="/icons/search_white.svg" style={style.searchIcons} />

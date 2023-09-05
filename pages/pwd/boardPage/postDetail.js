@@ -9,7 +9,7 @@ import BottomBar from "@/components/pwd/reportSearchPage/bottomBar";
 import Post from "@/components/pwd/boardPage/post";
 
 
-export default function PostDetail({ text, userid, time, type, count, picurl }) {
+export default function PostDetail() {
 
   const comment = [
     {
