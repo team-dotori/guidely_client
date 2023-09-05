@@ -6,10 +6,22 @@ import ReactModal from "react-modal";
 import AppBar from "@/components/npwd/myPage/badgePage/topBar";
 
 function BadgePage() {
+
+  const [ifDisabled, setifDisabled] = useState(undefined);
+
+  fetch("/api/guidely/api/users/badges", {
+    method: "GET",
+  }).then((res) => {
+    return res.json();
+  }).then((data) => {
+    console.log(data);
+  });
+
+
   const bigbadge = {
-    name: "공감왕",
+    name: "이달의 신입사원",
     date: "2023.08.22",
-    badgeImageName: "heartKing",
+    badgeImageName: "nonewbieKing",
     level: 3,
   };
   const badges = [
@@ -17,7 +29,7 @@ function BadgePage() {
       name: "퀴즈왕",
       date: "2023.09.23",
       badgeImageName: "quizKing",
-      acq: true,
+      acq: false,
       level: 3,
     },
     { name: "탐색대왕", badgeImageName: "exploreKing", acq: false },
@@ -25,7 +37,7 @@ function BadgePage() {
       name: "소통 5회",
       date: "2023.09.23",
       badgeImageName: "communicate",
-      acq: true,
+      acq: false,
       level: 3,
     },
     { name: "점자왕", badgeImageName: "dotKing", acq: false },
@@ -33,35 +45,35 @@ function BadgePage() {
       name: "초보탈출",
       date: "2023.09.23",
       badgeImageName: "nonewbieKing",
-      acq: true,
+      acq: false,
       level: 3,
     },
     {
       name: "빠른성장상",
       date: "2023.09.23",
       badgeImageName: "growingKing",
-      acq: true,
+      acq: false,
       level: 3,
     },
     {
       name: "안전지킴이",
       date: "2023.09.23",
       badgeImageName: "safeKing",
-      acq: true,
+      acq: false,
       level: 3,
     },
     {
       name: "콜럼버스",
       date: "2023.09.23",
       badgeImageName: "unnamed1",
-      acq: true,
+      acq: false,
       level: 3,
     },
     {
       name: "몰라...",
       date: "2023.09.23",
       badgeImageName: "unnamed2",
-      acq: true,
+      acq: false,
       level: 3,
     },
     // 더 많은 뱃지 데이터 추가 가능
