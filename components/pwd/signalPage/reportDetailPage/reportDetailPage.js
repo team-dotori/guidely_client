@@ -7,7 +7,7 @@ export default function ReportDetailPage({ locationName, curReport }) {
     <div className="container">
       <Panel locationName={locationName} reportCount={curReport.count} />
       <ReportDetail curReport={curReport} />
-      <Like reportId={curReport} />
+      <Like reportId={curReport.id} />
       <style jsx>{`
         .container {
           width: 100vw;

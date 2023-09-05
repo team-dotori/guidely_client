@@ -3,11 +3,11 @@ import { useEffect, useState } from "react";
 import { defaultLatLon } from "@/public/constants/constant";
 import { getCurrentPostion } from "@/public/functions/coordinate";
 
-export default function MapTab() {
+export default function MapTab({ reportList }) {
   return (
     <div className="container">
       <SearchBar />
-      <MyMap />
+      <MyMap reportList={reportList} />
       <style jsx>{`
         .container {
           display: flex;
@@ -88,7 +88,7 @@ function SearchBar() {
   );
 }
 
-function MyMap() {
+function MyMap({ reportList }) {
   const [kakaoMap, setKakaoMap] = useState();
 
   function createCircle({ lat, lon }) {
@@ -101,11 +101,18 @@ function MyMap() {
       strokeOpacity: 0, // 선의 불투명도 입니다 1에서 0 사이의 값이며 0에 가까울수록 투명합니다
       fillColor: "#FFFFFF", // 채우기 색깔입니다
       fillOpacity: 1, // 채우기 불투명도 입니다
+      clip: true,
     });
 
     // 지도에 원을 표시합니다
     circle.setMap(kakaoMap);
   }
+
+  useEffect(() => {
+    reportList.map((val) => {
+      createCircle({ lat: val.location.latitude, lon: val.location.longitude });
+    });
+  }, [reportList]);
 
   function createRectangle() {
     var sw = new window.kakao.maps.LatLng(33.255012, 125.61518), // 사각형 영역의 남서쪽 좌표
@@ -163,6 +170,7 @@ function MyMap() {
 
   useEffect(() => {
     if (kakaoMap) {
+      createRectangle();
       getCurrentPostion(
         (position) => {
           kakaoMap.setCenter(
@@ -171,11 +179,6 @@ function MyMap() {
               position.coords.longitude
             )
           );
-          createRectangle();
-          createCircle({
-            lat: position.coords.latitude,
-            lon: position.coords.longitude,
-          });
         },
         (error) => {
           alert(error.message);

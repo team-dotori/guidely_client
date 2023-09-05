@@ -64,9 +64,10 @@ function ReportComponent({ report }) {
         </div>
       )}{" "}
       <div className="footerBox">
-        <div className="text">2023.08.23</div>
+        <div className="text">{formatDate(report.createdTime)}</div>
         <div className="likesBox">
-          도움 <b>6</b>
+          도움
+          <b>{report.likeCount}</b>
         </div>
       </div>
       {ifClosed ? null : (
@@ -200,6 +201,7 @@ function ReportComponent({ report }) {
         .footerBox .likesBox b {
           color: #4f4beb;
           font-weight: 700;
+          margin-left: 3px;
         }
 
         .closeButton {
@@ -213,4 +215,14 @@ function ReportComponent({ report }) {
       `}</style>
     </div>
   );
+}
+
+function formatDate(inputDate) {
+  const date = new Date(inputDate);
+
+  const year = date.getFullYear().toString().slice(-2);
+  const month = (date.getMonth() + 1).toString().padStart(2, "0");
+  const day = date.getDate().toString().padStart(2, "0");
+
+  return `${year}.${month}.${day}`;
 }

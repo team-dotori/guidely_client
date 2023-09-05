@@ -11,13 +11,14 @@ export default function ReportListPage({
   const [reportList, setReportList] = useState([]);
 
   useEffect(() => {
-    // getReportList();
+    getReportList();
   }, []);
 
   async function getReportList() {
     const data = await (
       await fetch(`/api/guidely/api/location/${curLocation.id}`)
     ).json();
+    console.log(data);
     setReportList(
       data.map((val) => ({
         count: data.length,
@@ -25,6 +26,7 @@ export default function ReportListPage({
         risk: riskEnumTable[val.risk],
         contents: val.contents,
         specification: val.specification,
+        id: val.id,
       }))
     );
   }

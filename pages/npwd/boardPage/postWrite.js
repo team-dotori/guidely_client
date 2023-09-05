@@ -10,6 +10,14 @@ export default function PostWrite() {
   const [selectedButton, setSelectedButton] = useState(null);
   const [content, setContent] = useState(""); // 글 내용
 
+  const [stream, setStream] = useState();
+  const [media, setMedia] = useState();
+  const [onRec, setOnRec] = useState(false);
+  const [source, setSource] = useState();
+  const [analyser, setAnalyser] = useState();
+  const [audioUrl, setAudioUrl] = useState();
+  const [audioFile, setAudioFile] = useState();
+
   function requestPost() {
     fetch("/api/guidely/api/posts/text", {
       method: "POST",
@@ -107,14 +115,17 @@ export default function PostWrite() {
     },
 
     voiceContainer: {
-      display: selectedButton === "voice" ? "" : "none",
+      display: selectedButton === "voice" ? "flex" : "none",
       width: "80%",
       height: "200px",
       backgroundColor: "#F8F9FA",
       border: "none",
-      borderRadius: "20px",
+      borderRadius: "25px",
       padding: "5%",
       margin: "0 5% 0 5%",
+      alignItems: "center",
+      justifyContent: "center",
+      flexDirection: 'column'
     },
 
     cntl: {
@@ -141,6 +152,26 @@ export default function PostWrite() {
 
       fontFamily: "Pretendard",
     },
+    recordText:{
+      fontSize: '14px',
+      fontWeight: '700'
+    },
+    recordBtn:{
+      border: 'none',
+      backgroundColor: 'transparent',
+      marginBottom: '5%'
+    },
+    recordImg:{
+      backgroundColor: 'white',
+      width: '20px',
+      height: '20px',
+      borderRadius: '18px',
+      // border: '1px solid black',
+      padding: '10%',
+      backgroundColor: onRec? "black" : "#F1F3F5",
+      boxShadow: onRec ? "none": "inset 0px 1px 2px rgba(0, 0, 0, 0.5)" ,
+      marginBottom: '5%'
+    }
   };
 
   const handleButtonClick = (buttonName) => {
@@ -149,13 +180,13 @@ export default function PostWrite() {
 
   /////////////////////////////////////////////////////////////////////////////여기부터 음성녹음 관련
 
-  const [stream, setStream] = useState();
-  const [media, setMedia] = useState();
-  const [onRec, setOnRec] = useState(false);
-  const [source, setSource] = useState();
-  const [analyser, setAnalyser] = useState();
-  const [audioUrl, setAudioUrl] = useState();
-  const [audioFile, setAudioFile] = useState();
+  // const [stream, setStream] = useState();
+  // const [media, setMedia] = useState();
+  // const [onRec, setOnRec] = useState(false);
+  // const [source, setSource] = useState();
+  // const [analyser, setAnalyser] = useState();
+  // const [audioUrl, setAudioUrl] = useState();
+  // const [audioFile, setAudioFile] = useState();
 
   function startRec() {
     // 음원정보를 담은 노드를 생성하거나 음원을 실행또는 디코딩 시키는 일을 한다
@@ -332,9 +363,15 @@ export default function PostWrite() {
           }}
         ></textarea>
         <div style={style.voiceContainer}>
-          <button onClick={onRec ? stopRec : startRec}>녹음</button>
-
-          {audioUrl ? <audio src={audioUrl} controls></audio> : null}
+          <button onClick={onRec ? stopRec : startRec}
+          style={style.recordBtn}>
+            {onRec ? <img src="/icons/blackvoice.svg" 
+            style={style.recordImg}/> :   
+            <img  src="/icons/voice.svg"
+            style={style.recordImg}/>} 
+            <div style={style.recordText}>눌러서 말하기</div>
+            </button>
+          {audioUrl ?<audio src={audioUrl} controls></audio> : null}
         </div>
 
         <button
