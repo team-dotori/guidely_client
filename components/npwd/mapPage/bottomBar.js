@@ -98,9 +98,7 @@ export function PlaceDetail({ currentLocation }) {
   const style = {
     background: {
       position: "fixed",
-      bottom: "0",
-      inset: "78% 0 0 50%",
-      transform: "translateX(-50%)", // 모달을 가로 방향으로 중앙 정렬
+      bottom: "0px",
       width: "100%",
       height: "21.5%",
       borderRadius: "13.5px 13.5px 0 0",
@@ -268,6 +266,8 @@ function CustomMarkerContent({ type, risk, count }) {
     </div>
   );
 }
+
+// export function
 
 export function RouteSearchResult({ routeInfo }) {
   return (

@@ -13,41 +13,52 @@ import { riskEnumTable } from "@/public/constants/enumTable";
 import { getDistanceBetweenCoor } from "@/public/functions/coordinate";
 
 export default function MapPage() {
-  const [mode, setMode] = useState(2); // 0: 지도 | 1: 위치선택 -> 모달창 | 2: 경로 선택 | 3: 네비게이션
+  const [mode, setMode] = useState(0); // 0: 지도 | 1: 위치 상세 | 2: 신고내역 조회 | 3: 경로 선택 | 4: 네비게이션
 
   const [currentLocation, setCurrentLocation] = useState(null);
   useEffect(() => {
-    // setMode(currentLocation ? 1 : 0);
+    setMode(currentLocation !== null ? 1 : 0);
   }, [currentLocation]);
 
   const [sourceSearchItem, setSourceSearchItem] = useState(null);
   const [destinationSearchItem, setDestinationSearchItem] = useState(null);
 
-  const [routeInfo, setRouteInfo] = useState({
-    totalDistance: 557,
-    totalTime: 463,
-    totalDeclarationCount: 16,
-    locationList: [
-      {
-        type: "INSIDE",
-        riskMean: 0.7,
-        countDeclaration: 3,
-        percentageFromStart: 10,
-      },
-      {
-        type: "OUTSIDE",
-        riskMean: 1.5,
-        countDeclaration: 8,
-        percentageFromStart: 40,
-      },
-      {
-        type: "INSIDE",
-        riskMean: 2,
-        countDeclaration: 5,
-        percentageFromStart: 70,
-      },
-    ],
-  });
+  const [routeInfo, setRouteInfo] = useState(null);
+
+  // const [customBack, setCustomBack] = useState();
+  // useEffect(() => {
+  //   // 뒤로가기 제어
+  //   (() => {
+  //     history.pushState(null, "", location.href);
+  //     window.addEventListener("popstate", customBack);
+  //   })();
+
+  //   return () => {
+  //     window.removeEventListener("popstate", customBack);
+  //   };
+  // }, [customBack]);
+  // useEffect(() => {
+  //   switch (mode) {
+  //     case 0:
+  //       setCustomBack(null);
+  //       break;
+  //     case 1:
+  //       setCustomBack(() => {
+  //         setMode(0);
+  //       });
+  //       break;
+  //     case 2:
+  //       setCustomBack(() => {
+  //         setMode(1);
+  //       });
+  //       break;
+  //     case 3:
+  //       setCustomBack(() => {
+  //         setMode(1);
+  //       });
+  //       break;
+  //   }
+  // }, [mode]);
 
   const style = {
     map: {
@@ -61,8 +72,9 @@ export default function MapPage() {
     switch (mode) {
       case 0:
       case 1:
-        return <AppBar_Main />;
       case 2:
+        return <AppBar_Main />;
+      case 3:
         return (
           <AppBar_RouteSelection
             setSourceSearchItem={setSourceSearchItem}
@@ -77,9 +89,10 @@ export default function MapPage() {
       case 0:
         return <NavBar />;
       case 1:
-      // return <PlaceDetail currentLocation={currentLocation} />;
+        return <PlaceDetail currentLocation={currentLocation} />;
       case 2:
-        return <RouteSearchResult routeInfo={routeInfo} />;
+      case 3:
+        return routeInfo ? <RouteSearchResult routeInfo={routeInfo} /> : null;
     }
   }
 
@@ -138,9 +151,14 @@ function Map({
   const [locationList, setLocationList] = useState([]);
   useEffect(() => {
     if (locationList.length > 0) {
-      setMarker(locationList);
+      initClusterer({ minLevel: 5 });
     }
   }, [locationList]);
+  useEffect(() => {
+    if (clusterer) {
+      setMarker(locationList);
+    }
+  }, [clusterer]);
 
   //
   const [kakaoMap, setKakaoMap] = useState();
@@ -242,9 +260,6 @@ function Map({
   }
 
   function setMarker(newLocations) {
-    initClusterer({ minLevel: 5 });
-    clusterer.clear();
-
     const customMarkers = newLocations.map((val) => {
       const content = customMarkerContent({
         type: val.type,
