@@ -11,6 +11,8 @@ const nextConfig = {
     FIREBASE_messagingSenderId: process.env.FIREBASE_messagingSenderId,
     FIREBASE_appId: process.env.FIREBASE_appId,
     FIREBASE_measurementId: process.env.FIREBASE_measurementId,
+
+    TMAP_APPKEY: process.env.TMAP_APPKEY,
   },
 
   async rewrites() {
@@ -86,6 +88,11 @@ const nextConfig = {
       //   source: "/api/kakao/map/load",
       //   destination: `//dapi.kakao.com/v2/maps/sdk.js?appkey=${process.env.KAKAO_JAVASCRIPT_KEY}&autoload=false`,
       // },
+
+      {
+        source: "/api/tmap/searchRoute",
+        destination: `https://apis.openapi.sk.com/tmap/routes/pedestrian`,
+      },
     ];
   },
 };
