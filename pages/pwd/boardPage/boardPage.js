@@ -74,19 +74,22 @@ export default function PutLocation(){
           </div>
         </div>
         <div style={style.postPart}>
+          {/* text: 내용 id: 사용자 id type: 음성게시물인지 아닌지 count: 좋아요 개수 mode:목록에 있는글인지 상세보기인지(list/detail) */}
           <Post
             text="글1"
             id="바닐라"
             time="10분전"
-            type="sound"
+            type="text"
             count={1}
-            picurl="/img/haerin.jpeg"></Post>
+            picurl="/img/haerin.jpeg"
+            mode="list"></Post>
           <Post
             text="글이 존나 길다면?? 글이 존나 길다면?? 글이 존나 길다면?? 글이 존나 길다면?? 글이 존나 길다면?? 글이 존나 길다면?? 글이 존나 길다면?? 글이 존나 길다면?? 글이 존나 길다면?? 글이 존나 길다면??"
             id="스펀지송"
             time="12분전"
             type="text"
             count={22}
+            mode="list"
             picurl=""></Post>
           <Post
             text="글3"

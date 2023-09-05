@@ -2,14 +2,14 @@ import React, { useState } from "react";
 import TruncatedText from "@/components/npwd/boardPage/TruncatedText";
 
 
-export default function Post({ text, id, time, type, count, picurl }) {
+export default function Post({ text, id, time, type, count, picurl, mode }) {
   const [isLiked, setIsLiked] = useState(false);
 
   const style = {
     postbox: {
-      backgroundColor: "#F1F3F5",
+      backgroundColor: mode === "detail" ? "#FCFF59" : "#F1F3F5",
       width: "80vw",
-      height: "150px",
+      height: "auto",
       margin: "auto",
       marginBottom: "5%",
       borderRadius: "20px",
@@ -18,13 +18,15 @@ export default function Post({ text, id, time, type, count, picurl }) {
     profilebox: {
       display: "grid",
       gridTemplateColumns: "auto 1fr",
-      height: "40px",
+      height: "30px",
       gridColumnGap: "10px",
       marginTop: "0",
+      marginBottom: "1%"
     },
     profile: {
       width: "40px",
       height: "40px",
+      backgroundColor: 'skyblue',
     },
     userid: {
       fontFamily: "InterBold",
@@ -36,35 +38,55 @@ export default function Post({ text, id, time, type, count, picurl }) {
     },
     contents: {
       //display: type === "sound" ? "none": null,
-      height: "50px",
+      height: "auto",
       fontSize: "24px",
       fontWeight: '400',
-      marginBottom: type === "sound" ? '0':'10%',
+      lineHeight: '28px',
+      marginBottom: type === "sound" ? '0':'5%',
     },
-    soundimgBox: {
+    soundBox: {
       position: "relative",
       alignItems: "center",
       display: "flex",
       justifyContent: "center",
-      marginTop: "10%",
+      marginTop: "7%",
     },
-    soundimg: {
-      //flex: 1,
-      position: "absolute",
-      top: '0px',
-      margin: '0 5px 30px 5px'
+    
+    soundBtn:{
+      border: 'none',
+      backgroundColor: 'black',
+      color: 'white',
+      fontSize: '14px',
+      fontWeight: '700',
+      padding: '3% 5% 3% 5%',
+      borderRadius: '20px',
+      margin: '1%',
+      width: '40%'
     },
+    iconStyle:{
+      width:'13px',
+      height: '13px',
+      margin: '0% 10% 0 0',
+      //alignItems: "center",
+      //justifyContent: "center",
+    },
+    hrStyle:{
+      width: '80vw',
+      border: '0.5px solid black',
+      marginTop: '5%'
+    }
   };
 
   const imgstyle = {
     maxWidth: "100%",
     maxHeight: "100%",
+    
   };
 
   const bottomstyle = {
     display: "flex",
     justifyContent: "space-between",
-    marginTop: '10px',
+    marginTop: '15px',
 
     date: {
       fontSize: "11px",
@@ -81,8 +103,8 @@ export default function Post({ text, id, time, type, count, picurl }) {
       fontSize: '11px',
       opacity: '0.8',
       padding: '1%',
-      fontWeight: '300'
-    }
+      fontWeight: '300',
+    },
   };
 
   const handleLikeClick = () => {
@@ -99,17 +121,30 @@ export default function Post({ text, id, time, type, count, picurl }) {
           <strong>{id}</strong>
         </p>
       </div>
-      <hr></hr>
+      <hr style={style.hrStyle} />
       <div style={style.contents}>
-        {type === "text" ? (
+      {type === "text" ? (
+        mode === "list" ? (
           <TruncatedText text={text} maxLength={37} />
         ) : (
-          <div style={style.soundimgBox}>
-            <img style={style.soundimg} src="/img/nocolorLine.svg" />
-            <img style={style.soundimg} src="/img/coloredLine.svg" />
-          </div>
-        )}
+          <div>{text}</div>
+        )
+      ) : type === "sound" ? (
+        <div style={style.soundBox}>
+          <button style={style.soundBtn}>
+            <img 
+            style={style.iconStyle}
+            src="/icons/play.svg"/>
+            게시물 듣기
+          </button>
+          <button style={style.soundBtn}>
+            <img src="/icons/pause.svg" style={style.iconStyle}/>
+            듣기 멈춤
+          </button>
+        </div>
+        ) : null}
       </div>
+
       <div style={bottomstyle}>
         <div style={bottomstyle.date}>{time}</div>
         <div style={bottomstyle.heartcnt}>{count}</div>

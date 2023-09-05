@@ -108,7 +108,7 @@ export default function Post({ text, userid, time, type, count, picurl }) {
     justifyContent: "space-between",
     marginBottom: '3%',
     padding: "0 10% 0 5%",
-
+ 
     time: {
       fontSize: "11px",
       flex: 1,
