@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 
 
-export default function BadgeModal({ name, level, badgeImageName, acq }) {
+export default function BadgeModal({ name, level, badgeImageName, acq, howtoGet }) {
     const [buttonClicked, setButtonClicked] = useState(false);
     
     const style = {
@@ -97,7 +97,7 @@ export default function BadgeModal({ name, level, badgeImageName, acq }) {
            :
           <div>
             <div style={style.badgeLevel}>-</div>
-            <div style={style.badgeGet}><strong>획득방법 | </strong> 어쩌고 저쩌고</div>
+            <div style={style.badgeGet}><strong>획득방법 | </strong> {howtoGet} </div>
             </div>}
         </div>
          </>

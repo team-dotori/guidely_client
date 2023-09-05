@@ -22,7 +22,7 @@ function BadgePage() {
         console.log(data)
         if (data !== undefined){
           setBadgeList(data.map((val)=>{
-            console.log(val);
+            //console.log(val);
             return val;
           }))
         } else{
@@ -34,79 +34,85 @@ function BadgePage() {
 
 
     useEffect(()=>{
-      console.log(badgeList);
+      //console.log(badgeList[0].collectDate);
     }, [badgeList])
   
 
-
-  const bigbadge = {
-    name: "이달의 신입사원",
-    date: "2023.08.22",
-    badgeImageName: "nonewbieKing",
-    level: 3,
-  };
+  const bigbadge = 0;
+  // const bigbadge = {
+  //   name: "안녕 뉴비",
+  //   date: "2023.08.22",
+  //   badgeImageName: "nonewbieKing",
+  //   level: 3,
+  // };
+  
   const badges = [
     {
-      name: "병아리",
-      date: badgeList[0].collectData,
+      name: "안녕 뉴비",
       badgeImageName: "nonewbieKing",
       acq: badgeList[0].state,
-      level: acq ? badgeList[0].level : "",
+      level: badgeList[0].state == 1 ? badgeList[0].level : "-",
+      date: badgeList[0].state == 1 ? formatDate(badgeList[0].collectDate) : "-",
+      howtoGet: badgeList[0].state == 1 ? null : "신규 가입 회원",
     },
-    { name: "신고 5회", 
-      date: badgeList[1].collectData,
+
+    { 
+      name: "신고 5회", 
       badgeImageName: "exploreKing", 
       acq: badgeList[1].state,
-      level: acq ? badgeList[1].level : "",
+      level: badgeList[1].state == 1 ? badgeList[1].level : "-",
+      date: badgeList[1].state == 1 ? formatDate(badgeList[1].collectDate): "-",
+      howtoGet: badgeList[1].state == 1 ? null : "신고 5번 하기",
     },
     {
       name: "소통 5회",
-      date: badgeList[2].collectData,
       badgeImageName: "communicate",
       acq: badgeList[2].state,
-      level: acq ? badgeList[2].level : "",
+      evel: badgeList[2].state == 1 ? badgeList[2].level : "-",
+      date: badgeList[2].state == 1 ? formatDate(badgeList[2].collectDate): "-",
+      howtoGet: badgeList[2].state == 1 ? null : "글 5번 작성하기",
     },
-    { name: "점자왕", 
-      date: badgeList[3].collectData,
-      badgeImageName: "dotKing", 
-      acq: badgeList[3].state,
-      level: acq ? badgeList[3].level : "",
-    },
-    {
-      name: "초보탈출",
-      date: badgeList[4].collectData,
-      badgeImageName: "nonewbieKing",
-      acq: badgeList[4].state,
-      level: acq ? badgeList[4].level : "",
-    },
-    {
-      name: "빠른성장상",
-      date: badgeList[5].collectData,
-      badgeImageName: "growingKing",
-      acq: badgeList[5].state,
-      level: acq ? badgeList[5].level : "",
-    },
-    {
-      name: "안전지킴이",
-      date: badgeList[6].collectData,
-      badgeImageName: "safeKing",
-      acq: badgeList[6].state,
-      level: acq ? badgeList[6].level : "",
-    },
-    {
-      name: "콜럼버스",
-      date: badgeList[7].collectData,
-      badgeImageName: "unnamed1",
-      acq: badgeList[7].state,
-      level: acq ? badgeList[7].level : "",
-    },
-    {
-      name: "몰라...",
-      date: badgeList[8].collectData,
-      badgeImageName: "unnamed2",
-      acq: badgeList[8].state,
-      level: acq ? badgeList[8].level : "",
-    },
+    // { name: "점자왕", 
+    //   date: badgeList[3].collectData,
+    //   badgeImageName: "dotKing", 
+    //   acq: badgeList[3].state,
+    //   level: acq ? badgeList[3].level : "",
+    // },
+    // {
+    //   name: "초보탈출",
+    //   date: badgeList[4].collectData,
+    //   badgeImageName: "nonewbieKing",
+    //   acq: badgeList[4].state,
+    //   level: acq ? badgeList[4].level : "",
+    // },
+    // {
+    //   name: "빠른성장상",
+    //   date: badgeList[5].collectData,
+    //   badgeImageName: "growingKing",
+    //   acq: badgeList[5].state,
+    //   level: acq ? badgeList[5].level : "",
+    // },
+    // {
+    //   name: "안전지킴이",
+    //   date: badgeList[6].collectData,
+    //   badgeImageName: "safeKing",
+    //   acq: badgeList[6].state,
+    //   level: acq ? badgeList[6].level : "",
+    // },
+    // {
+    //   name: "콜럼버스",
+    //   date: badgeList[7].collectData,
+    //   badgeImageName: "unnamed1",
+    //   acq: badgeList[7].state,
+    //   level: acq ? badgeList[7].level : "",
+    // },
+    // {
+    //   name: "몰라...",
+    //   date: badgeList[8].collectData,
+    //   badgeImageName: "unnamed2",
+    //   acq: badgeList[8].state,
+    //   level: acq ? badgeList[8].level : "",
+    // },
     // 더 많은 뱃지 데이터 추가 가능
   ];
 
@@ -154,10 +160,10 @@ function BadgePage() {
       <AppBar pagename="활동배지" />
       <div style={style.bar} />
       <BigBadge
-        name={bigbadge.name}
-        date={bigbadge.date}
-        badgeImageName={bigbadge.badgeImageName}
-        level={bigbadge.level}
+        name={badges[bigbadge].name}
+        date={badges[bigbadge].date}
+        badgeImageName={badges[bigbadge].badgeImageName}
+        level={badges[bigbadge].level}
       />
       {/* {레벨 어쩔거???} */}
       <hr style={style.hrstyle} />
@@ -171,6 +177,7 @@ function BadgePage() {
               badgeImageName={badge.badgeImageName}
               acq={badge.acq}
               level={badge.level}
+              howtoGet={badge.howtoGet}
               setIsOpen={setIsOpen}
               setOpenedData={setOpenedData}
             />
@@ -190,6 +197,7 @@ function BadgePage() {
             name={openedData.name}
             level={openedData.level}
             badgeImageName={openedData.badgeImageName}
+            howtoGet = {openedData.howtoGet}
             acq={openedData.acq}
           />
         )}
@@ -199,3 +207,13 @@ function BadgePage() {
 }
 
 export default BadgePage;
+
+function formatDate(inputDate) {
+  const date = new Date(inputDate);
+
+  const year = date.getFullYear().toString();
+  const month = (date.getMonth() + 1).toString().padStart(2, "0");
+  const day = date.getDate().toString().padStart(2, "0");
+
+  return `${year}.${month}.${day}`;
+}

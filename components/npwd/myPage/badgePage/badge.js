@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 
 
-export default function badge({name, date, badgeImageName, acq, level, setIsOpen, setOpenedData}) {
+export default function badge({name, date, badgeImageName, acq, level, howtoGet, setIsOpen, setOpenedData}) {
   // const [isModalOpen, setIsModalOpen] = useState(false); // 모달 상태 관리
 
   const style = {
@@ -44,7 +44,7 @@ export default function badge({name, date, badgeImageName, acq, level, setIsOpen
     <div style={style.badgeBox} onClick={() => {
       setIsOpen(old => !old);
       setOpenedData({
-        name, date, badgeImageName, acq, level,
+        name, date, badgeImageName, acq, level, howtoGet
       })
     }}>
       <div style={style.badgeimg}>
