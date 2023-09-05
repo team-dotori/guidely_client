@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState} from "react";
 import AppBar from "@/components/pwd/reportSearchPage/appbar";
 import Post from "@/components/pwd/boardPage/post";
 //import SearchBar from "@/components/npwd/mapPage/searchBar"
@@ -13,6 +13,12 @@ import BottomBar from "@/components/pwd/reportSearchPage/bottomBar";
 
 
 export default function PutLocation(){
+  const [isClicked, setIsClicked] = useState(false);
+
+  const handleIsClick = () => {
+    setIsClicked(!isClicked);
+    // console.log(isClicked);
+  };
 
     const style={
         postPart:{
@@ -60,6 +66,13 @@ export default function PutLocation(){
         writeText:{
           fontSize: '15px',
           fontWeight: '700',
+        },
+        writeBtn:{
+          display: 'flex',
+          width: 'max-content',
+          border: 'none',
+          backgroundColor: 'transparent',
+          marginLeft: '70%'
         }
 
     }
@@ -71,8 +84,10 @@ export default function PutLocation(){
             <img src="/icons/speechbubble_black.svg" style={style.titleIcon} />
             게시판
             <br />
-            
-            <div style={style.writeText}>게시물 작성</div>
+            <button style={style.writeBtn} onClick={handleIsClick}>
+              <img src="/icons/edit.svg"/>
+              <div style={style.writeText}>게시글 작성</div>
+            </button>
             <div style={style.searchbarCon}>
               <input style={style.searchingB} />
               <img src="/icons/search_white.svg" style={style.searchIcons} />

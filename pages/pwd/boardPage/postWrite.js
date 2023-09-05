@@ -1,6 +1,8 @@
-import AppBar from "@/components/npwd/boardPage/topBar";
-import CatBar from "./catBar";
+import AppBar from "@/components/pwd/reportSearchPage/appbar";
+// import CatBar from "./catBar";
 import { useEffect, useState } from "react";
+import { Waveform } from '@uiball/loaders';
+
 
 import { v4 as uuid } from "uuid";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
@@ -23,35 +25,14 @@ export default function PostWrite() {
   }
 
   const style = {
-    introBox: {
-      display: selectedButton ? "none" : "",
-      width: "80%",
-      height: "100px",
-      backgroundColor: "#fcfcfc",
-      // border: '1px solid gray',
-      margin: "auto",
-      borderRadius: "20px",
-      textAlign: "center",
-      paddingTop: "10%",
-      paddingBottom: "5%",
-      marginTop: "5%",
-    },
-    bigTitle: {
-      color: "#000",
-      fontSize: "18px",
-      fontStyle: "normal",
-      fontWeight: "600",
-      lineHeight: "normal",
-      marginBottom: "2%",
-    },
-    smallTitle: {
-      color: "#000",
-      fontSize: "13px",
-      fontStyle: "normal",
-      fontWeight: "400",
-      lineHeight: "normal",
-      marginBottom: "5%",
-      marginTop: "3%",
+    writePost:{
+      width: '86%',
+      height: '4vh',
+      backgroundColor: '#FCFF59',
+      color: "#181818",
+      fontSize: '30px',
+      fontWeight: '600',
+      padding: '7%'
     },
     btns: {
       // width: '77px',
@@ -63,8 +44,13 @@ export default function PostWrite() {
     },
 
     selectedBtn: {
-      backgroundColor: "#4F4BEB", // 선택된 버튼의 색상을 여기에 설정하세요.
+      display:' flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      backgroundColor: "#181818",
       color: "#F8F9FA", // 선택된 버튼의 텍스트 색상
+      margin: "3% 2% 3% 2%",
+      width: "max-content",
       height: "36px",
       margin: "2%",
       border: "none",
@@ -81,10 +67,14 @@ export default function PostWrite() {
     },
 
     newbtns: {
+      alignItems: 'center',
+      justifyContent: 'center',
+      display:' flex',
       backgroundColor: "#FFFFFF", // 선택된 버튼의 색상을 여기에 설정하세요.
       margin: "3% 2% 3% 2%",
-      width: "36px",
+      width: "max-content",
       height: "36px",
+      padding: '5% 7% 5% 7%',
       borderRadius: "18px",
       border: "none",
       boxShadow: "0px 1.28px 1.29px 0px rgba(0, 0, 0, 0.10) inset",
@@ -107,18 +97,17 @@ export default function PostWrite() {
     },
 
     voiceContainer: {
-      display: selectedButton === "voice" ? "" : "none",
+      display: selectedButton === "voice" ? "flex" : "none",
       width: "80%",
       height: "200px",
-      backgroundColor: "#F8F9FA",
+      backgroundColor: "#181818",
       border: "none",
       borderRadius: "20px",
       padding: "5%",
       margin: "0 5% 0 5%",
-    },
-
-    cntl: {
-      display: selectedButton ? "" : "none",
+      alignItems: 'center',
+      justifyContent: 'center',
+      display:' flex',
     },
 
     changeColor: {
@@ -126,21 +115,39 @@ export default function PostWrite() {
     },
 
     submitBtn: {
-      width: "116px",
-      height: "36px",
+      width: "30%",
+      height: "5vh",
       display: "flex",
-      padding: "11px 32px",
+      margin: 'auto',
+      marginTop: '5%',
       justifyContent: "center",
       alignItems: "center",
       //gap: '49px',
       border: "none",
       borderRadius: "19px",
-      backgroundColor: "#C9CCD4",
-      marginLeft: "65%",
-      marginTop: "2%",
+      backgroundColor: "#181818",
+      
+      color:'white',
+      fontSize: '14px',
+      fontWeight: '700',
 
       fontFamily: "Pretendard",
     },
+    recordBtn:{
+      backgroundColor: 'transparent',
+      border: 'none',
+    },
+    recordTxt:{
+      color: 'white',
+      fontSize: '24px',
+      fontWeight: '700',
+      marginTop: '10%',
+      fontFamily: "Pretendard",
+    },
+    recordImg:{
+      height: '53px',
+      width: '40px'
+    }
   };
 
   const handleButtonClick = (buttonName) => {
@@ -276,46 +283,26 @@ export default function PostWrite() {
   return (
     <>
       <AppBar pagename={"게시글 작성"}></AppBar>
-      <CatBar></CatBar>
-      <div style={style.introBox}>
-        <div style={style.bigTitle}>게시글 작성 유형을 선택해주세요.</div>
-        <div style={style.smallTitle}>다양한 방법으로 소통해보세요 !</div>
-        <div>
-          <button
-            style={{
-              ...style.btns,
-            }}
-            onClick={() => handleButtonClick("text")}
-          >
-            글
-          </button>
-          <button
-            style={{
-              ...style.btns,
-            }}
-            onClick={() => handleButtonClick("voice")}
-          >
-            음성
-          </button>
-        </div>
+      <div style={style.writePost}>
+        <img src="/icons/edit.svg" style={{ width: "28px", height: "28px" }} />
+        &nbsp;&nbsp;게시글 작성
       </div>
+      {/* <CatBar></CatBar> */}
 
-      <div style={style.cntl}>
+      <div>
         <div style={style.btnCont}>
           <button
             style={
               selectedButton === "text" ? style.selectedBtn : style.newbtns
             }
-            onClick={() => handleButtonClick("text")}
-          >
+            onClick={() => handleButtonClick("text")}>
             {selectedButton === "text" ? "글" : <img src="/icons/edit.svg" />}
           </button>
           <button
             style={
               selectedButton === "voice" ? style.selectedBtn : style.newbtns
             }
-            onClick={() => handleButtonClick("voice")}
-          >
+            onClick={() => handleButtonClick("voice")}>
             {selectedButton === "voice" ? (
               "음성"
             ) : (
@@ -329,19 +316,33 @@ export default function PostWrite() {
           value={content}
           onChange={(value) => {
             setContent(value.target.value);
-          }}
-        ></textarea>
+          }}></textarea>
         <div style={style.voiceContainer}>
-          <button onClick={onRec ? stopRec : startRec}>녹음</button>
+          {!onRec ? (
+            <button
+              style={style.recordBtn}
+              onClick={onRec ? stopRec : startRec}>
+              <img style={style.recordImg} src="/icons/voiceWhite.svg" />
+              <div style={style.recordTxt}>누르고 말하기</div>
+            </button>
+          ) : (
+            <Waveform
+              onClick={onRec ? stopRec : startRec}
+              size={40}
+              lineWeight={3.5}
+              speed={1}
+              color="white"
+            />
+          )}
 
           {audioUrl ? <audio src={audioUrl} controls></audio> : null}
         </div>
 
         <button
           style={style.submitBtn}
-          onClick={selectedButton === "voice" ? requestAudioPost : requestPost}
-        >
-          작성완료
+          onClick={selectedButton === "voice" ? requestAudioPost : requestPost}>
+          <img src="/icons/check.svg" />
+          &nbsp; 작성완료
         </button>
       </div>
     </>
