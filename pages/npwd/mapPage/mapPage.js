@@ -10,10 +10,16 @@ import {
 } from "@/components/npwd/mapPage/bottomBar";
 import { defaultLatLon } from "@/public/constants/constant";
 import { riskEnumTable } from "@/public/constants/enumTable";
-import { getDistanceBetweenCoor } from "@/public/functions/coordinate";
+import {
+  getDistanceBetweenCoor,
+  getCurrentPostion,
+} from "@/public/functions/coordinate";
 
 export default function MapPage() {
   const [mode, setMode] = useState(0); // 0: 지도 | 1: 위치 상세 | 2: 신고내역 조회 | 3: 경로 선택 | 4: 네비게이션
+  useEffect(() => {
+    console.log(mode);
+  }, [mode]);
 
   const [currentLocation, setCurrentLocation] = useState(null);
   useEffect(() => {
@@ -24,6 +30,56 @@ export default function MapPage() {
   const [destinationSearchItem, setDestinationSearchItem] = useState(null);
 
   const [routeInfo, setRouteInfo] = useState(null);
+
+  function searchLocation(callBackFuction, query) {
+    fetch(`/api/kakao/map/searchByKeyword?query=${query}`, {
+      headers: {
+        Authorization: `KakaoAK ${process.env.KAKAO_REST_API_KEY}`,
+      },
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(data);
+        if (data["documents"].length !== 0) {
+          const resultList = data["documents"].map((val) => {
+            return {
+              placeName: val.place_name,
+              latitude: parseFloat(val.y),
+              longitude: parseFloat(val.x),
+            };
+          });
+          console.log(resultList);
+          callBackFuction(resultList);
+        }
+      });
+  }
+
+  function setCurrentSearchItemByCurrentLocation() {
+    getCurrentPostion(
+      (position) => {
+        console.log(position);
+        fetch(
+          `/api/kakao/map/addressByCoor?x=${position.coords.longitude}&y=${position.coords.latitude}`,
+          {
+            headers: {
+              Authorization: `KakaoAK ${process.env.KAKAO_REST_API_KEY}`,
+            },
+          }
+        )
+          .then((res) => res.json())
+          .then((data) => {
+            if (data.documents.length > 0) {
+              searchLocation((resultList) => {
+                setSourceSearchItem(resultList[0]);
+              }, data.documents[0].address.address_name);
+            }
+          });
+      },
+      (error) => {
+        alert(error);
+      }
+    );
+  }
 
   // const [customBack, setCustomBack] = useState();
   // useEffect(() => {
@@ -77,8 +133,11 @@ export default function MapPage() {
       case 3:
         return (
           <AppBar_RouteSelection
+            sourceSearchItem={sourceSearchItem}
+            destinationSearchItem={destinationSearchItem}
             setSourceSearchItem={setSourceSearchItem}
             setDestinationSearchItem={setDestinationSearchItem}
+            searchLocation={searchLocation}
           />
         );
     }
@@ -89,7 +148,16 @@ export default function MapPage() {
       case 0:
         return <NavBar />;
       case 1:
-        return <PlaceDetail currentLocation={currentLocation} />;
+        return (
+          <PlaceDetail
+            currentLocation={currentLocation}
+            setMode={setMode}
+            setDestinationSearchItem={setDestinationSearchItem}
+            setCurrentSearchItemByCurrentLocation={
+              setCurrentSearchItemByCurrentLocation
+            }
+          />
+        );
       case 2:
       case 3:
         return routeInfo ? <RouteSearchResult routeInfo={routeInfo} /> : null;
@@ -104,6 +172,8 @@ export default function MapPage() {
         sourceSearchItem={sourceSearchItem}
         destinationSearchItem={destinationSearchItem}
         setRouteInfo={setRouteInfo}
+        mode={mode}
+        setMode={setMode}
         style={style.map}
       />
       {renderBottom()}
@@ -116,6 +186,8 @@ function Map({
   sourceSearchItem,
   destinationSearchItem,
   setRouteInfo,
+  mode,
+  setMode,
 }) {
   const [clusterer, setClusterer] = useState(null);
   function initClusterer({ minLevel }) {
@@ -234,6 +306,9 @@ function Map({
       if (nearlestDisInd !== -1) {
         setCurrentLocation(locationList[nearlestDisInd]);
       } else {
+        if (mode === 1) {
+          setMode(0);
+        }
         setCurrentLocation(null);
       }
     }
@@ -252,7 +327,7 @@ function Map({
         };
       })
       .sort((a, b) => a.dis - b.dis)[0];
-    if (nearlestDis.dis < 50) {
+    if (nearlestDis !== undefined && nearlestDis.dis < 50) {
       return nearlestDis.ind;
     } else {
       return -1;
