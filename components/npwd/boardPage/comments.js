@@ -1,7 +1,17 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
+import Image from "next/image";
 
-export default function Comments({ userid, timeinfo, contents, heartcnt }) {
+export default function Comments({
+  userid,
+  timeinfo,
+  contents,
+  type,
+  heartcnt,
+}) {
   const [isLiked, setIsLiked] = useState(false);
+  const handleLikeClick = () => {
+    setIsLiked(!isLiked);
+  };
 
   const style = {
     whole: {
@@ -14,7 +24,7 @@ export default function Comments({ userid, timeinfo, contents, heartcnt }) {
     },
     profile: {
       display: "flex",
-      backgroundColor: "pink",
+      backgroundColor: "#FCFF59",
       width: "30px",
       height: "30px",
       borderRadius: "15px",
@@ -46,6 +56,12 @@ export default function Comments({ userid, timeinfo, contents, heartcnt }) {
       lineHeight: "normal",
       margin: "4% 0 4% 0",
     },
+    audioBox: {
+      display: "flex",
+      alignItems: "center",
+      margin: "4% 0 4% 0",
+    },
+
     bottomPart: {
       display: "flex",
     },
@@ -68,9 +84,18 @@ export default function Comments({ userid, timeinfo, contents, heartcnt }) {
     heart: {},
   };
 
-  const handleLikeClick = () => {
-    setIsLiked(!isLiked);
+  const [isOnPlay, setIsOnPlay] = useState(false);
+  function toggleIsOnPlay() {
+    setIsOnPlay(!isOnPlay);
+  }
+  const handlePlayClick = () => {
+    if (isOnPlay) {
+      audioRef.current.pause();
+    } else {
+      audioRef.current.play();
+    }
   };
+  const audioRef = useRef(null);
 
   return (
     <div style={style.whole}>
@@ -80,8 +105,43 @@ export default function Comments({ userid, timeinfo, contents, heartcnt }) {
           <div style={style.username}>{userid}</div>
           <div style={style.timeinfo}>{timeinfo}</div>
         </div>
-        <div style={style.contents}>{contents}</div>
-        <div style={style.bottomPart}>
+        {type === "text" ? (
+          <div style={style.contents}>{contents}</div>
+        ) : (
+          <div style={style.audioBox}>
+            {isOnPlay ? (
+              <Image
+                src="/icons/pause_blue.svg"
+                alt="일시정지"
+                width={11.14}
+                height={13}
+                onClick={handlePlayClick}
+              />
+            ) : (
+              <Image
+                src="/icons/play.svg"
+                alt="재생"
+                width={11.14}
+                height={13}
+                onClick={handlePlayClick}
+              />
+            )}{" "}
+            <div style={{ width: "13.86px" }} />
+            <Image
+              src="/icons/audio.svg"
+              alt="음성 파일"
+              width={59}
+              height={19.44}
+            />
+            <audio
+              src={contents}
+              ref={audioRef}
+              onPlay={toggleIsOnPlay}
+              onPause={toggleIsOnPlay}
+            />
+          </div>
+        )}
+        {/* <div style={style.bottomPart}>
           <div style={style.heart} onClick={handleLikeClick}>
             {isLiked ? (
               <img
@@ -99,7 +159,7 @@ export default function Comments({ userid, timeinfo, contents, heartcnt }) {
           </div>
           <div style={style.heartcnt}>{heartcnt}</div>
           <div style={style.reply}>답글달기</div>
-        </div>
+        </div> */}
       </div>
     </div>
   );

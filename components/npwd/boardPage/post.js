@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import TruncatedText from "./TruncatedText";
+import Image from "next/image";
 
 export default function Post({ text, id, time, type, count, picurl }) {
   const [isLiked, setIsLiked] = useState(false);
@@ -15,22 +16,29 @@ export default function Post({ text, id, time, type, count, picurl }) {
       padding: "4%",
     },
     profilebox: {
-      display: "grid",
-      gridTemplateColumns: "auto 1fr",
+      display: "flex",
+      alignItems: "center",
       height: "40px",
-      gridColumnGap: "10px",
       marginTop: "0",
     },
     profile: {
-      width: "40px",
-      height: "40px",
+      display: "flex",
+      backgroundColor: "#4F4BEB",
+      width: "30px",
+      height: "30px",
+      borderRadius: "15px",
+      marginRight: "10px",
     },
     userid: {
-      fontFamily: "InterBold",
+      fontFamily: "Pretendard",
+      fontWeight: "700",
       fontSize: "14px",
-      marginTop: "10px",
       whiteSpace: "nowrap",
       display: "inline",
+      marginRight: "auto",
+    },
+    deleteButton: {
+      border: "none",
     },
     contents: {
       paddingTop: "0.5%",
@@ -72,13 +80,13 @@ export default function Post({ text, id, time, type, count, picurl }) {
       textAlign: "right",
       cursor: "pointer",
     },
-    heartcnt:{
+    heartcnt: {
       textAlign: "right",
-      fontSize: '11px',
-      opacity: '0.8',
-      padding: '1%',
-      fontWeight: '300'
-    }
+      fontSize: "11px",
+      opacity: "0.8",
+      padding: "1%",
+      fontWeight: "300",
+    },
   };
 
   const handleLikeClick = () => {
@@ -89,11 +97,19 @@ export default function Post({ text, id, time, type, count, picurl }) {
     <div style={style.postbox}>
       <div style={style.profilebox}>
         <div style={style.profile}>
-          <img src={picurl} style={imgstyle} alt="pf" />
+          {/* <img src={picurl} style={imgstyle} alt="pf" /> */}
         </div>
         <p style={style.userid}>
           <strong>{id}</strong>
         </p>
+        <button style={{ ...style.deleteButton, display: "" }}>
+          <Image
+            src="/icons/cancel.svg"
+            width={10}
+            height={10}
+            alt="삭제하기"
+          />
+        </button>
       </div>
       <hr></hr>
       <div style={style.contents}>

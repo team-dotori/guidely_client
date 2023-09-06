@@ -1,21 +1,58 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Post from "@/components/npwd/boardPage/post";
 import AppBar from "@/components/npwd/boardPage/topBar";
-function boardPage() {
+import CatBar from "../../../components/npwd/boardPage/catBar";
+
+function BoardPage() {
   const style = {
-    marginTop: "12.5vh",
+    marginTop: "20px",
   };
+
+  const [posts, setPosts] = useState([]);
+
+  useEffect(() => {
+    fetch("/api/guidely/api/posts")
+      .then((res) => res.json())
+      .then((res) => {
+        setPosts(res);
+      });
+  }, []);
 
   return (
     <div>
-      <AppBar pagename="게시판" />
+      <AppBar
+        pagename="게시판"
+        onBackClick={() => {
+          location.href = "/npwd/mapPage";
+        }}
+      />
+      <CatBar mode="boardPage" />
       <div style={style} />
-      <Post text="글1" id="바닐라" time="10분전" type="sound" count={1} picurl="/img/haerin.jpeg"></Post>
-      <Post text="글2" id="스펀지송" time="12분전" type="text" count={22} picurl=""></Post>
-      <Post text="글3" id="유미" time="14분전" type="text" count={18} picurl=""></Post>
-      <Post text="글4" id="팜하니" time="50분전" type="text" count={5} picurl=""></Post>
+      {/* <Post
+        text="안녕하세요"
+        id="김민수"
+        time="1분전"
+        type="text"
+        count="10"
+      ></Post> */}
+      {posts.map((post) => {
+        return (
+          <Post
+            key={post.postId}
+            text={post.content.text}
+            id={post.nickname}
+            time={
+              Math.round(
+                (Date.now() - Date.parse(post.createdDate)) / (1000 * 60)
+              ).toString() + "분전"
+            }
+            type={post.type === "TEXT" ? "text" : "sound"}
+            count={post.likeCount}
+          ></Post>
+        );
+      })}
     </div>
   );
 }
 
-export default boardPage;
+export default BoardPage;
