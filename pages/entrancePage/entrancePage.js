@@ -3,7 +3,7 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 
 export default function EntrancePage() {
-  const [screenState, setScreenState] = useState("SelectionScreen");
+  const [screenState, setScreenState] = useState("SignInScreen");
   const [ifDisabled, setifDisabled] = useState(undefined);
 
   useEffect(() => {
@@ -14,12 +14,48 @@ export default function EntrancePage() {
     let code = new URL(window.location.href).searchParams.get("code");
 
     if (code) {
-      const res = await fetch(`/api/guidely/kakao/callback?code=${code}`);
-      const data = await res.json();
-      document.cookie = `accessToken=${data.accessToken}`;
-      document.cookie = `refreshToken=${data.refreshToken}`;
+      requestSignIn({ code });
     }
   };
+
+  function requestSignIn({ code }) {
+    fetch(`/api/guidely/kakao/callback?code=${code}`)
+      .then((res) => {
+        switch (res.status) {
+          case 200:
+            return res.json();
+          default:
+            alert("로그인에 실패했습니다.");
+            return null;
+        }
+      })
+      .then((data) => {
+        if (data !== null) {
+          document.cookie = `accessToken=${data.accessToken}`;
+          document.cookie = `refreshToken=${data.refreshToken}`;
+
+          getUserType();
+        }
+      });
+  }
+
+  function getUserType() {
+    fetch(`/api/guidely/api/users/type`)
+      .then((res) => {
+        switch (res.status) {
+          case 200:
+            return res.json();
+          default:
+            alert("오류 발생 :", res.status);
+            return null;
+        }
+      })
+      .then((data) => {
+        if (data === "NEW") {
+          setScreenState("SelectionScreen");
+        }
+      });
+  }
 
   return (
     <div>
@@ -95,7 +131,28 @@ function SplashScreen() {
   );
 }
 
-function SelectionScreen({ setifDisabled, setScreenState }) {
+function SelectionScreen({ setScreenState }) {
+  const [ifDisabled, setifDisabled] = useState(null);
+
+  useEffect(() => {
+    if (ifDisabled !== null) {
+      fetch("/api/guidely/api/users/type", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ type: ifDisabled ? "DISABLED" : "NORMAL" }),
+      }).then((res) => {
+        switch (res.status) {
+          case 200:
+            if (ifDisabled) location.href = "/pwd/homePage";
+            else location.href = "/npwd/mapPage";
+            break;
+        }
+      });
+    }
+  }, [ifDisabled]);
+
   return (
     <div>
       <div className="blur_box" />
@@ -103,7 +160,6 @@ function SelectionScreen({ setifDisabled, setScreenState }) {
         className="selectionButton"
         onClick={() => {
           setifDisabled(true);
-          setScreenState("SignInScreen");
         }}
         style={{
           top: "562px",
@@ -115,7 +171,6 @@ function SelectionScreen({ setifDisabled, setScreenState }) {
         className="selectionButton"
         onClick={() => {
           setifDisabled(false);
-          setScreenState("SignInScreen");
         }}
         style={{
           top: "626px",

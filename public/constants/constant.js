@@ -6,4 +6,4 @@ export const defaultLatLon = {
 export const textInputWaitTime = 1000;
 
 export const detectDistance = 500;
-export const detectInterval = 10000;
+export const detectPretendardval = 10000;

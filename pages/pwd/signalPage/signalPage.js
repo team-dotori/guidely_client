@@ -13,7 +13,7 @@ import {
 import {
   defaultLatLon,
   detectDistance,
-  detectInterval,
+  detectPretendardval,
 } from "@/public/constants/constant";
 
 export default function SignalPage() {
@@ -62,7 +62,7 @@ export default function SignalPage() {
 
     setTimeout(() => {
       setTimer(timer + 1);
-    }, detectInterval);
+    }, detectPretendardval);
   }, [timer]);
 
   function toNextPage() {

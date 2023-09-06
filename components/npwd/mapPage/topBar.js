@@ -111,35 +111,26 @@ function SearchBox({ onChange }) {
     </div>
   );
 }
+``;
 
 export function AppBar_RouteSelection({
+  sourceSearchItem,
+  destinationSearchItem,
   setSourceSearchItem,
   setDestinationSearchItem,
+  searchLocation,
 }) {
+  const [sourceInput, setSourceInput] = useState("");
+  const [destinationInput, setDestinationInput] = useState("");
+
   //출발지 검색
   const sourceInputOnSubmit = (e) => {
     if (e.keyCode == 13) {
       if (e.target.value.length > 0) {
-        fetch(`/api/kakao/map/searchByKeyword?query=${e.target.value}`, {
-          headers: {
-            Authorization: `KakaoAK ${process.env.KAKAO_REST_API_KEY}`,
-          },
-        })
-          .then((res) => res.json())
-          .then((data) => {
-            console.log(data);
-            if (data["documents"].length !== 0) {
-              const resultList = data["documents"].map((val) => {
-                return {
-                  placeName: val.place_name,
-                  latitude: parseFloat(val.y),
-                  longitude: parseFloat(val.x),
-                };
-              });
-              setSourceSearchItem(resultList[0]);
-              e.target.value = resultList[0].placeName;
-            }
-          });
+        searchLocation((resultList) => {
+          setSourceSearchItem(resultList[0]);
+          setSourceInput(resultList[0].placeName);
+        }, e.target.value);
       }
 
       e.target.blur();
@@ -153,28 +144,11 @@ export function AppBar_RouteSelection({
   const destinationInputOnSubmit = (e) => {
     if (e.keyCode == 13) {
       if (e.target.value.length > 0) {
-        fetch(`/api/kakao/map/searchByKeyword?query=${e.target.value}`, {
-          headers: {
-            Authorization: `KakaoAK ${process.env.KAKAO_REST_API_KEY}`,
-          },
-        })
-          .then((res) => res.json())
-          .then((data) => {
-            console.log(data);
-            if (data["documents"].length !== 0) {
-              const resultList = data["documents"].map((val) => {
-                return {
-                  placeName: val.place_name,
-                  latitude: parseFloat(val.y),
-                  longitude: parseFloat(val.x),
-                };
-              });
-              setDestinationSearchItem(resultList[0]);
-              e.target.value = resultList[0].placeName;
-            }
-          });
+        searchLocation((resultList) => {
+          setDestinationSearchItem(resultList[0]);
+          setDestinationInput(resultList[0].placeName);
+        }, e.target.value);
       }
-
       e.target.blur();
     }
   };
@@ -192,6 +166,17 @@ export function AppBar_RouteSelection({
           <input
             placeholder="출발지를 입력하세요."
             onKeyUp={sourceInputOnSubmit}
+            onChange={(e) => {
+              if (sourceSearchItem !== null) setSourceSearchItem(null);
+              setSourceInput(e.target.value);
+            }}
+            value={
+              sourceSearchItem === null
+                ? sourceInput
+                : sourceSearchItem.placeName
+                ? sourceSearchItem.placeName
+                : sourceSearchItem.address
+            }
           />
         </div>
 
@@ -210,6 +195,18 @@ export function AppBar_RouteSelection({
           <input
             placeholder="목적지를 입력하세요."
             onKeyUp={destinationInputOnSubmit}
+            onChange={(e) => {
+              if (destinationSearchItem !== null)
+                setDestinationSearchItem(null);
+              setDestinationInput(e.target.value);
+            }}
+            value={
+              destinationSearchItem === null
+                ? destinationInput
+                : destinationSearchItem.placeName
+                ? destinationSearchItem.placeName
+                : destinationSearchItem.address
+            }
             ref={destinationInputRef}
           />
         </div>

@@ -1,10 +1,11 @@
 import Image from "next/image";
 import React from "react";
 
-export default function AppBar({pagename}) {
+export default function AppBar({ pagename, onBackClick }) {
   return (
     <div className="appBar">
-      <TitleBox nowpagename={pagename} /> {/* nowpagename 값을 전달 */}
+      <TitleBox nowpagename={pagename} onBackClick={onBackClick} />{" "}
+      {/* nowpagename 값을 전달 */}
       <style jsx>{`
         .appBar {
           position: fixed;
@@ -21,7 +22,8 @@ export default function AppBar({pagename}) {
   );
 }
 
-function TitleBox({ nowpagename }) { // nowpagename 프롭을 받을 수 있도록 수정
+function TitleBox({ nowpagename, onBackClick }) {
+  // nowpagename 프롭을 받을 수 있도록 수정
   return (
     <div className="titleBox">
       <div className="titleContainer">
@@ -30,9 +32,7 @@ function TitleBox({ nowpagename }) { // nowpagename 프롭을 받을 수 있도�
           width={23}
           height={23}
           alt="뒤로가기"
-          onClick={() => {
-            console.log("back key clicked!");
-          }}
+          onClick={onBackClick}
         />
         <div className="title">{nowpagename}</div>
       </div>

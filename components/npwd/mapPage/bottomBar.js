@@ -93,8 +93,12 @@ export function NavBar() {
   );
 }
 
-export function PlaceDetail({ currentLocation }) {
-  console.log(currentLocation);
+export function PlaceDetail({
+  currentLocation,
+  setMode,
+  setDestinationSearchItem,
+  setCurrentSearchItemByCurrentLocation,
+}) {
   const style = {
     background: {
       position: "fixed",
@@ -183,6 +187,19 @@ export function PlaceDetail({ currentLocation }) {
     },
   };
 
+  function reportListOnClick() {
+    console.log("신고내역 버튼 클릭");
+  }
+  function reportOnClick() {
+    console.log("신고하기 버튼 클릭");
+  }
+  function destinationOnClick() {
+    setCurrentSearchItemByCurrentLocation();
+    console.log("fuck you", currentLocation);
+    setDestinationSearchItem(currentLocation);
+    setMode(3);
+  }
+
   return (
     <div style={style.background}>
       <div style={style.container}>
@@ -205,7 +222,7 @@ export function PlaceDetail({ currentLocation }) {
           </div>
         </div>
         <div style={style.btnArr}>
-          <div style={style.btn}>
+          <div style={style.btn} onClick={reportListOnClick}>
             <img
               src="/icons/reportlist.svg"
               style={style.icon}
@@ -213,7 +230,7 @@ export function PlaceDetail({ currentLocation }) {
             />
             신고내역
           </div>
-          <div style={style.btn}>
+          <div style={style.btn} onClick={reportOnClick}>
             <img
               src="/icons/report.svg"
               style={style.icon}
@@ -221,7 +238,7 @@ export function PlaceDetail({ currentLocation }) {
             />
             신고하기
           </div>
-          <div style={style.lastBtn}>
+          <div style={style.lastBtn} onClick={destinationOnClick}>
             <img
               src="/icons/arrival.svg"
               style={style.icon}
