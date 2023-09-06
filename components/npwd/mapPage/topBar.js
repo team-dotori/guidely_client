@@ -176,6 +176,8 @@ export function AppBar_RouteSelection({
                 : sourceSearchItem.placeName
                 ? sourceSearchItem.placeName
                 : sourceSearchItem.address
+                ? sourceSearchItem.address
+                : sourceSearchItem.buildingName
             }
           />
         </div>
@@ -206,6 +208,8 @@ export function AppBar_RouteSelection({
                 : destinationSearchItem.placeName
                 ? destinationSearchItem.placeName
                 : destinationSearchItem.address
+                ? destinationSearchItem.address
+                : destinationSearchItem.buildingName
             }
             ref={destinationInputRef}
           />

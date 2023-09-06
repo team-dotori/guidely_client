@@ -1,5 +1,7 @@
-import { riskEnumTable } from "@/public/constants/enumTable";
+import { riskEnumTable, categoryEnumTable } from "@/public/constants/enumTable";
 import Image from "next/image";
+import TruncatedText from "../boardPage/TruncatedText";
+import { useEffect, useState } from "react";
 
 export function NavBar() {
   const style = {
@@ -65,7 +67,12 @@ export function NavBar() {
           <div style={style.buttonText}>지도</div>
         </button>
         {/* 게시판버튼 */}
-        <button style={style.button}>
+        <button
+          style={style.button}
+          onClick={() => {
+            location.href = "/npwd/boardPage";
+          }}
+        >
           <img src="/icons/navbar/board.svg" style={style.iconstyle} />
           <div style={style.buttonText}>게시판</div>
         </button>
@@ -79,12 +86,22 @@ export function NavBar() {
           <div style={style.buttonText}>GUIDELY</div>
         </button>
         {/* 신고버튼 */}
-        <button style={style.button}>
+        <button
+          style={style.button}
+          onClick={() => {
+            location.href = "/npwd/reportPage";
+          }}
+        >
           <img src="/icons/navbar/report.svg" style={style.iconstyle} />
           <div style={style.buttonText}>신고</div>
         </button>
         {/* 내정보 버튼 */}
-        <button style={style.button}>
+        <button
+          style={style.button}
+          onClick={() => {
+            location.href = "/npwd/myPage";
+          }}
+        >
           <img src="/icons/navbar/myinfo.svg" style={style.iconstyle} />
           <div style={style.buttonText}>내정보</div>
         </button>
@@ -188,14 +205,22 @@ export function PlaceDetail({
   };
 
   function reportListOnClick() {
-    console.log("신고내역 버튼 클릭");
+    setMode(2);
   }
   function reportOnClick() {
-    console.log("신고하기 버튼 클릭");
+    console.log(currentLocation);
+    location.href = `/npwd/reportPage?place=${
+      currentLocation.buildingName ?? currentLocation.address
+    }&latitude=${currentLocation.latitude}&longitude=${
+      currentLocation.longitude
+    }&address=${currentLocation.address}${
+      currentLocation.buildingName !== null
+        ? `&buildingName=${currentLocation.buildingName}`
+        : ""
+    }&type=${currentLocation.type}`;
   }
   function destinationOnClick() {
     setCurrentSearchItemByCurrentLocation();
-    console.log("fuck you", currentLocation);
     setDestinationSearchItem(currentLocation);
     setMode(3);
   }
@@ -284,7 +309,299 @@ function CustomMarkerContent({ type, risk, count }) {
   );
 }
 
-// export function
+export function ReportList({ currentLocation, setMode }) {
+  const [reportList, setReportList] = useState([]);
+  useEffect(() => {
+    fetch(`/api/guidely/api/location/${currentLocation.id}`)
+      .then((res) => res.json())
+      .then((res) => {
+        console.log(res);
+        setReportList(res);
+      });
+  }, []);
+
+  return (
+    <div className="container">
+      <div
+        className="closeButton"
+        onClick={() => {
+          setMode(1);
+        }}
+      >
+        <Image
+          src="/icons/down_round.svg"
+          width={23.25}
+          height={23.25}
+          alt="닫기"
+        />
+      </div>
+      <div className="titleBox">
+        <Image
+          src="/icons/reportlist.svg"
+          width={25}
+          height={25}
+          alt="안내 시작"
+        />
+        <div style={{ width: 13 }} />
+        <div className="title">
+          <b>신고내역</b> ({currentLocation.countDeclaration})
+        </div>
+      </div>
+      <div style={{ height: 29 }} />
+      {reportList.map((report, ind) => {
+        return <ReportComponent key={ind} report={report} />;
+      })}
+
+      <style jsx>{`
+        .container {
+          position: fixed;
+          width: 100%;
+          height: 684px;
+          background-color: white;
+          border-radius: 13.5px 13.5px 0 0;
+          bottom: 0px;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          z-index: 2;
+          box-shadow: 0px -4px 4px 0px rgba(0, 0, 0, 0.1);
+        }
+
+        .closeButton {
+          width: 100%;
+          height: 23.25px;
+          margin-top: 8px;
+
+          display: flex;
+          justify-content: center;
+          align-items: center;
+        }
+
+        .titleBox {
+          width: 329.86px;
+          height: 22px;
+          margin-top: 32.75px;
+
+          display: flex;
+        }
+        .titleBox .title {
+          color: #000000;
+          font-size: 18.24px;
+          font-weight: 500;
+        }
+        .titleBox .title b {
+          font-weight: 700;
+        }
+      `}</style>
+    </div>
+  );
+}
+
+function ReportComponent({ report }) {
+  const [ifClosed, setIfClosed] = useState(true);
+
+  return (
+    <div className={`container ${ifClosed ? "closedBox" : "openBox"}`}>
+      <div className="titleBox">
+        <Image
+          src={`/icons/risk_${report.risk}.svg`}
+          width={17.05}
+          height={17}
+          alt={`${riskEnumTable[report.risk]}`}
+        />
+        <div style={{ width: 10.44 }} />
+        <div className="title">
+          {riskEnumTable[report.risk] +
+            " / " +
+            categoryEnumTable[report.category]}
+        </div>
+        <div style={{ width: 13 }} />
+        <div className="specific">{report.specification}</div>
+      </div>
+      <div className="divider" />
+      {ifClosed ? (
+        <div
+          className="previewBox"
+          onClick={() => {
+            setIfClosed(false);
+          }}
+        >
+          <TruncatedText text={report.contents} maxLength={25} />
+        </div>
+      ) : (
+        <div className="contentBox">
+          <div className="text">{report.contents}</div>
+          {report.imgUrl ? (
+            <>
+              <div style={{ height: 23 }} />
+              <img src={`${report.imgUrl}`} alt="이미지" className="imgBox" />
+            </>
+          ) : null}
+        </div>
+      )}{" "}
+      <div className="footerBox">
+        <div className="text">{formatDate(report.createdDate)}</div>
+        <div className="likesBox">
+          도움
+          <b>{report.likeCount}</b>
+        </div>
+      </div>
+      {ifClosed ? null : (
+        <>
+          <div className="divider" />
+          <div
+            className="closeButton"
+            onClick={() => {
+              setIfClosed(true);
+            }}
+          >
+            <Image
+              src={"/icons/close_drawer.svg"}
+              width={10.41}
+              height={18.18}
+              alt="접기"
+            />
+          </div>
+        </>
+      )}
+      <style jsx>{`
+        .container {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+
+          width: 331.19px;
+
+          border-radius: 20.53px;
+          background-color: #f8f9fa;
+
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+
+          margin-bottom: 18px;
+        }
+
+        .closedBox {
+          height: 145px;
+          transition: height 0.1s ease-in-out;
+        }
+
+        .openBox {
+          transition: height 0.1s ease-in-out;
+        }
+
+        .titleBox {
+          width: 286px;
+          height: 52px;
+
+          display: flex;
+          align-items: center;
+        }
+        .titleBox .title {
+          color: #000000;
+          font-size: 14px;
+          font-weight: 700;
+        }
+        .titleBox .specific {
+          color: #000000;
+          font-size: 10px;
+          font-weight: 300;
+        }
+
+        .divider {
+          width: 331px;
+          height: 0.3px;
+          background-color: #000000;
+          opacity: 0.25;
+        }
+
+        .previewBox {
+          width: 286px;
+          height: 16px;
+          display: flex;
+          flex-direction: column;
+          margin: auto;
+
+          color: #000000;
+          font-size: 13px;
+          font-weight: 500;
+        }
+
+        .contentBox {
+          width: 286px;
+          display: flex;
+          flex-direction: column;
+          margin-top: 18px;
+          margin-bottom: 25px;
+        }
+        .contentBox .text {
+          color: #000000;
+          font-size: 13px;
+          font-weight: 500;
+        }
+        .contentBox img {
+          height: 188px;
+          border-radius: 7px;
+          margin-right: auto;
+        }
+
+        .footerBox {
+          width: 286px;
+          display: flex;
+          justify-content: space-between;
+
+          margin: 8.11px 0px;
+        }
+        .footerBox .text {
+          color: #000000;
+          font-size: 11px;
+          font-weight: 300;
+        }
+        .footerBox .text .b {
+          font-size: 9px;
+        }
+        .footerBox .likesBox {
+          padding: 4px 14px;
+          display: flex;
+          background-color: #ffffff;
+
+          border: 0.42px solid rgba(0, 0, 0, 0.2);
+          border-radius: 12.53px;
+          box-shadow: 0px 2.09px 4.18px 0px rgba(0, 0, 0, 0.1) inset;
+
+          color: #000000;
+          font-size: 10.45px;
+          font-weight: 400;
+        }
+        .footerBox .likesBox b {
+          color: #4f4beb;
+          font-weight: 700;
+          margin-left: 3px;
+        }
+
+        .closeButton {
+          width: 331.19px;
+          height: 36px;
+
+          display: flex;
+          justify-content: center;
+          align-items: center;
+        }
+      `}</style>
+    </div>
+  );
+}
+
+function formatDate(inputDate) {
+  const date = new Date(inputDate);
+
+  const year = date.getFullYear().toString().slice(-2);
+  const month = (date.getMonth() + 1).toString().padStart(2, "0");
+  const day = date.getDate().toString().padStart(2, "0");
+
+  return `${year}.${month}.${day}`;
+}
 
 export function RouteSearchResult({ routeInfo }) {
   return (

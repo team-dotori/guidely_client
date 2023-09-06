@@ -7,6 +7,7 @@ import {
   NavBar,
   PlaceDetail,
   RouteSearchResult,
+  ReportList,
 } from "@/components/npwd/mapPage/bottomBar";
 import { defaultLatLon } from "@/public/constants/constant";
 import { riskEnumTable } from "@/public/constants/enumTable";
@@ -17,9 +18,7 @@ import {
 
 export default function MapPage() {
   const [mode, setMode] = useState(0); // 0: 지도 | 1: 위치 상세 | 2: 신고내역 조회 | 3: 경로 선택 | 4: 네비게이션
-  useEffect(() => {
-    console.log(mode);
-  }, [mode]);
+  useEffect(() => {}, [mode]);
 
   const [currentLocation, setCurrentLocation] = useState(null);
   useEffect(() => {
@@ -39,7 +38,6 @@ export default function MapPage() {
     })
       .then((res) => res.json())
       .then((data) => {
-        console.log(data);
         if (data["documents"].length !== 0) {
           const resultList = data["documents"].map((val) => {
             return {
@@ -48,7 +46,6 @@ export default function MapPage() {
               longitude: parseFloat(val.x),
             };
           });
-          console.log(resultList);
           callBackFuction(resultList);
         }
       });
@@ -57,7 +54,6 @@ export default function MapPage() {
   function setCurrentSearchItemByCurrentLocation() {
     getCurrentPostion(
       (position) => {
-        console.log(position);
         fetch(
           `/api/kakao/map/addressByCoor?x=${position.coords.longitude}&y=${position.coords.latitude}`,
           {
@@ -159,6 +155,9 @@ export default function MapPage() {
           />
         );
       case 2:
+        return (
+          <ReportList currentLocation={currentLocation} setMode={setMode} />
+        );
       case 3:
         return routeInfo ? <RouteSearchResult routeInfo={routeInfo} /> : null;
     }
@@ -189,6 +188,21 @@ function Map({
   mode,
   setMode,
 }) {
+  useEffect(() => {
+    switch (mode) {
+      case 0:
+        clearMap();
+        getPins();
+      case 3:
+        clearMap();
+        break;
+    }
+  }, [mode]);
+  function clearMap() {
+    clusterer && clusterer.clear();
+    clearCircleAndLines();
+  }
+
   const [clusterer, setClusterer] = useState(null);
   function initClusterer({ minLevel }) {
     setClusterer(
@@ -212,13 +226,13 @@ function Map({
 
   //////////////////////////////// 지도 모드일 때
   //location 핀들 가져오기
-  useEffect(() => {
+  function getPins() {
     fetch("/api/guidely/api/location")
       .then((res) => res.json())
       .then((data) => {
         setLocationList(data);
       });
-  }, []);
+  }
 
   const [locationList, setLocationList] = useState([]);
   useEffect(() => {
@@ -227,10 +241,10 @@ function Map({
     }
   }, [locationList]);
   useEffect(() => {
-    if (clusterer) {
+    if (clusterer && locationList.length > 0) {
       setMarker(locationList);
     }
-  }, [clusterer]);
+  }, [clusterer, locationList]);
 
   //
   const [kakaoMap, setKakaoMap] = useState();
@@ -364,9 +378,29 @@ function Map({
   //////////////////////////////// 위치선택 모드일 때
   useEffect(() => {
     if (sourceSearchItem && destinationSearchItem) {
+      clearMap();
       searchRoute();
     }
   }, [sourceSearchItem, destinationSearchItem]);
+
+  async function getPinFromPoint({ lat, lon }) {
+    return fetch(
+      `/api/guidely/api/location/navigation?latitude=${lat}&longitude=${lon}`
+    )
+      .then((res) => res.json())
+      .then((data) => {
+        // riskMean: 0.7,
+        // countDeclaration: 3,
+        let totRiskMean = 0;
+        let totCountDeclaration = 0;
+        data.map((val) => {
+          totCountDeclaration += val.countDeclaration;
+          totRiskMean += val.riskMean;
+        });
+        setLocationList(data);
+        return { totRiskMean, totCountDeclaration };
+      });
+  }
 
   function searchRoute() {
     fetch(`/api/tmap/searchRoute?version=1&format=json&callback=result`, {
@@ -381,8 +415,8 @@ function Map({
         endY: destinationSearchItem.latitude,
         reqCoordType: "WGS84GEO",
         resCoordType: "WGS84GEO",
-        startName: sourceSearchItem.placeName,
-        endName: destinationSearchItem.placeName,
+        startName: "출발지",
+        endName: "도착지",
       }),
     })
       .then((res) => {
@@ -394,36 +428,14 @@ function Map({
             break;
         }
       })
-      .then((data) => {
+      .then(async (data) => {
         if (data) {
-          setRouteInfo({
-            totalDistance: data.features[0].properties.totalDistance,
-            totalTime: data.features[0].properties.totalTime,
-            totalDeclarationCount: 16,
-            locationList: [
-              {
-                type: "INSIDE",
-                riskMean: 0.7,
-                countDeclaration: 3,
-                percentageFromStart: 10,
-              },
-              {
-                type: "OUTSIDE",
-                riskMean: 1.5,
-                countDeclaration: 8,
-                percentageFromStart: 40,
-              },
-              {
-                type: "INSIDE",
-                riskMean: 2,
-                countDeclaration: 5,
-                percentageFromStart: 70,
-              },
-            ],
-          });
           let newPoints = [];
           let newLines = [];
-          data.features.forEach((element) => {
+          let newLocationList = [];
+          let curDisAccum = 0;
+
+          for (let element of data.features) {
             if (element.geometry.type === "Point") {
               newPoints.push({
                 lon: element.geometry.coordinates[0],
@@ -433,7 +445,23 @@ function Map({
                   lat: element.geometry.coordinates[1],
                 }),
               });
+              const pinInfo = await getPinFromPoint({
+                lat: element.geometry.coordinates[1],
+                lon: element.geometry.coordinates[0],
+              });
+
+              if (pinInfo.totCountDeclaration > 0) {
+                newLocationList.push({
+                  type: "INSIDE",
+                  riskMean: pinInfo.totRiskMean / pinInfo.totCountDeclaration,
+                  countDeclaration: pinInfo.totCountDeclaration,
+                  percentageFromStart:
+                    (curDisAccum / data.features[0].properties.totalDistance) *
+                    100,
+                });
+              }
             } else if (element.geometry.type === "LineString") {
+              curDisAccum += element.properties.distance;
               newLines.push({
                 points: element.geometry.coordinates.map((val) => {
                   return {
@@ -452,10 +480,16 @@ function Map({
                 }),
               });
             }
-          });
+          }
 
           setPoints(newPoints);
           setLines(newLines);
+          setRouteInfo({
+            totalDistance: data.features[0].properties.totalDistance,
+            totalTime: data.features[0].properties.totalTime,
+            totalDeclarationCount: 16,
+            locationList: newLocationList,
+          });
         }
       });
   }
@@ -507,6 +541,15 @@ function Map({
       strokeStyle: "solid", // 선의 스타일입니다
     });
   }
+  function clearCircleAndLines() {
+    points.forEach((point) => {
+      point.circle.setMap(null);
+    });
+    lines.forEach((line) => {
+      line.line.setMap(null);
+    });
+  }
+
   function mapPostionReset({ points }) {
     let bounds = new window.kakao.maps.LatLngBounds();
     points.forEach((point) => {
