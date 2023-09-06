@@ -350,10 +350,10 @@ function TitleBox() {
             justify-content: center;
           }
           .textBox1 {
-            margin: 50px;
+            margin: 50px 50px 50px 35px;
           }
           .textBox2 {
-            margin: 50px 25px 50px 50px;
+            margin: 50px 25px 50px 47px;
           }
           .icon{
             position: fixed;
