@@ -9,8 +9,11 @@ import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import storage from "@/firebase/storage";
 
 export default function PostWrite() {
-  const [selectedButton, setSelectedButton] = useState(null);
+  let [selectedButton, setSelectedButton] = useState("voice");
   const [content, setContent] = useState(""); // 글 내용
+  
+
+  console.log(selectedButton);
 
   function requestPost() {
     fetch("/api/guidely/api/posts/text", {
@@ -61,7 +64,7 @@ export default function PostWrite() {
     btnCont: {
       paddingLeft: "2%",
       width: "90%",
-
+      margin: '2% 0 3% 0',
       display: "flex",
       alignItems: "center",
     },
@@ -81,7 +84,7 @@ export default function PostWrite() {
     },
 
     textContainer: {
-      display: selectedButton === "text" ? "" : "none",
+      display: selectedButton === "text" ? "flex" : "none",
       width: "80%",
       height: "200px",
       backgroundColor: "#F8F9FA",
@@ -98,16 +101,17 @@ export default function PostWrite() {
 
     voiceContainer: {
       display: selectedButton === "voice" ? "flex" : "none",
+      //display: "none",
       width: "80%",
       height: "200px",
       backgroundColor: "#181818",
       border: "none",
-      borderRadius: "20px",
+      borderRadius: "25px",
       padding: "5%",
       margin: "0 5% 0 5%",
       alignItems: 'center',
       justifyContent: 'center',
-      display:' flex',
+      flexDirection: 'column'
     },
 
     changeColor: {
@@ -143,6 +147,7 @@ export default function PostWrite() {
       fontWeight: '700',
       marginTop: '10%',
       fontFamily: "Pretendard",
+      marginBottom: '10%'
     },
     recordImg:{
       height: '53px',
@@ -317,17 +322,17 @@ export default function PostWrite() {
           onChange={(value) => {
             setContent(value.target.value);
           }}></textarea>
-        <div style={style.voiceContainer}>
+        <div style={style.voiceContainer }               
+        onClick={onRec ? stopRec : startRec}>
           {!onRec ? (
             <button
               style={style.recordBtn}
-              onClick={onRec ? stopRec : startRec}>
+              >
               <img style={style.recordImg} src="/icons/voiceWhite.svg" />
               <div style={style.recordTxt}>누르고 말하기</div>
             </button>
           ) : (
             <Waveform
-              onClick={onRec ? stopRec : startRec}
               size={40}
               lineWeight={3.5}
               speed={1}
