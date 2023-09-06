@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import TruncatedText from "./TruncatedText";
 import Image from "next/image";
 
-export default function Post({ text, id, time, type, count, picurl }) {
+export default function Post({ text, id, time, type, count, picurl, postId }) {
   const [isLiked, setIsLiked] = useState(false);
 
   const style = {
@@ -94,7 +94,12 @@ export default function Post({ text, id, time, type, count, picurl }) {
   };
 
   return (
-    <div style={style.postbox}>
+    <div
+      style={style.postbox}
+      onClick={() => {
+        location.href = `/npwd/boardPage/postDetail?postId=${postId}`;
+      }}
+    >
       <div style={style.profilebox}>
         <div style={style.profile}>
           {/* <img src={picurl} style={imgstyle} alt="pf" /> */}
@@ -119,6 +124,7 @@ export default function Post({ text, id, time, type, count, picurl }) {
           <div style={style.soundimgBox}>
             <img style={style.soundimg} src="/img/nocolorLine.svg" />
             <img style={style.soundimg} src="/img/coloredLine.svg" />
+            <audio />
           </div>
         )}
       </div>

@@ -98,8 +98,8 @@ export default function PostWrite() {
   }
 
   function uploadAudio(file) {
-    const imageRef = ref(storage, `audios/${uuid()}.mp3`);
-    const uploadTask = uploadBytesResumable(imageRef, file);
+    const audioRef = ref(storage, `audios/${uuid()}.mp3`);
+    const uploadTask = uploadBytesResumable(audioRef, file);
     uploadTask.on(
       "state_changed",
       (snapshot) => {
@@ -126,6 +126,7 @@ export default function PostWrite() {
         // For instance, get the download URL: https://firebasestorage.googleapis.com/...
         getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
           setAudioUrl(downloadURL);
+          setAudioFile(null);
         });
       }
     );
@@ -134,18 +135,6 @@ export default function PostWrite() {
   useEffect(() => {
     if (audioFile) uploadAudio(audioFile);
   }, [audioFile]);
-
-  function requestAudioPost() {
-    fetch("/api/guidely/api/posts/text", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        voiceUrl: audioUrl,
-      }),
-    });
-  }
 
   ////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -161,6 +150,13 @@ export default function PostWrite() {
       body: JSON.stringify({
         content: content,
       }),
+    }).then((res) => {
+      switch (res.status) {
+        case 200:
+        case 201:
+          location.href = "/npwd/boardPage";
+          break;
+      }
     });
   }
 
@@ -173,6 +169,13 @@ export default function PostWrite() {
       body: JSON.stringify({
         voiceUrl: audioUrl,
       }),
+    }).then((res) => {
+      switch (res.status) {
+        case 200:
+        case 201:
+          location.href = "/npwd/boardPage";
+          break;
+      }
     });
   }
 
@@ -405,13 +408,12 @@ export default function PostWrite() {
           style={style.submitBtn}
           onClick={
             selectedButton === "voice"
-              ? requestPostAudio
-              : // ? audioUrl
-                //   ? requestPostAudio
-                //   : () => {
-                //       alert("음성이 없습니다.");
-                //     }
-                requestPostText
+              ? audioUrl
+                ? requestPostAudio
+                : () => {
+                    alert("음성이 없습니다.");
+                  }
+              : requestPostText
           }
         >
           작성완료

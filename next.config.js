@@ -66,6 +66,14 @@ const nextConfig = {
         source: "/pwd/reportSearchPage",
         destination: "/pwd/reportSearchPage/reportSearchPage",
       },
+      {
+        source: "/pwd/naviPage",
+        destination: "/pwd/naviPage/naviPage",
+      },
+      {
+        source: "/pwd/boardPage",
+        destination: "/pwd/boardPage/boardPage",
+      },
 
       {
         source: "/api/guidely/:path*",

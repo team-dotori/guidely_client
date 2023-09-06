@@ -3,64 +3,132 @@ import AppBar from "@/components/pwd/reportSearchPage/appbar";
 
 import Comment from "@/components/pwd/boardPage/comments";
 
-import PutComm from "@/pages/pwd/boardPage/inputComment"
+import PutComm from "@/components/pwd/boardPage/inputComment";
 // 멈춤 없는거
 import BottomBar from "@/components/pwd/reportSearchPage/bottomBar";
 import Post from "@/components/pwd/boardPage/post";
 
-
 export default function PostDetail() {
+  const [isLiked, setIsLiked] = useState(false);
+
+  const [curPost, setCurPost] = useState({});
+  const [commentList, setCommentList] = useState([]);
+  const [curLikeCount, setCurLikeCount] = useState();
+
+  const [postId, setPostId] = useState(-1);
+
+  useEffect(() => {
+    setPostId(new URL(window.location.href).searchParams.get("postId"));
+  }, []);
+
+  useEffect(() => {
+    if (postId === -1) return;
+    if (postId === null) return alert("알 수 없는 게시글입니다.");
+
+    fetch(`/api/guidely/api/posts/${postId}`)
+      .then((res) => res.json())
+      .then((res) => {
+        setCurPost(res);
+      });
+
+    fetch(`/api/guidely/api/posts/${postId}/comments`)
+      .then((res) => res.json())
+      .then((res) => {
+        setCommentList(res);
+      });
+
+    fetch(`/api/guidely/api/heart/posts/check`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        userId: getCookie("userId"),
+        postId: postId,
+      }),
+    })
+      .then((res) => res.json())
+      .then((res) => {
+        setIsLiked(res.alreadyLike);
+      });
+  }, [postId]);
+
+  useEffect(() => {
+    setCurLikeCount(curPost.likeCount);
+  }, [curPost]);
+
+  function setLike() {
+    fetch("/api/guidely/api/heart/posts", {
+      method: isLiked ? "DELETE" : "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        userId: getCookie("userId"),
+        postId: curPost.postId,
+      }),
+    }).then((res) => {
+      switch (res.status) {
+        case 200:
+        case 201:
+          setIsLiked(!isLiked);
+          setCurLikeCount(curLikeCount + (isLiked ? -1 : 1));
+          break;
+      }
+    });
+  }
 
   const comment = [
     {
-        userid:"아이디",
-        timeinfo:"1분전",
-        contents:"댓글이 존나 길다면??댓글이 존나 길다면? 댓글이 존나 길다면? 댓글이 존나 길다면? 댓글이 존나 길다면? 댓글이 존나 길다면? 댓글이 존나 길다면? 댓글이 존나 길다면?",
-        heartcnt: "1개"
+      userid: "아이디",
+      timeinfo: "1분전",
+      contents:
+        "댓글이 존나 길다면??댓글이 존나 길다면? 댓글이 존나 길다면? 댓글이 존나 길다면? 댓글이 존나 길다면? 댓글이 존나 길다면? 댓글이 존나 길다면? 댓글이 존나 길다면?",
+      heartcnt: "1개",
     },
     {
-        userid:"아이디",
-        timeinfo:"1분전",
-        contents:"어쩌고 저쩌고",
-        heartcnt: "1개"
+      userid: "아이디",
+      timeinfo: "1분전",
+      contents: "어쩌고 저쩌고",
+      heartcnt: "1개",
     },
     {
-        userid:"아이디",
-        timeinfo:"1분전",
-        contents:"어쩌고 저쩌고",
-        heartcnt: "1개"
+      userid: "아이디",
+      timeinfo: "1분전",
+      contents: "어쩌고 저쩌고",
+      heartcnt: "1개",
     },
     {
-        userid:"아이디",
-        timeinfo:"1분전",
-        contents:"어쩌고 저쩌고",
-        heartcnt: "1개"
+      userid: "아이디",
+      timeinfo: "1분전",
+      contents: "어쩌고 저쩌고",
+      heartcnt: "1개",
     },
     {
-      userid:"아이디",
-      timeinfo:"1분전",
-      contents:"어쩌고 저쩌고",
-      heartcnt: "1개"
-  },
-  {
-    userid:"아이디",
-    timeinfo:"1분전",
-    contents:"어쩌고 저쩌고",
-    heartcnt: "1개"
-  }]
-
+      userid: "아이디",
+      timeinfo: "1분전",
+      contents: "어쩌고 저쩌고",
+      heartcnt: "1개",
+    },
+    {
+      userid: "아이디",
+      timeinfo: "1분전",
+      contents: "어쩌고 저쩌고",
+      heartcnt: "1개",
+    },
+  ];
 
   const bottomstyle = {
     display: "flex",
     justifyContent: "space-between",
-    marginBottom: '3%',
+    marginBottom: "3%",
     padding: "0 10% 0 5%",
- 
+
     time: {
       fontSize: "11px",
       flex: 1,
       textAlign: "left",
-      marginLeft: '4%'
+      marginLeft: "4%",
     },
     heart: {
       flex: 1,
@@ -75,8 +143,8 @@ export default function PostDetail() {
       fontWeight: "300",
     },
     hrStyle: {
-      width: '85vw',
-      border: '0.5px solid black'
+      width: "85vw",
+      border: "0.5px solid black",
     },
     commTitle: {
       fontFamily: "Inter",
@@ -88,38 +156,53 @@ export default function PostDetail() {
     },
   };
 
-
-
   return (
     <>
       <AppBar></AppBar>
-      <div style={{height:'1vh'}}/>
+      <div style={{ height: "1vh" }} />
       <Post
-            text="글이 존나 길다면?? 글이 존나 길다면?? 글이 존나 길다면?? 글이 존나 길다면?? 글이 존나 길다면?? 글이 존나 길다면?? 글이 존나 길다면?? 글이 존나 길다면?? 글이 존나 길다면?? 글이 존나 길다면??"
-            id="스펀지송"
-            time="12분전"
-            type="text"
-            count={22}
-            picurl="/img/haerin.jpeg" 
-            mode="detail"
-            />
-        <div style={bottomstyle.commTitle}>
-          <img src="/icons/comment.svg"/>
-          &nbsp;댓글</div>
-        <hr style={bottomstyle.hrStyle}/>
-        {/* 댓글 데이터를 사용하여 렌더링 */}
-        {comment.map((comment, index) => (
-          <Comment
-            key={index}
-            userid={comment.userid}
-            timeinfo={comment.timeinfo}
-            contents={comment.contents}
-            heartcnt={comment.heartcnt}
-          />
-        ))}
-        <div style={{height:'15vh'}}/>
-        <PutComm></PutComm>
-        <BottomBar></BottomBar>
+        toDetail={null}
+        key={curPost.postId}
+        text={
+          curPost.type === "TEXT"
+            ? curPost.content.text
+            : curPost.content.voiceUrl
+        }
+        id={curPost.nickname}
+        postId={curPost.postId}
+        time={parsePassedTimeToString(curPost.createdDate)}
+        type={curPost.type === "TEXT" ? "text" : "sound"}
+        count={curPost.likeCount}
+        mode="detail"
+      />
+
+      <div style={bottomstyle.commTitle}>
+        <img src="/icons/comment.svg" />
+        댓글
+      </div>
+      <hr style={bottomstyle.hrStyle} />
+      {/* 댓글 데이터를 사용하여 렌더링 */}
+      {commentList.map((comment, index) => (
+        <Comment
+          key={index}
+          userid={comment.nickname}
+          timeinfo={parsePassedTimeToString(comment.createdDate)}
+          contents={
+            comment.type === "text"
+              ? comment.content.text
+              : comment.content.voiceUrl
+          }
+          type={comment.type}
+          heartcnt={comment.heartcnt}
+        />
+      ))}
+
+      <div style={{ height: "15vh" }} />
+      <PutComm
+        commentList={commentList}
+        setCommentList={setCommentList}
+      ></PutComm>
+      <BottomBar></BottomBar>
     </>
   );
 }

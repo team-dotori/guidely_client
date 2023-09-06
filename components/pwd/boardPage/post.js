@@ -1,9 +1,30 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import TruncatedText from "@/components/npwd/boardPage/TruncatedText";
 
-
-export default function Post({ text, id, time, type, count, picurl, mode }) {
+export default function Post({
+  toDetail,
+  text,
+  id,
+  time,
+  type,
+  count,
+  picurl,
+  mode,
+}) {
   const [isLiked, setIsLiked] = useState(false);
+
+  const [isOnPlay, setIsOnPlay] = useState(false);
+  function toggleIsOnPlay() {
+    setIsOnPlay(!isOnPlay);
+  }
+  const handlePlayClick = () => {
+    if (isOnPlay) {
+      audioRef.current.pause();
+    } else {
+      audioRef.current.play();
+    }
+  };
+  const audioRef = useRef(null);
 
   const style = {
     postbox: {
@@ -21,12 +42,13 @@ export default function Post({ text, id, time, type, count, picurl, mode }) {
       height: "30px",
       gridColumnGap: "10px",
       marginTop: "0",
-      marginBottom: "1%"
+      marginBottom: "1%",
     },
     profile: {
       width: "40px",
       height: "40px",
-      backgroundColor: 'skyblue',
+      borderRadius: "50%",
+      backgroundColor: "black",
     },
     userid: {
       fontFamily: "InterBold",
@@ -34,15 +56,15 @@ export default function Post({ text, id, time, type, count, picurl, mode }) {
       marginTop: "10px",
       whiteSpace: "nowrap",
       display: "inline",
-      fontWeight: '700'
+      fontWeight: "700",
     },
     contents: {
       //display: type === "sound" ? "none": null,
       height: "auto",
       fontSize: "24px",
-      fontWeight: '400',
-      lineHeight: '28px',
-      marginBottom: type === "sound" ? '0':'5%',
+      fontWeight: "400",
+      lineHeight: "28px",
+      marginBottom: type === "sound" ? "0" : "5%",
     },
     soundBox: {
       position: "relative",
@@ -51,42 +73,41 @@ export default function Post({ text, id, time, type, count, picurl, mode }) {
       justifyContent: "center",
       marginTop: "7%",
     },
-    
-    soundBtn:{
-      border: 'none',
-      backgroundColor: 'black',
-      color: 'white',
-      fontSize: '14px',
-      fontWeight: '700',
-      padding: '3% 5% 3% 5%',
-      borderRadius: '20px',
-      margin: '1%',
-      width: '40%'
+
+    soundBtn: {
+      border: "none",
+      backgroundColor: "black",
+      color: "white",
+      fontSize: "14px",
+      fontWeight: "700",
+      padding: "3% 5% 3% 5%",
+      borderRadius: "20px",
+      margin: "1%",
+      width: "50%",
     },
-    iconStyle:{
-      width:'13px',
-      height: '13px',
-      margin: '0% 10% 0 0',
+    iconStyle: {
+      width: "13px",
+      height: "13px",
+      margin: "0% 10% 0 0",
       //alignItems: "center",
       //justifyContent: "center",
     },
-    hrStyle:{
-      width: '80vw',
-      border: '0.5px solid black',
-      marginTop: '5%'
-    }
+    hrStyle: {
+      width: "80vw",
+      border: "0.5px solid black",
+      marginTop: "5%",
+    },
   };
 
   const imgstyle = {
     maxWidth: "100%",
     maxHeight: "100%",
-    
   };
 
   const bottomstyle = {
     display: "flex",
     justifyContent: "space-between",
-    marginTop: '15px',
+    marginTop: "15px",
 
     date: {
       fontSize: "11px",
@@ -98,12 +119,12 @@ export default function Post({ text, id, time, type, count, picurl, mode }) {
       textAlign: "right",
       cursor: "pointer",
     },
-    heartcnt:{
+    heartcnt: {
       textAlign: "right",
-      fontSize: '11px',
-      opacity: '0.8',
-      padding: '1%',
-      fontWeight: '300',
+      fontSize: "11px",
+      opacity: "0.8",
+      padding: "1%",
+      fontWeight: "300",
     },
   };
 
@@ -113,9 +134,9 @@ export default function Post({ text, id, time, type, count, picurl, mode }) {
 
   return (
     <div style={style.postbox}>
-      <div style={style.profilebox}>
+      <div style={style.profilebox} onClick={toDetail}>
         <div style={style.profile}>
-          <img src={picurl} style={imgstyle} alt="pf" />
+          {/* <img src={picurl} style={imgstyle} alt="pf" /> */}
         </div>
         <p style={style.userid}>
           <strong>{id}</strong>
@@ -123,32 +144,42 @@ export default function Post({ text, id, time, type, count, picurl, mode }) {
       </div>
       <hr style={style.hrStyle} />
       <div style={style.contents}>
-      {type === "text" ? (
-        mode === "list" ? (
-          <TruncatedText text={text} maxLength={37} />
-        ) : (
-          <div>{text}</div>
-        )
-      ) : type === "sound" ? (
-        <div style={style.soundBox}>
-          <button style={style.soundBtn}>
-            <img 
-            style={style.iconStyle}
-            src="/icons/play.svg"/>
-            게시물 듣기
-          </button>
-          <button style={style.soundBtn}>
-            <img src="/icons/pause.svg" style={style.iconStyle}/>
-            듣기 멈춤
-          </button>
-        </div>
+        {type === "text" ? (
+          mode === "list" ? (
+            <TruncatedText text={text} maxLength={37} />
+          ) : (
+            <div>{text}</div>
+          )
+        ) : type === "sound" ? (
+          <div style={style.soundBox}>
+            {!isOnPlay ? (
+              <button style={style.soundBtn} onClick={handlePlayClick}>
+                <img style={style.iconStyle} src="/icons/play.svg" />
+                게시물 듣기
+              </button>
+            ) : (
+              <button style={style.soundBtn} onClick={handlePlayClick}>
+                <img src="/icons/pause.svg" style={style.iconStyle} />
+                듣기 멈춤
+              </button>
+            )}{" "}
+            <audio
+              src={text}
+              ref={audioRef}
+              onPlay={toggleIsOnPlay}
+              onPause={toggleIsOnPlay}
+            />
+          </div>
         ) : null}
       </div>
 
       <div style={bottomstyle}>
         <div style={bottomstyle.date}>{time}</div>
         <div style={bottomstyle.heartcnt}>{count}</div>
-        <div style={style.heart} onClick={handleLikeClick}>
+        <div
+          style={style.heart}
+          onClick={mode === "list" ? null : handleLikeClick}
+        >
           {isLiked ? (
             <img
               src="/img/blueheart.svg"

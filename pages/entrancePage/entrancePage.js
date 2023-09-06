@@ -33,6 +33,7 @@ export default function EntrancePage() {
         if (data !== null) {
           document.cookie = `accessToken=${data.accessToken}`;
           document.cookie = `refreshToken=${data.refreshToken}`;
+          document.cookie = `userId=${data.userId}`;
 
           getUserType();
         }

@@ -40,6 +40,7 @@ export default function HomePage() {
             />
           }
           title="길찾기"
+          linkURL="/pwd/naviPage"
         />
         <ListItem
           image={
@@ -51,6 +52,7 @@ export default function HomePage() {
             />
           }
           title="게시판"
+          linkURL="/pwd/boardPage"
         />
       </div>
 
