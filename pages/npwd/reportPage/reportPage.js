@@ -43,7 +43,20 @@ export default function ReportPage() {
     setCurrentProgressInd(ind);
   }
 
-  useEffect(() => {}, []);
+  useEffect(() => {
+    ////쿼리 파싱
+    //장소 가져오기
+    const url = new URL(window.location.href);
+
+    setPlace(url.searchParams.get("place") ?? "");
+    setPlaceInfo({
+      latitude: url.searchParams.get("latitude") ?? "",
+      longitude: url.searchParams.get("longitude") ?? "",
+      address: url.searchParams.get("address") ?? "",
+      buildingName: url.searchParams.get("buildingName") ?? "",
+      type: url.searchParams.get("type") ?? "",
+    });
+  }, []);
 
   async function postRequest() {
     fetch(`/api/guidely/api/declaration`, {
