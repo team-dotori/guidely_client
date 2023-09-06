@@ -37,8 +37,11 @@ export default function MyPage(){
         <div>
             <AppBar pagename="내 정보"/>
             <div style={{marginTop: '15vh'}}/>
-            <User></User>
-            <div style={style.container}>
+            <User userName="연주24" level={999}></User>
+            <div style={style.container}
+                onClick={() => {
+                    location.href = "myPage/myActionPage/myActionPage";
+              }}>
                 <div style={style.bigTitle}>내 활동 
                 <div style={style.smallTitle}>
                     나의 신고내역, 게시판 활동 내역 등을 확인 할 수 있습니다.    
@@ -47,7 +50,11 @@ export default function MyPage(){
                 <Image src={"/icons/commsub.svg"} width={21} height={21}
             style={style.icon}/>
             </div>
-            <div style={style.container}>
+            <div style={style.container}
+                onClick={() => {
+                    location.href = "myPage/badgePage/badgePage";
+                  }}
+                >
                 <div style={style.bigTitle}>활동 뱃지
                 <div style={style.smallTitle}>
                  뱃지 획득 방법과 나의 뱃지 등을 확인 할 수 있습니다. &nbsp;

@@ -77,7 +77,10 @@ export function NavBar() {
           <div style={style.buttonText}>게시판</div>
         </button>
         {/* 점자스캔 버튼 */}
-        <button style={style.Bbutton}>
+        <button style={style.Bbutton}
+        onClick={() => {
+          location.href = "/npwd/braillePage/scanBraille";
+        }}>
           <img
             style={style.Bimg}
             src="/icons/navbar/dotscanner.svg"

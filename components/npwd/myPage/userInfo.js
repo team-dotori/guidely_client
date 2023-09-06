@@ -1,7 +1,7 @@
 import React from "react";
 import Image from "next/image";
 
-export default function Info(){
+export default function Info({userName, level}){
 
     const style={
         container:{
@@ -16,7 +16,8 @@ export default function Info(){
         userName:{
             fontWeight: '700',
             fontSize: '24px',
-            opacity: '0.8'
+            opacity: '0.8',
+            marginBottom: '4px',
         },
         userLevel:{
             fontWeight: '500',
@@ -40,8 +41,8 @@ export default function Info(){
             style={style.img}
             ></Image>
             <div style={style.infoContainer}>
-                <div style={style.userName}>연주24</div>
-                <div>레벨</div>
+                <div style={style.userName}>{userName}</div>
+                <div>레벨 {level}</div>
             </div>
         </div>
         <hr style={style.hrStyle}/>
