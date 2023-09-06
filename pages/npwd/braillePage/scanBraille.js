@@ -5,6 +5,7 @@ import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import storage from "@/firebase/storage";
 
 export default function Scanning(){
+  const imageInputRef = useRef();
 
     const style = {
         container:{
@@ -28,21 +29,22 @@ export default function Scanning(){
     return(
         <>  
             <TitleBox />
-            <DetailInput></DetailInput>
-            <SubmitButton></SubmitButton>
+            <DetailInput imageInputRef={imageInputRef}></DetailInput>
+            <SubmitButton imageInputRef={imageInputRef}></SubmitButton>
             <div style={style.container}>변환내용</div>
         </>
     )
         
 }
 
-function DetailInput() {
+function DetailInput({imageInputRef}) {
     const [imageUrl, setImageUrl] = useState();
     //const [ifDetailOnEdit, setIfDetailOnEdit] = useState(false);
     const [imageFile, setImageFile] = useState();
   
-    const imageInputRef = useRef();
     const progressCircleRef = useRef();
+
+
   
     function uploadImage(file) {
       const imageRef = ref(storage, `images/${uuid()}.png`);
@@ -154,7 +156,7 @@ function DetailInput() {
             justify-content: center;
             align-items: center;
   
-            margin: 24px 0px auto 24px;
+            margin: 15px 0px auto 24px;
           }
   
           .imageButtonBox {
@@ -246,18 +248,51 @@ function DetailInput() {
     );
   }
   
-function SubmitButton() {
+function SubmitButton({imageInputRef}) {
+
+
+
+  const sendPic = (e) => {
+    e.preventDefault();
+
+    if (imageInputRef.current && imageInputRef.current.files.length > 0) {
+      const formData = new FormData();
+      formData.append("image", imageInputRef.current.files[0]);
+      
+      console.log(formData);
+
+      // formData.forEach((value, key) => {
+      //   console.log(key, value);
+      // });
+      
+      fetch("http://192.168.45.242:8000/upload", {
+        method: "POST",
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+        body: formData,
+      })
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error("에러발생!");
+          }
+          return response.json();
+        })
+        .then((data) => {
+          console.log(data);
+        })
+        .catch((error) => {
+          alert(error);
+        });
+    } else {
+      //console.log(imageInputRef.current);
+      //alert("파일을 선택하세요.");
+  };}
+
     return (
       <div
         className="container"
-        onClick={() => {
-          if (curDetail.length === 0) {
-            setDetail("이미지");
-          } else {
-            setDetail(curDetail);
-          }
-          toNextStep();
-        }}
+        onClick={sendPic}
       >
         변환하기
         <style jsx>{`
