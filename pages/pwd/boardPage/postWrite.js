@@ -1,41 +1,26 @@
 import AppBar from "@/components/pwd/reportSearchPage/appbar";
 // import CatBar from "./catBar";
 import { useEffect, useState } from "react";
-import { Waveform } from '@uiball/loaders';
-
+import { Waveform } from "@uiball/loaders";
 
 import { v4 as uuid } from "uuid";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import storage from "@/firebase/storage";
+import BottomBar from "@/components/pwd/boardPage/bottomBar";
 
 export default function PostWrite() {
   let [selectedButton, setSelectedButton] = useState("voice");
   const [content, setContent] = useState(""); // 글 내용
-  
-
-  console.log(selectedButton);
-
-  function requestPost() {
-    fetch("/api/guidely/api/posts/text", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        content: content,
-      }),
-    });
-  }
 
   const style = {
-    writePost:{
-      width: '86%',
-      height: '4vh',
-      backgroundColor: '#FCFF59',
+    writePost: {
+      width: "86%",
+      height: "4vh",
+      backgroundColor: "#FCFF59",
       color: "#181818",
-      fontSize: '30px',
-      fontWeight: '600',
-      padding: '7%'
+      fontSize: "30px",
+      fontWeight: "600",
+      padding: "7%",
     },
     btns: {
       // width: '77px',
@@ -47,9 +32,9 @@ export default function PostWrite() {
     },
 
     selectedBtn: {
-      display:' flex',
-      alignItems: 'center',
-      justifyContent: 'center',
+      display: " flex",
+      alignItems: "center",
+      justifyContent: "center",
       backgroundColor: "#181818",
       color: "#F8F9FA", // 선택된 버튼의 텍스트 색상
       margin: "3% 2% 3% 2%",
@@ -64,20 +49,20 @@ export default function PostWrite() {
     btnCont: {
       paddingLeft: "2%",
       width: "90%",
-      margin: '2% 0 3% 0',
+      margin: "2% 0 3% 0",
       display: "flex",
       alignItems: "center",
     },
 
     newbtns: {
-      alignItems: 'center',
-      justifyContent: 'center',
-      display:' flex',
+      alignItems: "center",
+      justifyContent: "center",
+      display: " flex",
       backgroundColor: "#FFFFFF", // 선택된 버튼의 색상을 여기에 설정하세요.
       margin: "3% 2% 3% 2%",
       width: "max-content",
       height: "36px",
-      padding: '5% 7% 5% 7%',
+      padding: "5% 7% 5% 7%",
       borderRadius: "18px",
       border: "none",
       boxShadow: "0px 1.28px 1.29px 0px rgba(0, 0, 0, 0.10) inset",
@@ -95,6 +80,7 @@ export default function PostWrite() {
       fontSize: "16px",
       padding: "5%",
       margin: "0 5% 0 5%",
+      resize: "none",
 
       fontFamily: "Pretendard",
     },
@@ -109,9 +95,9 @@ export default function PostWrite() {
       borderRadius: "25px",
       padding: "5%",
       margin: "0 5% 0 5%",
-      alignItems: 'center',
-      justifyContent: 'center',
-      flexDirection: 'column'
+      alignItems: "center",
+      justifyContent: "center",
+      flexDirection: "column",
     },
 
     changeColor: {
@@ -122,37 +108,37 @@ export default function PostWrite() {
       width: "30%",
       height: "5vh",
       display: "flex",
-      margin: 'auto',
-      marginTop: '5%',
+      margin: "auto",
+      marginTop: "5%",
       justifyContent: "center",
       alignItems: "center",
       //gap: '49px',
       border: "none",
       borderRadius: "19px",
       backgroundColor: "#181818",
-      
-      color:'white',
-      fontSize: '14px',
-      fontWeight: '700',
+
+      color: "white",
+      fontSize: "14px",
+      fontWeight: "700",
 
       fontFamily: "Pretendard",
     },
-    recordBtn:{
-      backgroundColor: 'transparent',
-      border: 'none',
+    recordBtn: {
+      backgroundColor: "transparent",
+      border: "none",
     },
-    recordTxt:{
-      color: 'white',
-      fontSize: '24px',
-      fontWeight: '700',
-      marginTop: '10%',
+    recordTxt: {
+      color: "white",
+      fontSize: "24px",
+      fontWeight: "700",
+      marginTop: "10%",
       fontFamily: "Pretendard",
-      marginBottom: '10%'
+      marginBottom: "10%",
     },
-    recordImg:{
-      height: '53px',
-      width: '40px'
-    }
+    recordImg: {
+      height: "53px",
+      width: "40px",
+    },
   };
 
   const handleButtonClick = (buttonName) => {
@@ -196,7 +182,23 @@ export default function PostWrite() {
       makeSound(stream);
       // 음성 녹음이 시작됐을 때 onRec state값을 false로 변경
       analyser.onaudioprocess = function (e) {
-        setOnRec(true);
+        if (e.playbackTime > 180) {
+          stream.getAudioTracks().forEach(function (track) {
+            track.stop();
+          });
+          mediaRecorder.stop();
+          // 메서드가 호출 된 노드 연결 해제
+          analyser.disconnect();
+          audioCtx.createMediaStreamSource(stream).disconnect();
+
+          mediaRecorder.ondataavailable = function (e) {
+            setAudioUrl(e.data);
+            setOnRec(false);
+          };
+          alert("3분 미만으로 녹음해주세요.");
+        } else {
+          setOnRec(true);
+        }
       };
     });
   }
@@ -234,8 +236,8 @@ export default function PostWrite() {
   }
 
   function uploadAudio(file) {
-    const imageRef = ref(storage, `audios/${uuid()}.mp3`);
-    const uploadTask = uploadBytesResumable(imageRef, file);
+    const audioRef = ref(storage, `audios/${uuid()}.mp3`);
+    const uploadTask = uploadBytesResumable(audioRef, file);
     uploadTask.on(
       "state_changed",
       (snapshot) => {
@@ -262,6 +264,7 @@ export default function PostWrite() {
         // For instance, get the download URL: https://firebasestorage.googleapis.com/...
         getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
           setAudioUrl(downloadURL);
+          setAudioFile(null);
         });
       }
     );
@@ -271,8 +274,29 @@ export default function PostWrite() {
     if (audioFile) uploadAudio(audioFile);
   }, [audioFile]);
 
-  function requestAudioPost() {
+  /////////////////////////////////////////////////////////////////////////////
+
+  function requestPostText() {
     fetch("/api/guidely/api/posts/text", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        content: content,
+      }),
+    }).then((res) => {
+      switch (res.status) {
+        case 200:
+        case 201:
+          location.href = "/pwd/boardPage";
+          break;
+      }
+    });
+  }
+
+  function requestPostAudio() {
+    fetch("/api/guidely/api/posts/voice", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -280,17 +304,22 @@ export default function PostWrite() {
       body: JSON.stringify({
         voiceUrl: audioUrl,
       }),
+    }).then((res) => {
+      switch (res.status) {
+        case 200:
+        case 201:
+          location.href = "/pwd/boardPage";
+          break;
+      }
     });
   }
-
-  /////////////////////////////////////////////////////////////////////////////
 
   return (
     <>
       <AppBar pagename={"게시글 작성"}></AppBar>
       <div style={style.writePost}>
         <img src="/icons/edit.svg" style={{ width: "28px", height: "28px" }} />
-        &nbsp;&nbsp;게시글 작성
+        게시글 작성
       </div>
       {/* <CatBar></CatBar> */}
 
@@ -300,14 +329,16 @@ export default function PostWrite() {
             style={
               selectedButton === "text" ? style.selectedBtn : style.newbtns
             }
-            onClick={() => handleButtonClick("text")}>
+            onClick={() => handleButtonClick("text")}
+          >
             {selectedButton === "text" ? "글" : <img src="/icons/edit.svg" />}
           </button>
           <button
             style={
               selectedButton === "voice" ? style.selectedBtn : style.newbtns
             }
-            onClick={() => handleButtonClick("voice")}>
+            onClick={() => handleButtonClick("voice")}
+          >
             {selectedButton === "voice" ? (
               "음성"
             ) : (
@@ -321,23 +352,16 @@ export default function PostWrite() {
           value={content}
           onChange={(value) => {
             setContent(value.target.value);
-          }}></textarea>
-        <div style={style.voiceContainer }               
-        onClick={onRec ? stopRec : startRec}>
+          }}
+        ></textarea>
+        <div style={style.voiceContainer} onClick={onRec ? stopRec : startRec}>
           {!onRec ? (
-            <button
-              style={style.recordBtn}
-              >
+            <button style={style.recordBtn}>
               <img style={style.recordImg} src="/icons/voiceWhite.svg" />
               <div style={style.recordTxt}>누르고 말하기</div>
             </button>
           ) : (
-            <Waveform
-              size={40}
-              lineWeight={3.5}
-              speed={1}
-              color="white"
-            />
+            <Waveform size={40} lineWeight={3.5} speed={1} color="white" />
           )}
 
           {audioUrl ? <audio src={audioUrl} controls></audio> : null}
@@ -345,11 +369,26 @@ export default function PostWrite() {
 
         <button
           style={style.submitBtn}
-          onClick={selectedButton === "voice" ? requestAudioPost : requestPost}>
+          onClick={
+            selectedButton === "voice"
+              ? audioUrl
+                ? requestPostAudio
+                : () => {
+                    alert("음성이 없습니다.");
+                  }
+              : requestPostText
+          }
+          disabled={true}
+        >
           <img src="/icons/check.svg" />
-          &nbsp; 작성완료
+          작성완료
         </button>
       </div>
+      <BottomBar
+        beforeOnClick={() => {
+          location.href = "/pwd/boardPage";
+        }}
+      />
     </>
   );
 }

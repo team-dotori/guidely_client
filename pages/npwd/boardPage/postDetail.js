@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import AppBar from "@/components/npwd/boardPage/topBar";
 import TruncatedText from "@/components/npwd/boardPage/TruncatedText";
 import Comment from "@/components/npwd/boardPage/comments";
 import PutComm from "@/components/npwd/boardPage/inputComment";
+import { parsePassedTimeToString } from "@/public/functions/time";
 
 export default function Post() {
   const [isLiked, setIsLiked] = useState(false);
@@ -11,13 +12,14 @@ export default function Post() {
   const [commentList, setCommentList] = useState([]);
   const [curLikeCount, setCurLikeCount] = useState();
 
-  const [postId, setPostId] = useState(null);
+  const [postId, setPostId] = useState(-1);
 
   useEffect(() => {
     setPostId(new URL(window.location.href).searchParams.get("postId"));
   }, []);
 
   useEffect(() => {
+    if (postId === -1) return;
     if (postId === null) return alert("알 수 없는 게시글입니다.");
 
     fetch(`/api/guidely/api/posts/${postId}`)
@@ -31,19 +33,35 @@ export default function Post() {
       .then((res) => {
         setCommentList(res);
       });
-  }, []);
+
+    fetch(`/api/guidely/api/heart/posts/check`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        userId: getCookie("userId"),
+        postId: postId,
+      }),
+    })
+      .then((res) => res.json())
+      .then((res) => {
+        setIsLiked(res.alreadyLike);
+      });
+  }, [postId]);
+
   useEffect(() => {
     setCurLikeCount(curPost.likeCount);
   }, [curPost]);
 
   function setLike() {
-    fetch("/api/guidely/api/heart", {
+    fetch("/api/guidely/api/heart/posts", {
       method: isLiked ? "DELETE" : "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        userId: 1,
+        userId: getCookie("userId"),
         postId: curPost.postId,
       }),
     }).then((res) => {
@@ -122,7 +140,7 @@ export default function Post() {
     justifyContent: "space-between",
     marginBottom: "3%",
     padding: "0 10% 0 5%",
- 
+
     time: {
       fontSize: "11px",
       flex: 1,
@@ -169,6 +187,19 @@ export default function Post() {
     setLike();
   };
 
+  const audioRef = useRef(null);
+  const [isOnPlay, setIsOnPlay] = useState(false);
+  function toggleIsOnPlay() {
+    setIsOnPlay(!isOnPlay);
+  }
+  const handlePlayClick = () => {
+    if (isOnPlay) {
+      audioRef.current.pause();
+    } else {
+      audioRef.current.play();
+    }
+  };
+
   return (
     <>
       <AppBar
@@ -186,20 +217,18 @@ export default function Post() {
           </p>
         </div>
         <div style={style.contents}>
-          {/* {type === "text" ? (
-            <TruncatedText text="hi" maxLength={30} />
-          ) : (
-            <div style={style.soundimgBox}>
-              <img style={style.soundimg} src="/img/nocolorLine.svg" />
-              <img style={style.soundimg} src="/img/coloredLine.svg" />
-            </div>
-          )} */}
           {curPost.type === "TEXT" ? (
             <TruncatedText text={curPost.content.text} maxLength={30} />
           ) : (
-            <div style={style.soundimgBox}>
+            <div style={style.soundimgBox} onClick={handlePlayClick}>
               <img style={style.soundimg} src="/img/nocolorLine.svg" />
               <img style={style.soundimg} src="/img/coloredLine.svg" />
+              <audio
+                ref={audioRef}
+                src={curPost.content.voiceUrl}
+                onPlay={toggleIsOnPlay}
+                onPasue={toggleIsOnPlay}
+              />
             </div>
           )}
         </div>
@@ -230,22 +259,16 @@ export default function Post() {
       <hr style={bottomstyle.hrStyle} />
       <div style={bottomstyle.commTitle}>댓글</div>
       {/* 댓글 데이터를 사용하여 렌더링 */}
-      <Comment
-        userid="김민수"
-        timeinfo="1분전"
-        contents="https://firebasestorage.googleapis.com/v0/b/guidely-5e5a6.appspot.com/o/audios%2F187cd995-ccda-4f7a-93d1-13f7d647a0d3.mp3?alt=media&token=89863d92-370d-4da1-a75a-3776023e4a86"
-        type="audio"
-      />
       {commentList.map((comment, index) => (
         <Comment
           key={index}
           userid={comment.nickname}
-          timeinfo={
-            Math.round(
-              (Date.now() - Date.parse(comment.createdDate)) / (1000 * 60)
-            ).toString() + "분전"
+          timeinfo={parsePassedTimeToString(comment.createdDate)}
+          contents={
+            comment.type === "text"
+              ? comment.content.text
+              : comment.content.voiceUrl
           }
-          contents={comment.content.text}
           type={comment.type}
           heartcnt={comment.heartcnt}
         />
@@ -254,4 +277,18 @@ export default function Post() {
       <PutComm commentList={commentList} setCommentList={setCommentList} />
     </>
   );
+}
+
+function getCookie(cName) {
+  cName = cName + "=";
+  var cookieData = document.cookie;
+  var start = cookieData.indexOf(cName);
+  var cValue = "";
+  if (start != -1) {
+    start += cName.length;
+    var end = cookieData.indexOf(";", start);
+    if (end == -1) end = cookieData.length;
+    cValue = cookieData.substring(start, end);
+  }
+  return cValue;
 }
