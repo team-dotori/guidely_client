@@ -35,30 +35,31 @@ export default function SignalPage() {
   }, []);
 
   useEffect(() => {
-    // getCurrentPostion(
-    //   (position) => {
-    //     if (
-    //       getDistanceBetweenCoor(
-    //         curCoordinate.lat,
-    //         curCoordinate.lon,
-    //         position.coords.latitude,
-    //         position.coords.longitude
-    //       ) > detectDistance
-    //     ) {
-    //       setCurCoordinate({
-    //         lat: position.coords.latitude,
-    //         lon: position.coords.longitude,
-    //       });
-    //     }
-    //   },
-    //   () => {
-    //     // navigator.permissions.revoke({ name: "geolocation" }).then((result) => {
-    //     //   report(result.state);
-    //     // });
-    //     // requestGeolocatorPermission();
-    //     // setCurCoordinate(defaultLatLon);
-    //   }
-    // );
+    getCurrentPostion(
+      (position) => {
+        if (
+          getDistanceBetweenCoor(
+            curCoordinate.lat,
+            curCoordinate.lon,
+            position.coords.latitude,
+            position.coords.longitude
+          ) > detectDistance
+        ) {
+          setCurCoordinate({
+            lat: position.coords.latitude,
+            lon: position.coords.longitude,
+          });
+        }
+      },
+      (error) => {
+        // navigator.permissions.revoke({ name: "geolocation" }).then((result) => {
+        //   report(result.state);
+        // });
+        // requestGeolocatorPermission();
+        alert(error.message);
+        setCurCoordinate(defaultLatLon);
+      }
+    );
 
     setTimeout(() => {
       setTimer(timer + 1);
@@ -107,6 +108,7 @@ export default function SignalPage() {
       <BottomBar
         beforeOnClick={() => {
           if (curDepth > 0) setCurDepth(curDepth - 1);
+          else location.href = "/pwd/homePage";
         }}
       />
 

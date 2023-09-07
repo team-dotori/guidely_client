@@ -67,9 +67,10 @@ const nextConfig = {
         destination: "/pwd/reportSearchPage/reportSearchPage",
       },
       {
-        source: "/pwd/naviPage",
-        destination: "/pwd/naviPage/naviPage",
+        source: "/pwd/putLocations",
+        destination: "/pwd/naviPage/putLocations",
       },
+
       {
         source: "/pwd/boardPage",
         destination: "/pwd/boardPage/boardPage",
@@ -78,6 +79,10 @@ const nextConfig = {
       {
         source: "/api/guidely/:path*",
         destination: `http://${process.env.GUIDELY_SERVER_BASE_URL}/:path*`,
+      },
+      {
+        source: "/api/guidelyAI/:path*",
+        destination: `http://${process.env.GUIDELY_AI_SERVER_BASE_URL}/:path*`,
       },
 
       {

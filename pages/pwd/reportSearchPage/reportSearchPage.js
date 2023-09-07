@@ -43,6 +43,7 @@ export default function ReportSearchPage() {
       <BottomBar
         beforeOnClick={() => {
           if (curDepth > 0) setCurDepth(curDepth - 1);
+          else location.href = "/pwd/homePage";
         }}
       />
       <style jsx>{`

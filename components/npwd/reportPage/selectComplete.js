@@ -2,6 +2,12 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 
 export default function SelectComplete() {
+  useEffect(() => {
+    setTimeout(() => {
+      location.href = "/npwd/mapPage";
+    }, 1000);
+  }, []);
+
   return (
     <div className="container">
       <div className="title">신고가 완료되었습니다.</div>

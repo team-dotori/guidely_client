@@ -1,6 +1,10 @@
 import Image from "next/image";
+import { useEffect } from "react";
 
 export default function Like({ reportId }) {
+  const [isLiked, setIsLiked] = useState(false);
+  useEffect(() => {}, []);
+
   function requestLike() {
     fetch(`/api/guidely/api/declaration/like/${reportId}`, {
       method: "PATCH",

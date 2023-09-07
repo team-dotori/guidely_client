@@ -40,7 +40,7 @@ export default function HomePage() {
             />
           }
           title="길찾기"
-          linkURL="/pwd/naviPage"
+          linkURL="/pwd/putLocations"
         />
         <ListItem
           image={

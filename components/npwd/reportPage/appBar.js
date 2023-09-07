@@ -54,7 +54,7 @@ function TitleBox() {
         height={18.18}
         alt="뒤로가기"
         onClick={() => {
-          console.log("back key clicked!");
+          location.href = "/npwd/mapPage";
         }}
       />
       <div className="title">신고</div>

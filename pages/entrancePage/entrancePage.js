@@ -19,6 +19,7 @@ export default function EntrancePage() {
   };
 
   function requestSignIn({ code }) {
+    setScreenState("SplashScreen");
     fetch(`/api/guidely/kakao/callback?code=${code}`)
       .then((res) => {
         switch (res.status) {
@@ -30,6 +31,7 @@ export default function EntrancePage() {
         }
       })
       .then((data) => {
+        setScreenState("SelectionScreen");
         if (data !== null) {
           document.cookie = `accessToken=${data.accessToken}`;
           document.cookie = `refreshToken=${data.refreshToken}`;

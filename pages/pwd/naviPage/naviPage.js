@@ -1,24 +1,113 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import AppBar from "@/components/pwd/reportSearchPage/appbar";
 //import SearchBar from "@/components/npwd/mapPage/searchBar"
 
 // 멈춤 없는거
 // import BottomBar from "@/components/pwd/reportSearchPage/bottomBar";
 
-// 멈춤 있는거  
+// 멈춤 있는거
 import BottomBar from "@/components/pwd/signalPage/bottomBar";
 import Path from "@/components/pwd/naviPage/pathinfo";
 import Notif from "@/components/pwd/naviPage/notification";
 
+export default function PutLocation() {
+  useEffect(() => {
+    const url = new URL(window.location.href);
+    const sourceLat = url.searchParams.get("sourceLat");
+    const sourceLon = url.searchParams.get("sourceLon");
+    const destinationLat = url.searchParams.get("destinationLat");
+    const destinationLon = url.searchParams.get("destinationLon");
+    searchRoute({
+      sourceLat,
+      sourceLon,
+      destinationLat,
+      destinationLon,
+    });
 
-export default function PutLocation(){
+    if (sourceLat && sourceLon && destinationLat && destinationLon) {
+    } else {
+      alert("출발지와 목적지가 올바르지 않습니다.");
+    }
+  }, []);
 
+  const [routeInfo, setRouteInfo] = useState([]); // 경로 정보
+
+  async function getPinFromPoint({ lat, lon }) {
+    return fetch(
+      `/api/guidely/api/location/navigation?latitude=${lat}&longitude=${lon}`
+    )
+      .then((res) => res.json())
+      .then((data) => {
+        return data;
+      });
+  }
+
+  function searchRoute({
+    sourceLat,
+    sourceLon,
+    destinationLat,
+    destinationLon,
+  }) {
+    fetch(`/api/tmap/searchRoute?version=1&format=json&callback=result`, {
+      method: "POST",
+      headers: {
+        appkey: process.env.TMAP_APPKEY,
+      },
+      body: JSON.stringify({
+        startX: sourceLon,
+        startY: sourceLat,
+        endX: destinationLon,
+        endY: destinationLat,
+        reqCoordType: "WGS84GEO",
+        resCoordType: "WGS84GEO",
+        startName: "출발지",
+        endName: "도착지",
+      }),
+    })
+      .then((res) => {
+        switch (res.status) {
+          case 200:
+            return res.json();
+          default:
+            alert("경로를 찾을 수 없습니다.");
+            break;
+        }
+      })
+      .then(async (data) => {
+        if (data) {
+          let newRouteInfo = [];
+          for (let element of data.features) {
+            if (element.geometry.type == "Point") {
+              newRouteInfo.push({
+                type: "Path",
+                info: element.properties.description,
+              });
+              getPinFromPoint({
+                lat: element.geometry.coordinates[1],
+                lon: element.geometry.coordinates[0],
+              }).then((data) => {
+                for (let dat in data) {
+                  newRouteInfo.push({
+                    type: "Notif",
+                    info: dat.buildingName + ", " + dat.countDeclaration + "건",
+                    location: dat,
+                  });
+                }
+              });
+            }
+          }
+          setRouteInfo(newRouteInfo);
+        }
+      });
+  }
 
   const style = {
-    backgrd: {
-      display: "fixed",
+    background: {
       backgroundColor: "black",
-      height: "73svh",
+    },
+
+    backgrd: {
+      backgroundColor: "black",
       zIndex: "0",
       overflow: "hidden",
     },
@@ -65,17 +154,17 @@ export default function PutLocation(){
   }
 
   return (
-    <>
+    <div style={style.background}>
       <AppBar></AppBar>
       <div style={style.backgrd}>
-        <Path info="100m 직진 후 좌회전"></Path>
-        <Notif info="100m 직진 후 좌회전"></Notif>
-        <Path info="100m 직진 후 좌회전"></Path>
-        <Path info="100m 직진 후 좌회전"></Path>
-        <Notif info="100m 직진 후 좌회전"></Notif>
-        <Notif info="100m 직진 후 좌회전"></Notif>
+        {routeInfo.map((val, ind) => {
+          if (val.type == "Path") {
+            return <Path key={ind} info={val.info} />;
+          }
+        })}
       </div>
-      <div style={style.bottomPart}>
+      <div style={{ height: "74px" }} />
+      {/* <div style={style.bottomPart}>
         <div style={style.updownBtn}>
           <img src="/icons/left.svg" style={style.previewIcon} />
           이전목록
@@ -84,8 +173,12 @@ export default function PutLocation(){
           <img src="/icons/left.svg" style={style.nextIcon} />
           다음목록
         </div>
-      </div>
-      <BottomBar></BottomBar>
-    </>
+      </div> */}
+      <BottomBar
+        beforeOnClick={() => {
+          window.location.href = "/pwd/naviPage/putLocations";
+        }}
+      ></BottomBar>
+    </div>
   );
 }
