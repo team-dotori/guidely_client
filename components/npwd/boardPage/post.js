@@ -3,8 +3,6 @@ import TruncatedText from "./TruncatedText";
 import Image from "next/image";
 
 export default function Post({ text, id, time, type, count, picurl, postId }) {
-  const [isLiked, setIsLiked] = useState(false);
-
   const style = {
     postbox: {
       backgroundColor: "#F1F3F5",
@@ -89,10 +87,6 @@ export default function Post({ text, id, time, type, count, picurl, postId }) {
     },
   };
 
-  const handleLikeClick = () => {
-    setIsLiked(!isLiked);
-  };
-
   return (
     <div
       style={style.postbox}
@@ -107,7 +101,7 @@ export default function Post({ text, id, time, type, count, picurl, postId }) {
         <p style={style.userid}>
           <strong>{id}</strong>
         </p>
-        <button style={{ ...style.deleteButton, display: "" }}>
+        <button style={{ ...style.deleteButton, display: "none" }}>
           <Image
             src="/icons/cancel.svg"
             width={10}
@@ -131,8 +125,13 @@ export default function Post({ text, id, time, type, count, picurl, postId }) {
       <div style={bottomstyle}>
         <div style={bottomstyle.date}>{time}</div>
         <div style={bottomstyle.heartcnt}>{count}</div>
-        <div style={style.heart} onClick={handleLikeClick}>
-          {isLiked ? (
+        <div style={style.heart}>
+          <img
+            src="/img/blueheart.svg"
+            alt="Heart1"
+            style={{ width: "20px", height: "20px" }}
+          />
+          {/* {isLiked ? (
             <img
               src="/img/blueheart.svg"
               alt="Heart1"
@@ -144,7 +143,7 @@ export default function Post({ text, id, time, type, count, picurl, postId }) {
               alt="Heart2"
               style={{ width: "20px", height: "20px" }}
             />
-          )}
+          )} */}
         </div>
       </div>
     </div>

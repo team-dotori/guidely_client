@@ -105,7 +105,7 @@ export default function Comments({
           <div style={style.username}>{userid}</div>
           <div style={style.timeinfo}>{timeinfo}</div>
         </div>
-        {type === "text" ? (
+        {type === "TEXT" ? (
           <div style={style.contents}>{contents}</div>
         ) : (
           <div style={style.audioBox}>

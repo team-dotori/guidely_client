@@ -8,9 +8,9 @@ import { parsePassedTimeToString } from "@/public/functions/time";
 export default function Post() {
   const [isLiked, setIsLiked] = useState(false);
 
-  const [curPost, setCurPost] = useState({});
-  const [commentList, setCommentList] = useState([]);
-  const [curLikeCount, setCurLikeCount] = useState();
+  const [curPost, setCurPost] = useState(null);
+  const [commentList, setCommentList] = useState(null);
+  const [curLikeCount, setCurLikeCount] = useState(null);
 
   const [postId, setPostId] = useState(-1);
 
@@ -51,6 +51,7 @@ export default function Post() {
   }, [postId]);
 
   useEffect(() => {
+    if (curPost === null) return;
     setCurLikeCount(curPost.likeCount);
   }, [curPost]);
 
@@ -201,81 +202,88 @@ export default function Post() {
   };
 
   return (
-    <>
+    <div>
       <AppBar
         pagename={"자세히보기"}
         onBackClick={() => {
           location.href = "/npwd/boardPage";
         }}
       />
-      <div style={style.postbox}>
-        {/* 게시물 데이터를 사용하여 렌더링 */}
-        <div style={style.profilebox}>
-          <div style={style.profile}></div>
-          <p style={style.userid}>
-            <strong>{curPost.nickname}</strong>
-          </p>
-        </div>
-        <div style={style.contents}>
-          {curPost.type === "TEXT" ? (
-            <TruncatedText text={curPost.content.text} maxLength={30} />
-          ) : (
-            <div style={style.soundimgBox} onClick={handlePlayClick}>
-              <img style={style.soundimg} src="/img/nocolorLine.svg" />
-              <img style={style.soundimg} src="/img/coloredLine.svg" />
-              <audio
-                ref={audioRef}
-                src={curPost.content.voiceUrl}
-                onPlay={toggleIsOnPlay}
-                onPasue={toggleIsOnPlay}
-              />
+
+      {curPost !== null && commentList !== null && curLikeCount !== null ? (
+        <>
+          <div style={style.postbox}>
+            {/* 게시물 데이터를 사용하여 렌더링 */}
+            <div style={style.profilebox}>
+              <div style={style.profile}></div>
+              <p style={style.userid}>
+                <strong>{curPost.nickname}</strong>
+              </p>
             </div>
-          )}
-        </div>
-      </div>
-      <div style={bottomstyle}>
-        <div style={bottomstyle.time}>
-          {Math.round(
-            (Date.now() - Date.parse(curPost.createdDate)) / (1000 * 60)
-          ).toString() + "분전"}
-        </div>
-        <div style={bottomstyle.heartcnt}>{curLikeCount}</div>
-        <div style={style.heart} onClick={handleLikeClick}>
-          {isLiked ? (
-            <img
-              src="/img/blueheart.svg"
-              alt="Heart1"
-              style={{ width: "20px", height: "20px" }}
+            <div style={style.contents}>
+              {curPost.type === "TEXT" ? (
+                <TruncatedText text={curPost.content.text} maxLength={30} />
+              ) : (
+                <div style={style.soundimgBox} onClick={handlePlayClick}>
+                  <img style={style.soundimg} src="/img/nocolorLine.svg" />
+                  <img style={style.soundimg} src="/img/coloredLine.svg" />
+                  <audio
+                    ref={audioRef}
+                    src={curPost.content.voiceUrl ?? ""}
+                    onPlay={toggleIsOnPlay}
+                    onPasue={toggleIsOnPlay}
+                  />
+                </div>
+              )}
+            </div>
+          </div>
+          <div style={bottomstyle}>
+            <div style={bottomstyle.time}>
+              {Math.round(
+                (Date.now() - Date.parse(curPost.createdDate)) / (1000 * 60)
+              ).toString() + "분전"}
+            </div>
+            <div style={bottomstyle.heartcnt}>{curLikeCount}</div>
+            <div style={style.heart} onClick={handleLikeClick}>
+              {isLiked ? (
+                <img
+                  src="/img/blueheart.svg"
+                  alt="Heart1"
+                  style={{ width: "20px", height: "20px" }}
+                />
+              ) : (
+                <img
+                  src="/img/whiteheart.svg"
+                  alt="Heart2"
+                  style={{ width: "20px", height: "20px" }}
+                />
+              )}
+            </div>
+          </div>
+          <hr style={bottomstyle.hrStyle} />
+          <div style={bottomstyle.commTitle}>댓글</div>
+          {/* 댓글 데이터를 사용하여 렌더링 */}
+          {commentList.map((comment, index) => (
+            <Comment
+              key={index}
+              userid={comment.nickname}
+              timeinfo={parsePassedTimeToString(comment.createdDate)}
+              contents={
+                comment.type === "TEXT"
+                  ? comment.content.text
+                  : comment.content.voiceUrl ?? ""
+              }
+              type={comment.type}
+              heartcnt={comment.heartcnt}
             />
-          ) : (
-            <img
-              src="/img/whiteheart.svg"
-              alt="Heart2"
-              style={{ width: "20px", height: "20px" }}
-            />
-          )}
-        </div>
-      </div>
-      <hr style={bottomstyle.hrStyle} />
-      <div style={bottomstyle.commTitle}>댓글</div>
-      {/* 댓글 데이터를 사용하여 렌더링 */}
-      {commentList.map((comment, index) => (
-        <Comment
-          key={index}
-          userid={comment.nickname}
-          timeinfo={parsePassedTimeToString(comment.createdDate)}
-          contents={
-            comment.type === "text"
-              ? comment.content.text
-              : comment.content.voiceUrl
-          }
-          type={comment.type}
-          heartcnt={comment.heartcnt}
-        />
-      ))}
-      <div style={{ height: "20px" }} />
-      <PutComm commentList={commentList} setCommentList={setCommentList} />
-    </>
+          ))}
+          <div style={{ height: "20px" }} />
+          <PutComm commentList={commentList} setCommentList={setCommentList} />
+        </>
+      ) : (
+        <></>
+      )}
+    </div>
   );
 }
 
