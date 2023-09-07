@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import AppBar from "@/components/pwd/reportSearchPage/appbar";
 
 // 멈춤 없는거
@@ -8,6 +8,32 @@ import BottomBar from "@/components/pwd/reportSearchPage/bottomBar";
 // import BottomBar from "@/components/pwd/signalPage/bottomBar";
 
 export default function PutLocation() {
+  function searchLocation(callBackFuction, query) {
+    fetch(`/api/kakao/map/searchByKeyword?query=${query}`, {
+      headers: {
+        Authorization: `KakaoAK ${process.env.KAKAO_REST_API_KEY}`,
+      },
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data["documents"].length !== 0) {
+          const resultList = data["documents"].map((val) => {
+            return {
+              placeName: val.place_name,
+              latitude: parseFloat(val.y),
+              longitude: parseFloat(val.x),
+            };
+          });
+          callBackFuction(resultList);
+        }
+      });
+  }
+
+  const [sourceQuery, setSourceQuery] = useState("");
+  const [destinationQuery, setDestinationQuery] = useState("");
+  const [sourceItem, setSourceItem] = useState(null);
+  const [destinationItem, setDestinationItem] = useState(null);
+
   const style = {
     depart: {
       height: "18vh",
@@ -98,8 +124,25 @@ export default function PutLocation() {
           출발지
           <br />
           <div style={style.searchbarCon}>
-            <input style={style.searchingW} />
-            <img src="/icons/search_big_black.svg" style={style.searchIcons} />
+            <input
+              style={style.searchingW}
+              value={sourceItem ? sourceItem.placeName : sourceQuery}
+              onChange={(val) => {
+                setSourceQuery(val.target.value);
+              }}
+              onFocus={() => {
+                setSourceItem(null);
+              }}
+            />
+            <img
+              src="/icons/search_big_black.svg"
+              style={style.searchIcons}
+              onClick={() => {
+                searchLocation((resultList) => {
+                  setSourceItem(resultList[0]);
+                }, sourceQuery);
+              }}
+            />
           </div>
           <div style={style.nowLocation}>
             <img src="/icons/locationpin.svg" />
@@ -110,16 +153,44 @@ export default function PutLocation() {
           목적지
           <br />
           <div style={style.searchbarCon}>
-            <input style={style.searchingB} />
-            <img src="/icons/search_white.svg" style={style.searchIcons} />
+            <input
+              style={style.searchingB}
+              value={
+                destinationItem ? destinationItem.placeName : destinationQuery
+              }
+              onChange={(val) => {
+                setDestinationQuery(val.target.value);
+              }}
+              onFocus={() => {
+                setDestinationItem(null);
+              }}
+            />
+            <img
+              src="/icons/search_white.svg"
+              style={style.searchIcons}
+              onClick={() => {
+                searchLocation((resultList) => {
+                  setDestinationItem(resultList[0]);
+                }, destinationQuery);
+              }}
+            />
           </div>
         </div>
-        <div style={style.getStart}>
+        <div
+          style={style.getStart}
+          onClick={() => {
+            location.href = `/pwd/naviPage/naviPage?sourceLat=${sourceItem.latitude}&sourceLon=${sourceItem.longitude}&destinationLat=${destinationItem.latitude}&destinationLon=${destinationItem.longitude}`;
+          }}
+        >
           <img src="/icons/walking.svg" style={style.walkingIcon} />
           <div style={style.getstartText}>길안내시작</div>
         </div>
       </div>
-      <BottomBar></BottomBar>
+      <BottomBar
+        beforeOnClick={() => {
+          window.location.href = "/pwd/homePage";
+        }}
+      />
     </>
   );
 }
