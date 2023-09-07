@@ -82,7 +82,7 @@ const nextConfig = {
       },
       {
         source: "/api/guidelyAI/:path*",
-        destination: `http://${process.env.GUIDELY_AI_SERVER_BASE_URL}/:path*`,
+        destination: `${process.env.GUIDELY_AI_SERVER_BASE_URL}/:path*`,
       },
 
       {
