@@ -1,3 +1,4 @@
+import { getCookie } from "@/public/functions/cookie";
 import Image from "next/image";
 import { useEffect } from "react";
 
@@ -8,6 +9,9 @@ export default function Like({ reportId }) {
   function requestLike() {
     fetch(`/api/guidely/api/declaration/like/${reportId}`, {
       method: "PATCH",
+      headers: {
+        accessToken: getCookie("accessToken"),
+      },
     });
   }
 

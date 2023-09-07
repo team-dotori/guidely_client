@@ -7,6 +7,7 @@ import { v4 as uuid } from "uuid";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import storage from "@/firebase/storage";
 import BottomBar from "@/components/pwd/boardPage/bottomBar";
+import { getCookie } from "@/public/functions/cookie";
 
 export default function PostWrite() {
   let [selectedButton, setSelectedButton] = useState("voice");
@@ -282,6 +283,7 @@ export default function PostWrite() {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          accessToken: getCookie("accessToken"),
         },
         body: JSON.stringify({
           content: content,
@@ -304,7 +306,9 @@ export default function PostWrite() {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        accessToken: getCookie("accessToken"),
       },
+
       body: JSON.stringify({
         voiceUrl: audioUrl,
       }),

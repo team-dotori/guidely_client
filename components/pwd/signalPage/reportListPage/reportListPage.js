@@ -2,6 +2,7 @@ import ReportList from "@/components/pwd/signalPage/reportListPage/reportList";
 import Panel from "@/components/pwd/signalPage/reportListPage/panel";
 import { useEffect, useState } from "react";
 import { riskEnumTable, categoryEnumTable } from "@/public/constants/enumTable";
+import { getCookie } from "@/public/functions/cookie";
 
 export default function ReportListPage({
   curLocation,
@@ -16,7 +17,11 @@ export default function ReportListPage({
 
   async function getReportList() {
     const data = await (
-      await fetch(`/api/guidely/api/location/${curLocation.id}`)
+      await fetch(`/api/guidely/api/location/${curLocation.id}`, {
+        headers: {
+          accessToken: getCookie("accessToken"),
+        },
+      })
     ).json();
     console.log(data);
     setReportList(

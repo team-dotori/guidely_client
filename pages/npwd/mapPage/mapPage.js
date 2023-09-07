@@ -15,6 +15,7 @@ import {
   getDistanceBetweenCoor,
   getCurrentPostion,
 } from "@/public/functions/coordinate";
+import { getCookie } from "@/public/functions/cookie";
 
 export default function MapPage() {
   const [mode, setMode] = useState(0); // 0: 지도 | 1: 위치 상세 | 2: 신고내역 조회 | 3: 경로 선택 | 4: 네비게이션
@@ -227,7 +228,11 @@ function Map({
   //////////////////////////////// 지도 모드일 때
   //location 핀들 가져오기
   function getPins() {
-    fetch("/api/guidely/api/location")
+    fetch("/api/guidely/api/location", {
+      headers: {
+        accessToken: getCookie("accessToken"),
+      },
+    })
       .then((res) => res.json())
       .then((data) => {
         setLocationList(data);
@@ -385,7 +390,12 @@ function Map({
 
   async function getPinFromPoint({ lat, lon }) {
     return fetch(
-      `/api/guidely/api/location/navigation?latitude=${lat}&longitude=${lon}`
+      `/api/guidely/api/location/navigation?latitude=${lat}&longitude=${lon}`,
+      {
+        headers: {
+          accessToken: getCookie("accessToken"),
+        },
+      }
     )
       .then((res) => res.json())
       .then((data) => {

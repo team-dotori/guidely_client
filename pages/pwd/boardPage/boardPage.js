@@ -6,6 +6,7 @@ import Post from "@/components/pwd/boardPage/post";
 // 멈춤 없는거
 import BottomBar from "@/components/pwd/boardPage/bottomBar";
 import { parsePassedTimeToString } from "@/public/functions/time";
+import { getCookie } from "@/public/functions/cookie";
 
 // 멈춤 있는거
 // import BottomBar from "@/components/pwd/signalPage/bottomBar";
@@ -18,7 +19,11 @@ export default function PutLocation() {
   const [posts, setPosts] = useState([]);
 
   useEffect(() => {
-    fetch("/api/guidely/api/posts")
+    fetch("/api/guidely/api/posts", {
+      headers: {
+        accessToken: getCookie("accessToken"),
+      },
+    })
       .then((res) => res.json())
       .then((res) => {
         setPosts(res);

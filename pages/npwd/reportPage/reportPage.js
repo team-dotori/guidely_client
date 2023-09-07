@@ -11,6 +11,7 @@ import SelectPlace from "@/components/npwd/reportPage/selectPlace.js";
 import SelectRisk from "@/components/npwd/reportPage/selectRisk.js";
 import SelectSpecific from "@/components/npwd/reportPage/selectSpecific.js";
 import SelectComplete from "@/components/npwd/reportPage/selectComplete.js";
+import { getCookie } from "@/public/functions/cookie";
 
 export default function ReportPage() {
   const [currentProgressInd, setCurrentProgressInd] = useState(0);
@@ -63,6 +64,7 @@ export default function ReportPage() {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        accessToken: getCookie("accessToken"),
       },
       body: JSON.stringify({
         buildingName: placeInfo.buildingName,

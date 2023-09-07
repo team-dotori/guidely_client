@@ -1,6 +1,7 @@
 import AppBar from "@/components/npwd/myPage/myActionPage/appBar";
 import LogTab from "@/components/npwd/myPage/myActionPage/tabLog";
 import MapTab from "@/components/npwd/myPage/myActionPage/tabMap";
+import { getCookie } from "@/public/functions/cookie";
 import { useEffect, useState } from "react";
 
 export default function MyActionPage() {
@@ -8,7 +9,11 @@ export default function MyActionPage() {
   const [curTab, setCurTab] = useState(true); // true: map, false: log
 
   useEffect(() => {
-    fetch("/api/guidely/api/users/declarations").then((res) => {
+    fetch("/api/guidely/api/users/declarations", {
+      headers: {
+        accessToken: getCookie("accessToken"),
+      },
+    }).then((res) => {
       res.json().then((res) => {
         console.log(res);
         setReportList(res);

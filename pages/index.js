@@ -1,4 +1,5 @@
 import { headers } from "@/next.config";
+import { getCookie } from "@/public/functions/cookie";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 
@@ -89,7 +90,9 @@ function SelectionScreen({ setScreenState }) {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          accessToken: getCookie("accessToken"),
         },
+
         body: JSON.stringify({ type: ifDisabled ? "DISABLED" : "NORMAL" }),
       }).then((res) => {
         switch (res.status) {

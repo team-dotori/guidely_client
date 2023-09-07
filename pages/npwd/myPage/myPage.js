@@ -3,13 +3,18 @@ import AppBar from "@/components/npwd/myPage/badgePage/topBar";
 import { NavBar } from "@/components/npwd/mapPage/bottomBar";
 import User from "@/components/npwd/myPage/userInfo";
 import Image from "next/image";
+import { getCookie } from "@/public/functions/cookie";
 
 export default function MyPage() {
   const [userName, setUserName] = useState("");
   const [email, setEmail] = useState("");
 
   useEffect(() => {
-    fetch("/api/guidely/api/users/one")
+    fetch("/api/guidely/api/users/one", {
+      headers: {
+        accessToken: getCookie("accessToken"),
+      },
+    })
       .then((res) => res.json())
       .then((res) => {
         setEmail(res.email);

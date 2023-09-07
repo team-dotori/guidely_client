@@ -26,13 +26,21 @@ export default function PostDetail() {
     if (postId === -1) return;
     if (postId === null) return alert("알 수 없는 게시글입니다.");
 
-    fetch(`/api/guidely/api/posts/${postId}`)
+    fetch(`/api/guidely/api/posts/${postId}`, {
+      headers: {
+        accessToken: getCookie("accessToken"),
+      },
+    })
       .then((res) => res.json())
       .then((res) => {
         setCurPost(res);
       });
 
-    fetch(`/api/guidely/api/posts/${postId}/comments`)
+    fetch(`/api/guidely/api/posts/${postId}/comments`, {
+      headers: {
+        accessToken: getCookie("accessToken"),
+      },
+    })
       .then((res) => res.json())
       .then((res) => {
         console.log(res);
@@ -43,6 +51,7 @@ export default function PostDetail() {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        accessToken: getCookie("accessToken"),
       },
       body: JSON.stringify({
         userId: getCookie("userId"),
@@ -65,6 +74,7 @@ export default function PostDetail() {
       method: isLiked ? "DELETE" : "POST",
       headers: {
         "Content-Type": "application/json",
+        accessToken: getCookie("accessToken"),
       },
       body: JSON.stringify({
         userId: getCookie("userId"),

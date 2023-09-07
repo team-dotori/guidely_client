@@ -3,6 +3,7 @@ import Post from "@/components/npwd/boardPage/post";
 import AppBar from "@/components/npwd/boardPage/topBar";
 import CatBar from "../../../components/npwd/boardPage/catBar";
 import { parsePassedTimeToString } from "@/public/functions/time";
+import { getCookie } from "@/public/functions/cookie";
 
 function BoardPage() {
   const style = {
@@ -12,7 +13,11 @@ function BoardPage() {
   const [posts, setPosts] = useState([]);
 
   useEffect(() => {
-    fetch("/api/guidely/api/posts")
+    fetch("/api/guidely/api/posts", {
+      headers: {
+        accessToken: getCookie("accessToken"),
+      },
+    })
       .then((res) => res.json())
       .then((res) => {
         setPosts(res);

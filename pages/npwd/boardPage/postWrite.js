@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { v4 as uuid } from "uuid";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import storage from "@/firebase/storage";
+import { getCookie } from "@/public/functions/cookie";
 
 export default function PostWrite() {
   /////////////////////////////////////////////////////////////////////////////여기부터 음성녹음 관련
@@ -146,7 +147,9 @@ export default function PostWrite() {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        accessToken: getCookie("accessToken"),
       },
+
       body: JSON.stringify({
         content: content,
       }),
@@ -165,6 +168,7 @@ export default function PostWrite() {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        accessToken: getCookie("accessToken"),
       },
       body: JSON.stringify({
         voiceUrl: audioUrl,

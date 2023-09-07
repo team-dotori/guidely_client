@@ -4,6 +4,7 @@ import BigBadge from "@/components/npwd/myPage/badgePage/represBadge";
 import BadgeDetail from "@/components/npwd/myPage/badgePage/badgeDetail";
 import ReactModal from "react-modal";
 import AppBar from "@/components/npwd/myPage/badgePage/topBar";
+import { getCookie } from "@/public/functions/cookie";
 
 function BadgePage() {
   const [badgeList, setBadgeList] = useState([
@@ -31,6 +32,9 @@ function BadgePage() {
   useEffect(() => {
     fetch("/api/guidely/api/users/badges", {
       method: "GET",
+      headers: {
+        accessToken: getCookie("accessToken"),
+      },
     })
       .then((res) => {
         return res.json();

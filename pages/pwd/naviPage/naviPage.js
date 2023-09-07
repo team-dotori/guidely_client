@@ -9,6 +9,7 @@ import AppBar from "@/components/pwd/reportSearchPage/appbar";
 import BottomBar from "@/components/pwd/signalPage/bottomBar";
 import Path from "@/components/pwd/naviPage/pathinfo";
 import Notif from "@/components/pwd/naviPage/notification";
+import { getCookie } from "@/public/functions/cookie";
 
 export default function PutLocation() {
   useEffect(() => {
@@ -34,7 +35,12 @@ export default function PutLocation() {
 
   async function getPinFromPoint({ lat, lon }) {
     return fetch(
-      `/api/guidely/api/location/navigation?latitude=${lat}&longitude=${lon}`
+      `/api/guidely/api/location/navigation?latitude=${lat}&longitude=${lon}`,
+      {
+        headers: {
+          accessToken: getCookie("accessToken"),
+        },
+      }
     )
       .then((res) => res.json())
       .then((data) => {
