@@ -2,6 +2,7 @@ import { v4 as uuid } from "uuid";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import storage from "@/firebase/storage";
 import { useState, useRef, useEffect } from "react";
+import { getCookie } from "@/public/functions/cookie";
 
 export default function InputComments({ commentList, setCommentList }) {
   const [isClicked, setIsClicked] = useState(false);
@@ -13,6 +14,7 @@ export default function InputComments({ commentList, setCommentList }) {
     fetch("/api/guidely/api/posts/1/comments", {
       method: "POST",
       headers: {
+        accessToken: getCookie("accessToken"),
         "Content-Type": "application/json",
       },
       body: JSON.stringify({

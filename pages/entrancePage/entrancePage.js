@@ -148,7 +148,9 @@ function SelectionScreen({ setScreenState }) {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          accessToken: getCookie("accessToken"),
         },
+
         body: JSON.stringify({ type: ifDisabled ? "DISABLED" : "NORMAL" }),
       }).then((res) => {
         switch (res.status) {

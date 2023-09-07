@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import SignalPanel from "@/components/pwd/signalPage/locationListPage/signalPanel";
 import LocationList from "@/components/pwd/signalPage/locationListPage/locationList";
+import { getCookie } from "@/public/functions/cookie";
 
 export default function LocationListPage({
   setCurLocation,
@@ -19,7 +20,12 @@ export default function LocationListPage({
     const data = await (
       await fetch(
         "/api/guidely/api/location/navigation" +
-          `?latitude=${lat}&longitude=${lon}`
+          `?latitude=${lat}&longitude=${lon}`,
+        {
+          headers: {
+            accessToken: getCookie("accessToken"),
+          },
+        }
       )
     ).json();
 

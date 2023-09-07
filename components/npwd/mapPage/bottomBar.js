@@ -2,6 +2,7 @@ import { riskEnumTable, categoryEnumTable } from "@/public/constants/enumTable";
 import Image from "next/image";
 import TruncatedText from "../boardPage/TruncatedText";
 import { useEffect, useState } from "react";
+import { getCookie } from "@/public/functions/cookie";
 
 export function NavBar() {
   const style = {
@@ -77,10 +78,12 @@ export function NavBar() {
           <div style={style.buttonText}>게시판</div>
         </button>
         {/* 점자스캔 버튼 */}
-        <button style={style.Bbutton}
-        onClick={() => {
-          location.href = "/npwd/braillePage/scanBraille";
-        }}>
+        <button
+          style={style.Bbutton}
+          onClick={() => {
+            location.href = "/npwd/braillePage/scanBraille";
+          }}
+        >
           <img
             style={style.Bimg}
             src="/icons/navbar/dotscanner.svg"
@@ -315,7 +318,11 @@ function CustomMarkerContent({ type, risk, count }) {
 export function ReportList({ currentLocation, setMode }) {
   const [reportList, setReportList] = useState([]);
   useEffect(() => {
-    fetch(`/api/guidely/api/location/${currentLocation.id}`)
+    fetch(`/api/guidely/api/location/${currentLocation.id}`, {
+      headers: {
+        accessToken: getCookie("accessToken"),
+      },
+    })
       .then((res) => res.json())
       .then((res) => {
         console.log(res);

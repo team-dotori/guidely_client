@@ -18,9 +18,12 @@ export default function ReportListPage({
   }, [curBuildingName]);
 
   async function getReportList() {
-    fetch(
-      `/api/guidely/api/location/find?buildingName=${curBuildingName}`
-    ).then((data) => {
+    fetch(`/api/guidely/api/location/find?buildingName=${curBuildingName}`, {
+      headers: {
+        accessToken: getCookie("accessToken"),
+        "Content-Type": "application/json",
+      },
+    }).then((data) => {
       switch (data.status) {
         case 200:
           data.json().then((data) => {
