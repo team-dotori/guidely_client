@@ -6,11 +6,29 @@ import ReactModal from "react-modal";
 import AppBar from "@/components/npwd/myPage/badgePage/topBar";
 
 function BadgePage() {
-
-  const [badgeList, setBadgeList] = useState();
+  const [badgeList, setBadgeList] = useState([
+    {
+      badgeId: 1,
+      level: 1,
+      state: 0,
+      collectDate: "2021-08-22T15:00:00.000+00:00",
+    },
+    {
+      badgeId: 2,
+      level: 1,
+      state: 0,
+      collectDate: "2021-08-22T15:00:00.000+00:00",
+    },
+    {
+      badgeId: 3,
+      level: 1,
+      state: 0,
+      collectDate: "2021-08-22T15:00:00.000+00:00",
+    },
+  ]);
   const [ifDisabled, setifDisabled] = useState(undefined);
 
-  useEffect(()=>{
+  useEffect(() => {
     fetch("/api/guidely/api/users/badges", {
       method: "GET",
     })
@@ -19,24 +37,23 @@ function BadgePage() {
       })
       .then((data) => {
         // JSON 데이터가 파싱되어 data 변수에 저장됨
-        console.log(data)
-        if (data !== undefined){
-          setBadgeList(data.map((val)=>{
-            //console.log(val);
-            return val;
-          }))
-        } else{
+        console.log(data);
+        if (data !== undefined) {
+          setBadgeList(
+            data.map((val) => {
+              //console.log(val);
+              return val;
+            })
+          );
+        } else {
           console.log("데이터를 가져오는 중 오류 발생");
         }
-  
-      })
-    },[])
+      });
+  }, []);
 
-
-    useEffect(()=>{
-      //console.log(badgeList[0].collectDate);
-    }, [badgeList])
-  
+  useEffect(() => {
+    //console.log(badgeList[0].collectDate);
+  }, [badgeList]);
 
   const bigbadge = 0;
   // const bigbadge = {
@@ -45,23 +62,25 @@ function BadgePage() {
   //   badgeImageName: "nonewbieKing",
   //   level: 3,
   // };
-  
+
   const badges = [
     {
       name: "안녕 뉴비",
       badgeImageName: "nonewbieKing",
       acq: badgeList[0].state,
       level: badgeList[0].state == 1 ? badgeList[0].level : "-",
-      date: badgeList[0].state == 1 ? formatDate(badgeList[0].collectDate) : "-",
+      date:
+        badgeList[0].state == 1 ? formatDate(badgeList[0].collectDate) : "-",
       howtoGet: badgeList[0].state == 1 ? null : "신규 가입 회원",
     },
 
-    { 
-      name: "신고 5회", 
-      badgeImageName: "exploreKing", 
+    {
+      name: "신고 5회",
+      badgeImageName: "exploreKing",
       acq: badgeList[1].state,
       level: badgeList[1].state == 1 ? badgeList[1].level : "-",
-      date: badgeList[1].state == 1 ? formatDate(badgeList[1].collectDate): "-",
+      date:
+        badgeList[1].state == 1 ? formatDate(badgeList[1].collectDate) : "-",
       howtoGet: badgeList[1].state == 1 ? null : "신고 5번 하기",
     },
     {
@@ -69,12 +88,13 @@ function BadgePage() {
       badgeImageName: "communicate",
       acq: badgeList[2].state,
       evel: badgeList[2].state == 1 ? badgeList[2].level : "-",
-      date: badgeList[2].state == 1 ? formatDate(badgeList[2].collectDate): "-",
+      date:
+        badgeList[2].state == 1 ? formatDate(badgeList[2].collectDate) : "-",
       howtoGet: badgeList[2].state == 1 ? null : "글 5번 작성하기",
     },
-    // { name: "점자왕", 
+    // { name: "점자왕",
     //   date: badgeList[3].collectData,
-    //   badgeImageName: "dotKing", 
+    //   badgeImageName: "dotKing",
     //   acq: badgeList[3].state,
     //   level: acq ? badgeList[3].level : "",
     // },
@@ -165,7 +185,6 @@ function BadgePage() {
         badgeImageName={badges[bigbadge].badgeImageName}
         level={badges[bigbadge].level}
       />
-      {/* {레벨 어쩔거???} */}
       <hr style={style.hrstyle} />
       {badgeGroups.map((group, index) => (
         <div key={index} style={{ display: "flex", justifyContent: "center" }}>
@@ -197,7 +216,7 @@ function BadgePage() {
             name={openedData.name}
             level={openedData.level}
             badgeImageName={openedData.badgeImageName}
-            howtoGet = {openedData.howtoGet}
+            howtoGet={openedData.howtoGet}
             acq={openedData.acq}
           />
         )}
