@@ -7,7 +7,7 @@ export function middleware(req: NextRequest) {
   ) {
     return NextResponse.next({
       headers: {
-        "accessToken": req.cookies.get("accessToken").value,
+        "Accesstoken": req.cookies.get("accessToken").value,
       },
     });
   }
