@@ -1,4 +1,3 @@
-import { headers } from "@/next.config";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 

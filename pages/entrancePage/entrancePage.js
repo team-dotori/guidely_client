@@ -1,5 +1,3 @@
-import { headers } from "@/next.config";
-import { getCookie } from "@/public/functions/cookie";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 
@@ -44,11 +42,7 @@ export default function EntrancePage() {
   }
 
   function getUserType() {
-    fetch(`/api/guidely/api/users/type`, {
-      headers: {
-        accessToken: getCookie("accessToken"),
-      },
-    })
+    fetch(`/api/guidely/api/users/type`)
       .then((res) => {
         switch (res.status) {
           case 200:

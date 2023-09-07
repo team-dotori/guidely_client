@@ -1,4 +1,4 @@
-// /** @type {import('next').NextConfig} */
+/** @type {import('next').NextConfig} */
 const nextConfig = {
   env: {
     KAKAO_REST_API_KEY: process.env.KAKAO_REST_API_KEY,
