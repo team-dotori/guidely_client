@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState, useEffect } from "react";
 import AppBar from "@/components/pwd/reportSearchPage/appbar";
 import Post from "@/components/pwd/boardPage/post";
 //import SearchBar from "@/components/npwd/mapPage/searchBar"
@@ -15,27 +15,15 @@ export default function PutLocation() {
     location.href = "/pwd/boardPage/postWrite";
   };
 
-  const [posts, setPosts] = useState([
-    {
-      postId: 1,
-      nickname: "김철수",
-      content: {
-        voiceUrl:
-          "https://firebasestorage.googleapis.com/v0/b/guidely-5e5a6.appspot.com/o/audios%2F63372eff-c5c8-4390-9897-d13ddf843401.mp3?alt=media&token=d61fbbc1-cd68-4c30-86be-b3079b837b85",
-      },
-      type: "sound",
-      likeCount: 3,
-      createdDate: "2023-08-0T00:00:00",
-    },
-  ]);
+  const [posts, setPosts] = useState([]);
 
-  // useEffect(() => {
-  //   fetch("/api/guidely/api/posts")
-  //     .then((res) => res.json())
-  //     .then((res) => {
-  //       setPosts(res);
-  //     });
-  // }, []);
+  useEffect(() => {
+    fetch("/api/guidely/api/posts")
+      .then((res) => res.json())
+      .then((res) => {
+        setPosts(res);
+      });
+  }, []);
 
   const style = {
     background: {

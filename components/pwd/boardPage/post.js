@@ -8,11 +8,11 @@ export default function Post({
   time,
   type,
   count,
+  isLiked,
+  handleLikeClick,
   picurl,
   mode,
 }) {
-  const [isLiked, setIsLiked] = useState(false);
-
   const [isOnPlay, setIsOnPlay] = useState(false);
   function toggleIsOnPlay() {
     setIsOnPlay(!isOnPlay);
@@ -126,10 +126,6 @@ export default function Post({
       padding: "1%",
       fontWeight: "300",
     },
-  };
-
-  const handleLikeClick = () => {
-    setIsLiked(!isLiked);
   };
 
   return (

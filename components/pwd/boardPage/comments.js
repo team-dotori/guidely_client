@@ -65,10 +65,10 @@ export default function Comments({ userid, timeinfo, contents, heartcnt }) {
       padding: "1%",
       marginLeft: "10%",
     },
-    hrStyle:{
-        width: '85vw',
-        border: '0.5px solid black'
-      }
+    hrStyle: {
+      width: "85vw",
+      border: "0.5px solid black",
+    },
   };
 
   const handleLikeClick = () => {
@@ -77,36 +77,36 @@ export default function Comments({ userid, timeinfo, contents, heartcnt }) {
 
   return (
     <>
-    <div style={style.whole}>
-      <div style={style.profile}></div>
-      <div style={style.container}>
-        <div style={style.topPart}>
-          <div style={style.username}>{userid}</div>
-          <div style={style.timeinfo}>{timeinfo}</div>
-        </div>
-        <div style={style.contents}>{contents}</div>
-        <div style={style.bottomPart}>
-          <div style={style.heart} onClick={handleLikeClick}>
-            {isLiked ? (
-              <img
-                src="/img/blueheart.svg"
-                alt="Heart1"
-                style={{ width: "20px", height: "20px" }}
-              />
-            ) : (
-              <img
-                src="/img/whiteheart.svg"
-                alt="Heart2"
-                style={{ width: "20px", height: "20px" }}
-              />
-            )}
+      <div style={style.whole}>
+        <div style={style.profile}></div>
+        <div style={style.container}>
+          <div style={style.topPart}>
+            <div style={style.username}>{userid}</div>
+            <div style={style.timeinfo}>{timeinfo}</div>
           </div>
-          <div style={style.heartcnt}>{heartcnt}</div>
-          <div style={style.reply}>답글달기</div>
+          <div style={style.contents}>{contents}</div>
+          {/* <div style={style.bottomPart}>
+            <div style={style.heart} onClick={handleLikeClick}>
+              {isLiked ? (
+                <img
+                  src="/img/blueheart.svg"
+                  alt="Heart1"
+                  style={{ width: "20px", height: "20px" }}
+                />
+              ) : (
+                <img
+                  src="/img/whiteheart.svg"
+                  alt="Heart2"
+                  style={{ width: "20px", height: "20px" }}
+                />
+              )}
+            </div>
+            <div style={style.heartcnt}>{heartcnt}</div>
+            <div style={style.reply}>답글달기</div>
+          </div> */}
         </div>
       </div>
-    </div>
-    <hr style={style.hrStyle}/>
+      <hr style={style.hrStyle} />
     </>
   );
 }

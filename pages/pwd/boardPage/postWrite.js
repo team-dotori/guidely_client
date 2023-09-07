@@ -277,25 +277,29 @@ export default function PostWrite() {
   /////////////////////////////////////////////////////////////////////////////
 
   function requestPostText() {
-    fetch("/api/guidely/api/posts/text", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        content: content,
-      }),
-    }).then((res) => {
-      switch (res.status) {
-        case 200:
-        case 201:
-          location.href = "/pwd/boardPage";
-          break;
-      }
-    });
+    if (content.length > 0) {
+      fetch("/api/guidely/api/posts/text", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          content: content,
+        }),
+      }).then((res) => {
+        switch (res.status) {
+          case 200:
+          case 201:
+            location.href = "/pwd/boardPage";
+            break;
+        }
+      });
+    }
   }
 
   function requestPostAudio() {
+    if (audioUrl === null) return alert("음성이 없습니다.");
+
     fetch("/api/guidely/api/posts/voice", {
       method: "POST",
       headers: {
@@ -378,7 +382,6 @@ export default function PostWrite() {
                   }
               : requestPostText
           }
-          disabled={true}
         >
           <img src="/icons/check.svg" />
           작성완료

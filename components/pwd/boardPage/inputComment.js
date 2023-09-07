@@ -3,12 +3,13 @@ import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import storage from "@/firebase/storage";
 import { useState, useRef, useEffect } from "react";
 
-export default function InputComments(commentList, setCommentList) {
+export default function InputComments({ commentList, setCommentList }) {
   const [isClicked, setIsClicked] = useState(false);
 
   const [comment, setComment] = useState("");
 
   function registComment() {
+    if (comment === "") return;
     fetch("/api/guidely/api/posts/1/comments", {
       method: "POST",
       headers: {
@@ -197,6 +198,8 @@ export default function InputComments(commentList, setCommentList) {
       width: "80vw",
       display: "flex",
       position: "relative", // 상대적 위치 설정
+      resize: "none",
+      fontFamily: "Pretendard",
     },
     inputarea: {
       width: "100%",
@@ -207,6 +210,7 @@ export default function InputComments(commentList, setCommentList) {
       display: "flex",
       alignItems: "center",
       padding: "10px 0 0 10px",
+      fontFamily: "Pretendard",
     },
     submitbtn: {
       position: "absolute", // 절대 위치 설정
@@ -257,7 +261,13 @@ export default function InputComments(commentList, setCommentList) {
         ) : (
           <div style={style.textareaCon}>
             {/* 녹음 중이 아니면 텍스트 입력 필드를 표시합니다. */}
-            <textarea style={style.inputarea} />
+            <textarea
+              style={style.inputarea}
+              value={comment}
+              onChange={(val) => {
+                setComment(val.target.value);
+              }}
+            />
             <button style={style.submitbtn} onClick={registComment}>
               <img src="/icons/commsub.svg" alt="전송" />
             </button>
