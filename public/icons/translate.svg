@@ -1,0 +1,22 @@
+<svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="Group 120">
+<g id="Ellipse 54" filter="url(#filter0_d_507_2686)">
+<circle cx="18" cy="16" r="16" transform="rotate(-90 18 16)" fill="#F7F8FC"/>
+</g>
+<g id="&#240;&#159;&#166;&#134; icon &#34;transfer&#34;">
+<path id="Vector" d="M22.0001 9V11H10V13H22.0001V15L26.0001 12L22.0001 9ZM14 17L10 20.0001L14 23.0001V21.0001H26.0001V19H14V17Z" fill="black"/>
+</g>
+</g>
+<defs>
+<filter id="filter0_d_507_2686" x="0" y="-9.53674e-07" width="36" height="36" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+<feFlood flood-opacity="0" result="BackgroundImageFix"/>
+<feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+<feOffset dy="2"/>
+<feGaussianBlur stdDeviation="1"/>
+<feComposite in2="hardAlpha" operator="out"/>
+<feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.1 0"/>
+<feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_507_2686"/>
+<feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_507_2686" result="shape"/>
+</filter>
+</defs>
+</svg>
